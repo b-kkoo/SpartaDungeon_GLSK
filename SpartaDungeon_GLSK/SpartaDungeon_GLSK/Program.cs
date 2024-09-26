@@ -2,9 +2,11 @@
 {
     internal class Program
     {
+        static SceneManager sceneManager = new SceneManager();
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            sceneManager.Start();
         }
     }
 }
