@@ -1,5 +1,4 @@
 ﻿using SpartaDungeon_GLSK.Scene;
-using System.Runtime.CompilerServices;
 
 namespace SpartaDungeon_GLSK
 {
