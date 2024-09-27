@@ -25,10 +25,7 @@ namespace SpartaDungeon_GLSK
 
         public void LvUp() //lv up함수
         {
-            Lv ++;
-            Hp += Hp_lvup;
-            Atk += Atk_lvup;
-            Def += Def_lvup;
+
         }
     }
 }
