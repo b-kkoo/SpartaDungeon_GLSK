@@ -3,7 +3,7 @@
 namespace SpartaDungeon_GLSK.Data
 {
 
-    public class ItemData
+    internal class ItemData
     {
         List<Item> list { get; }
 
