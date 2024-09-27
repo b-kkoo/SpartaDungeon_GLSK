@@ -25,6 +25,28 @@ namespace SpartaDungeon_GLSK
 
         public void LvUp() //lv up함수
         {
+            if (Chad == Chad.Warrior)
+            {
+                Lv++;
+                Hp += 10;
+                Atk += 1;
+                Def += 3;
+            }
+            else if (Chad == Chad.Archer)
+            {
+                Lv++;
+                Hp += 5;
+                Atk += 2;
+                Def += 2;
+                CriRate++;
+            }
+            else
+            {
+                Lv++;
+                Hp += 5;
+                Atk += 3;
+                Def += 1;
+            }
 
         }
     }
