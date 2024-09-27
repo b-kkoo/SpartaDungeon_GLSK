@@ -2,6 +2,16 @@
 
 namespace SpartaDungeon_GLSK.Data
 {
+    class WorldItemData
+    {
+        public Item item { get; }
+        public int stack { get; set; }
+        public WorldItemData(Item _item, int _num)
+        {
+            item = _item;
+            stack = _num;
+        }
+    }
 
     internal class ItemData
     {
