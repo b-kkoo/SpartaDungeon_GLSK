@@ -1,11 +1,4 @@
-﻿using SpartaDungeon_GLSK.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
-using static SpartaDungeon_GLSK.Scene.BattleScene;
+﻿
 
 namespace SpartaDungeon_GLSK.Scene
 {

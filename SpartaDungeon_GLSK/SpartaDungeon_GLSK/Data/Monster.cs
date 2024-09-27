@@ -1,12 +1,24 @@
 ﻿using System.Collections.Generic;
+using System.Net.Security;
 using System.Reflection.Emit;
 using static SpartaDungeon_GLSK.Data.Monster;
 
 namespace SpartaDungeon_GLSK.Data
 {
-   
-    
-        internal class MonsterData
+    internal class WorldMonster
+    {
+        public Monster Monster { get; }
+        public int currenthp { get; set; }
+
+        public WorldMonster(MonsterCode _code)
+        {
+           
+            
+        }
+
+        
+    }
+    internal class MonsterData
         {
             List<Monster> list { get; }
 
@@ -30,12 +42,13 @@ namespace SpartaDungeon_GLSK.Data
 
             }
 
-            public Item GetItem(MonsterCode code)
+            public Monster GetMonster(MonsterCode cd)
             {
 
-                return list.Find(i => i.code == code);
+                return list.Find(i => i.cod == cd);
 
             }
+
         }   
 
        
@@ -48,40 +61,39 @@ namespace SpartaDungeon_GLSK.Data
 
     internal class Monster
     {
-        public MonsterCode code { get; }
+        public MonsterCode cod { get; }
         public string name { get; }
         public MonsterType type { get; }
 
 
         public Monster(MonsterCode _code, string _name, MonsterType _type)
         {
-            code = _code;
+            cod = _code;
             name = _name;
             type = _type;
         }
 
-        public enum MonsterCode
-        {
-            CommonMonster1,
-            CommonMonster2,
-            CommonMonster3,
-            CommonMonster4,
-            CommonMonster5,
-            SpecialMonster1,
-            SpecialMonster2,
-            SpecialMonster3,
-            BossMonster1,
-            BossMonster2,
-            BossMonster3
-        }
-
-        public enum MonsterType
-        {
-            Common, // 일반 몬스터
-            Special, // 특수 몬스터
-            Boss // 보스 몬스터
-        }
-
     }
-    
+
+    public enum MonsterCode
+    {
+        CommonMonster1,
+        CommonMonster2,
+        CommonMonster3,
+        CommonMonster4,
+        CommonMonster5,
+        SpecialMonster1,
+        SpecialMonster2,
+        SpecialMonster3,
+        BossMonster1,
+        BossMonster2,
+        BossMonster3
+    }
+
+    public enum MonsterType
+    {
+        Common, // 일반 몬스터
+        Special, // 특수 몬스터
+        Boss // 보스 몬스터
+    }
 }

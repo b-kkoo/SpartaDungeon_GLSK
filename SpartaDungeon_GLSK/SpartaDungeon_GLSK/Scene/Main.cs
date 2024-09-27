@@ -5,6 +5,7 @@
     {
         public static bool TestMainScene(out Scenes next, KeyController keyController)
         {
+
             ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
             ConsoleKey keyInput;
 
@@ -27,10 +28,13 @@
                         return true;
 
                     case ConsoleKey.X:
-                        next = Scenes.Test_Start; //false를 반환하는 순간 next Scene은 중요치 않음
+                        next = Scenes.Start_Prolog_Scene; //false를 반환하는 순간 next Scene은 중요치 않음
                         return false;
                 }
             }
         }
     }
 }
+
+
+
