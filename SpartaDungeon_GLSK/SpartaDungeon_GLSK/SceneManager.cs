@@ -14,7 +14,7 @@ namespace SpartaDungeon_GLSK
         public void Start()
         {
             //초기 씬 설정
-            currentScene = Scenes.Test_Start;
+            currentScene = Scenes.Start_Prolog_Scene;
 
             bool loop = true;
             //게임 루프
@@ -35,8 +35,16 @@ namespace SpartaDungeon_GLSK
 
             switch (currentScene)
             {
-                case Scenes.Test_Start:
-                    loop = StartScene.TestStartScene(out next, keyController);
+                case Scenes.Start_Prolog_Scene:
+                    loop = StartScene.StartPrologScene(out next, keyController);
+                    break;
+
+                case Scenes.Prolog_Battel:
+                    loop = PrologBatlles.PrologBattle(out next, keyController);
+                    break;
+
+                case Scenes.Prolog_End:
+                    loop = PrologEnd.PrologBattleEnd(out next, keyController);
                     break;
 
                 case Scenes.Test_Main:
@@ -62,14 +70,15 @@ namespace SpartaDungeon_GLSK
     {
         //테스트용 씬
         Test_Main,
-        Test_Start,
         Test_Dungeon,
         Test_Inventory,
         Test_Shop,
         Test_Status,
 
-
         //
+        Start_Prolog_Scene,
+        Prolog_Battel,
+        Prolog_End,
         MainScene
     }
 }
