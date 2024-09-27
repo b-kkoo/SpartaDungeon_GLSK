@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace SpartaDungeon_GLSK.Scene
 {
@@ -48,7 +43,7 @@ namespace SpartaDungeon_GLSK.Scene
                         return true;
 
                     case ConsoleKey.X:
-                        next = Scenes.Test_Start; //false를 반환하는 순간 next Scene은 중요치 않음
+                        next = Scenes.Test_Main; //false를 반환하는 순간 next Scene은 중요치 않음
                         return false;
                 }
             }
