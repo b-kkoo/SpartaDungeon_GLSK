@@ -17,6 +17,7 @@ namespace SpartaDungeon_GLSK
         public int Hp { get; set; }
         public int Atk { get; set; }
         public int Def { get; set; }
+        public int CriRate { get; set; }
 
         public void SetLv1() //set lv1함수
         {
