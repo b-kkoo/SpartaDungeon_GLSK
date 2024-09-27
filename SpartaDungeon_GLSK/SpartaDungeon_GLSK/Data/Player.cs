@@ -4,69 +4,40 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using static SpartaDungeon_GLSK.Data.JobData;
+using System.Xml.Linq;
 
 namespace SpartaDungeon_GLSK.Data
 {
-    
-    internal class InitializedInfo
+    public class JobData
     {
-        List<Player> list { get; }
+        public static Job Warrior = new Job(Chad.Warrior, 100, 5, 10, 10, 1, 3);
 
-        public InitializedInfo()
-        {
-            list = new List<Player>();
-            list.Capacity = 3;
+        public static Job Archer = new Job(Chad.Archer, 80, 7, 7, 5, 2, 2);
 
-            list.Add(new Warrior("이름", Chad.Warrior, 1, 100, 5, 10));
-            list.Add(new Archer("이름", Chad.Archer, 1, 100, 7, 7));
-            list.Add(new Mage("이름", Chad.Mage, 1, 100, 10, 5));
-        }
-        
-        public Player GetPlayer(Chad code)
-        {
-
-        }
+        public static Job Mage = new Job(Chad.Mage, 70, 10, 5, 3, 3, 1);
     }
 
-    public class Player
+    public class Job
     {
-        public string Name { get; set; }
         public Chad Chad { get; set; }
-        public int Lv { get; set; }
         public int Hp { get; set; }
         public int Atk { get; set; }
         public int Def { get; set; }
-        
-        public Player(string _name, Chad _chad, int _lv, int _hp, int _atk, int _def)
+        public int Hp_lvup { get; set; }
+        public int Atk_lvup { get; set; }
+        public int Def_lvup { get; set; }       
+
+        public Job(Chad _chad, int _hp, int _atk, int _def, int _HP_lvup, int _Atk_lvup, int _Def_lvup)
         {
-            Name = _name;
             Chad = _chad;
-            Lv = _lv;
             Hp = _hp;
             Atk = _atk;
             Def = _def;
-        }
-        public void LevelUpW()
-        {
-            Lv++;
-            Hp += 10;
-            Atk += 1;
-            Def += 3;
-        }
-        public void LevelUpA()
-        {
-            Lv++;
-            Hp += 5;
-            Atk += 2;
-            Def += 2;
-        }
-        public void LevelUpM()
-        {
-            Lv++;
-            Hp += 3;
-            Atk += 3;
-            Def += 1;
-        }
+            Hp_lvup = _HP_lvup;
+            Atk_lvup = _Atk_lvup;
+            Def_lvup = _Def_lvup;
+        }       
     }
 
     public enum Chad

@@ -5,25 +5,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SpartaDungeon_GLSK
 {
     internal class PlayerData
     {
-        public ItemData itemData = new ItemData();
+        public string Name { get; set; }
+        public Chad Chad { get; set; }
+        public int Lv { get; set; }
+        public int Hp { get; set; }
+        public int Atk { get; set; }
+        public int Def { get; set; }
 
-        Dictionary<int, int> invetory = new Dictionary<int, int>();
-
-        public void UseItem() //소비아이템 사용
+        public void SetLv1() //set lv1함수
         {
-            Item item = itemData.GetItem(IC.Potion1);
-
-            string hp = item.name;
+            
         }
 
-        public void StoreItem(IC code) //인벤토리에 아이템 목록 추가
+        public void LvUp() //lv up함수
         {
-            invetory.Add((int)code, 1);
+            Lv ++;
+            Hp += Hp_lvup;
+            Atk += Atk_lvup;
+            Def += Def_lvup;
         }
     }
 }
