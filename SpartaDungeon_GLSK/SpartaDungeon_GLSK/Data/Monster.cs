@@ -8,15 +8,15 @@ namespace SpartaDungeon_GLSK.Data
     internal class WorldMonster
     {
         public Monster Monster { get; }
-        public int stack { get; set; }
+        public int currenthp { get; set; }
 
-        public WorldMonsterData(Monster _Monster, int _num)
+        public WorldMonster(MonsterCode _code)
         {
-            Monster = _Monster;
-            stack = _num;
+           
+            
         }
 
-        AuthenticationLevel,hp
+        
     }
     internal class MonsterData
         {
@@ -42,10 +42,10 @@ namespace SpartaDungeon_GLSK.Data
 
             }
 
-            public Monster GetMonster(MonsterCode code)
+            public Monster GetMonster(MonsterCode cd)
             {
 
-                return list.Find(i => i.code == code);
+                return list.Find(i => i.cod == cd);
 
             }
 
@@ -61,14 +61,14 @@ namespace SpartaDungeon_GLSK.Data
 
     internal class Monster
     {
-        public MonsterCode code { get; }
+        public MonsterCode cod { get; }
         public string name { get; }
         public MonsterType type { get; }
 
 
         public Monster(MonsterCode _code, string _name, MonsterType _type)
         {
-            code = _code;
+            cod = _code;
             name = _name;
             type = _type;
         }
