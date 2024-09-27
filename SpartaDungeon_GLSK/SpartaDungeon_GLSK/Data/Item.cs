@@ -20,7 +20,7 @@ namespace SpartaDungeon_GLSK.Data
             list.Add(new Item(IC.Bow1,         "활1",          IT.WeaponB,      6,     0));
             list.Add(new Item(IC.Bow2,         "활2",          IT.WeaponB,      8,     0));
             list.Add(new Item(IC.Wand1,        "지팡이1",      IT.WeaponW,      7,     0));
-            list.Add(new Item(IC.Wand2,        "지팡이1",      IT.WeaponW,      9,     0));
+            list.Add(new Item(IC.Wand2,        "지팡이2",      IT.WeaponW,      9,     0));
             list.Add(new Item(IC.HeavyArmor1,  "중갑옷1",      IT.ArmorHA,      0,     7));
             list.Add(new Item(IC.HeavyArmor2,  "중갑옷2",      IT.ArmorHA,      0,     9));
             list.Add(new Item(IC.LightArmor1,  "경갑옷1",      IT.ArmorLA,      0,     6));

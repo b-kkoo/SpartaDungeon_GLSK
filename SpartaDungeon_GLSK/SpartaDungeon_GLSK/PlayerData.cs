@@ -14,14 +14,14 @@ namespace SpartaDungeon_GLSK
 
         Dictionary<int, int> invetory = new Dictionary<int, int>();
 
-        public void UseItem()
+        public void UseItem() //소비아이템 사용
         {
             Item item = itemData.GetItem(IC.Potion1);
 
             string hp = item.name;
         }
 
-        public void StoreItem(IC code)
+        public void StoreItem(IC code) //인벤토리에 아이템 목록 추가
         {
             invetory.Add((int)code, 1);
         }
