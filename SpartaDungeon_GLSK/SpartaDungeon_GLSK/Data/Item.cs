@@ -2,48 +2,49 @@
 
 namespace SpartaDungeon_GLSK.Data
 {
-    class WorldItemData
+    public class WorldItem
     {
         public Item item { get; }
-        public int stack { get; set; }
-        public WorldItemData(Item _item, int _num)
+        public int stack { get; set; } //갯수
+
+        public WorldItem(IC _code, int _num)
         {
-            item = _item;
+            item = ItemData.GetItem(_code);
             stack = _num;
         }
     }
 
-    internal class ItemData
+    public static class ItemData
     {
-        List<Item> list { get; }
+        private static List<Item> Items { get; set; }
 
-        public ItemData()
+        public static void Set()
         {
-            list = new List<Item>();
-            list.Capacity = 100;
+            Items = new List<Item>();
+            Items.Capacity = 100;
 
             //                코드(중복X!!)     이름            타입            Atk    Def
-            list.Add(new Item(IC.Potion1,      "포션1",        IT.PotionHP,     0,     0));
-            list.Add(new Item(IC.Potion2,      "포션2",        IT.PotionHP,     0,     0));
-            list.Add(new Item(IC.Sword1,       "검1",          IT.WeaponS,      5,     0));
-            list.Add(new Item(IC.Sword2,       "검2",          IT.WeaponS,      7,     0));
-            list.Add(new Item(IC.Bow1,         "활1",          IT.WeaponB,      6,     0));
-            list.Add(new Item(IC.Bow2,         "활2",          IT.WeaponB,      8,     0));
-            list.Add(new Item(IC.Wand1,        "지팡이1",      IT.WeaponW,      7,     0));
-            list.Add(new Item(IC.Wand2,        "지팡이2",      IT.WeaponW,      9,     0));
-            list.Add(new Item(IC.HeavyArmor1,  "중갑옷1",      IT.ArmorHA,      0,     7));
-            list.Add(new Item(IC.HeavyArmor2,  "중갑옷2",      IT.ArmorHA,      0,     9));
-            list.Add(new Item(IC.LightArmor1,  "경갑옷1",      IT.ArmorLA,      0,     6));
-            list.Add(new Item(IC.LightArmor2,  "경갑옷2",      IT.ArmorLA,      0,     8));
-            list.Add(new Item(IC.Robe1,        "로브1",        IT.ArmorR,       0,     5));
-            list.Add(new Item(IC.Robe2,        "로브2",        IT.ArmorR,       0,     7));
+            Items.Add(new Item(IC.Potion1,      "포션1",        IT.PotionHP,     0,     0));
+            Items.Add(new Item(IC.Potion2,      "포션2",        IT.PotionHP,     0,     0));
+            Items.Add(new Item(IC.Sword1,       "검1",          IT.WeaponS,      5,     0));
+            Items.Add(new Item(IC.Sword2,       "검2",          IT.WeaponS,      7,     0));
+            Items.Add(new Item(IC.Bow1,         "활1",          IT.WeaponB,      6,     0));
+            Items.Add(new Item(IC.Bow2,         "활2",          IT.WeaponB,      8,     0));
+            Items.Add(new Item(IC.Wand1,        "지팡이1",      IT.WeaponW,      7,     0));
+            Items.Add(new Item(IC.Wand2,        "지팡이2",      IT.WeaponW,      9,     0));
+            Items.Add(new Item(IC.HeavyArmor1,  "중갑옷1",      IT.ArmorHA,      0,     7));
+            Items.Add(new Item(IC.HeavyArmor2,  "중갑옷2",      IT.ArmorHA,      0,     9));
+            Items.Add(new Item(IC.LightArmor1,  "경갑옷1",      IT.ArmorLA,      0,     6));
+            Items.Add(new Item(IC.LightArmor2,  "경갑옷2",      IT.ArmorLA,      0,     8));
+            Items.Add(new Item(IC.Robe1,        "로브1",        IT.ArmorR,       0,     5));
+            Items.Add(new Item(IC.Robe2,        "로브2",        IT.ArmorR,       0,     7));
 
             //아이템 추가
         }
 
-        public Item GetItem(IC code)
+        public static Item GetItem(IC code)
         {
-            return list.Find(i => i.code == code);
+            return Items.Find(i => i.code == code);
         }
     }
 

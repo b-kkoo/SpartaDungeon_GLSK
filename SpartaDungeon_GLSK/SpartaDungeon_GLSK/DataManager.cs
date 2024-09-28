@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace SpartaDungeon_GLSK
 {
-    internal class DataManager
+    public class DataManager
     {
         //저장파일 경로는 실행파일과 같음
         //저장파일 이름은 SaveData1, SaveData2, SaveData3 세개
@@ -21,7 +21,7 @@ namespace SpartaDungeon_GLSK
 
             //Player Data -> Save Data
             saveData.inventory = new Dictionary<int, int>();
-            foreach (WorldItemData i in Program.playerData.inventory) saveData.inventory.Add((int)i.item.code, i.stack);
+            foreach (WorldItem i in Program.playerData.inventory) saveData.inventory.Add((int)i.item.code, i.stack);
 
             try
             {
@@ -36,6 +36,8 @@ namespace SpartaDungeon_GLSK
                 Console.WriteLine($"\n데이터 저장 중 오류가 발생했습니다: {ex.Message}\n");
                 return false;
             }
+
+            return true;
         }
 
         //저장파일 경로는 실행파일과 같음
@@ -64,12 +66,12 @@ namespace SpartaDungeon_GLSK
                     {
                         foreach (KeyValuePair<int, int> pair in SaveData.inventory)
                         {
-                            Item ip = Program.itemData.list.Find(i => i.code == (IC)pair.Key);
-                            if (ip != null) Program.playerData.inventory.Add(new WorldItem(ip, pair.Value));
+                            if (ItemData.GetItem((IC)pair.Key) != null)
+                            {
+                                Program.playerData.inventory.Add(new WorldItem((IC)pair.Key, pair.Value));
+                            }
                         }
                     }
-
-                    return true;
                 }
                 else
                 {
@@ -84,11 +86,15 @@ namespace SpartaDungeon_GLSK
                 SaveData = null;
                 return false;
             }
+
+
+
+            return true;
         }
 
     }
 
-    internal class SaveData
+    public class SaveData
     {
         public Dictionary<int, int> inventory { get; set; }
     }

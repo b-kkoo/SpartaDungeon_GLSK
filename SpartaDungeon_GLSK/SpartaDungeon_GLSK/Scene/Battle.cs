@@ -1,10 +1,11 @@
 ﻿
 
+using SpartaDungeon_GLSK.Data;
+
 namespace SpartaDungeon_GLSK.Scene
 {
-    internal class BattleScene
+    public class BattleScene
     {
-        private BattleTable battleTable;
         //배틀 진행 정보
         public class BattleTable
         {
@@ -13,15 +14,15 @@ namespace SpartaDungeon_GLSK.Scene
             //적군 진영
             public WorldMonster[] Hostile;
 
-            public BattleTable(/*PlayerData playerData, WorldMonster[] enemies*/)
+            public BattleTable(PlayerData playerData, WorldMonster[] enemies)
             {
-                //Ally = new PlayerData[1]
-                //Ally[0] = playerData;
-                //Hostile = enemies;
+                Ally = new PlayerData[1];
+                Ally[0] = playerData;
+                Hostile = enemies;
             }
         }
 
-        public bool TutorialBattle(out Scenes next, KeyController keyController/*플레이어 데이터*/)
+        public static bool TutorialBattle(out Scenes next, KeyController keyController)
         {
             ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
             ConsoleKey keyInput;
@@ -29,7 +30,7 @@ namespace SpartaDungeon_GLSK.Scene
             int cheatActivated;
 
             MonsterCode[] enemies = new MonsterCode[] { MonsterCode.CommonMonster1, MonsterCode.CommonMonster2};
-            battleTable = new BattleTable(PlayerData.WorldPlayer/*나중에 다대다 전추 구현 가능하면 PlayerData에 함수 추가*/, IngameData.GetWorldMonster(enemies));
+            BattleTable battleTable = new BattleTable(Program.playerData/*나중에 다대다 전투 구현 가능하면 PlayerData에 함수 추가*/, IngameData.GetWorldMonsters(enemies));
 
             keyController.GetUserInput(keyFilter, out cheatActivated); //반환값 안받으면 입력버퍼 지우라는 뜻
 
@@ -37,29 +38,30 @@ namespace SpartaDungeon_GLSK.Scene
             bool loop = true;
             while (loop)
             {   
-                if (battleTable.Hostile[0].HPCur > 0)
+                if (battleTable.Hostile[0].isAlive)
                 {
-                    Console.SetCursorPosition(screenTop, 50);
+                    Console.SetCursorPosition(0, screenTop);
                     Console.WriteLine($"LV {battleTable.Hostile[0].monster.level}   {battleTable.Hostile[0].monster.name}");
-                    Console.SetCursorPosition(screenTop + 1, 0);
-                    Console.WriteLine($"{battleTable.Hostile[0].HPCur} / {battleTable.Hostile[0].monster.HP}");
+                    Console.SetCursorPosition(0, screenTop + 1);
+                    Console.WriteLine($"{battleTable.Hostile[0].currentHp} / {battleTable.Hostile[0].monster.hp}");
                 }
-                if (battleTable.Hostile[1].HPCur > 0)
+                if (battleTable.Hostile[1].isAlive)
                 {
-                    Console.SetCursorPosition(screenTop, 50);
+                    Console.SetCursorPosition(50, screenTop);
                     Console.WriteLine($"LV {battleTable.Hostile[1].monster.level}   {battleTable.Hostile[1].monster.name}");
-                    Console.SetCursorPosition(screenTop + 1, 50);
-                    Console.WriteLine($"{battleTable.Hostile[1].HPCur} / {battleTable.Hostile[1].monster.HP}");
+                    Console.SetCursorPosition(50, screenTop + 1);
+                    Console.WriteLine($"{battleTable.Hostile[1].currentHp} / {battleTable.Hostile[1].monster.hp}");
                 }
-                Console.SetCursorPosition(screenTop + 5, 0);
-                Console.WriteLine($"LV {battleTable.Ally[0].name}");
-                Console.SetCursorPosition(screenTop + 6, 0);
-                Console.WriteLine($"{battleTable.Ally[0].HPCur} / {battleTable.Ally[0].HP}");
-                Console.SetCursorPosition(screenTop + 8, 0);
+                Console.SetCursorPosition(0, screenTop + 5);
+                Console.WriteLine($"LV {battleTable.Ally[0].Lv}   {battleTable.Ally[0].Name}");
+                Console.SetCursorPosition(0, screenTop + 6);
+                Console.WriteLine($"{battleTable.Ally[0].currentHp} / {battleTable.Ally[0].Hp}");
+                Console.SetCursorPosition(0, screenTop + 8);
                 Console.WriteLine("Z를 눌러 적을 공격!");
 
-                Console.SetCursorPosition(screenTop + 50, 0);
-                Console.SetCursorPosition(screenTop, 0);
+                Console.SetCursorPosition(0, screenTop + 50);
+                Console.SetCursorPosition(0, screenTop);
+                Console.SetCursorPosition(0, screenTop + 9);
 
                 bool loop2 = true;
                 while (loop2)
@@ -70,29 +72,23 @@ namespace SpartaDungeon_GLSK.Scene
                     switch (keyInput)
                     {
                         case ConsoleKey.Z:
-                            next = Scenes.Test_Inventory;
+                            battleTable.Hostile[0].currentHp -= 10;
+                            if (battleTable.Hostile[0].currentHp <= 0) battleTable.Hostile[0].isAlive = false;
+                            battleTable.Hostile[1].currentHp -= 10;
+                            if (battleTable.Hostile[1].currentHp <= 0) battleTable.Hostile[1].isAlive = false;
+                            if (battleTable.Hostile[0].isAlive == false && battleTable.Hostile[1].isAlive == false)
+                            {
+                                next = Scenes.MainScene;
+                                return true;
+                            }
+                            loop2 = false;
                             break;
-
                     }
                 }
             }
 
-            while (true)
-            {
-                keyFilter = new ConsoleKey[] { ConsoleKey.Z, ConsoleKey.X };
-                keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
-
-                switch (keyInput)
-                {
-                    case ConsoleKey.Z:
-                        next = Scenes.Test_Inventory;
-                        return true;
-
-                    case ConsoleKey.X:
-                        next = Scenes.Test_Main; //false를 반환하는 순간 next Scene은 중요치 않음
-                        return false;
-                }
-            }
+            next = Scenes.MainScene;
+            return true;
         }
     }
 }

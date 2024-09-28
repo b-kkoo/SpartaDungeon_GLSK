@@ -3,7 +3,7 @@
 namespace SpartaDungeon_GLSK
 {
 
-    internal class SceneManager
+    public class SceneManager
     {
         Scenes currentScene;
         Scenes nextScene;
@@ -13,12 +13,14 @@ namespace SpartaDungeon_GLSK
         public void Start()
         {
             //초기 씬 설정
-            currentScene = Scenes.Start_Prolog_Scene;
+            currentScene = Scenes.TutorialBattle;
 
             bool loop = true;
             //게임 루프
             while (loop)
             {
+                Console.Clear();
+
                 loop = Execute(out nextScene);
             }
 
@@ -54,6 +56,10 @@ namespace SpartaDungeon_GLSK
                     loop = InventoryScene.TestInventoryScene(out next, keyController);
                     break;
 
+                case Scenes.TutorialBattle:
+                    loop = BattleScene.TutorialBattle(out next, keyController);
+                    break;
+
                 default:
                     return false; //유효하지 않은 씬
             }
@@ -78,7 +84,8 @@ namespace SpartaDungeon_GLSK
         Start_Prolog_Scene,
         Prolog_Battel,
         Prolog_End,
-        MainScene
+        MainScene,
+        TutorialBattle
     }
 }
 

@@ -2,7 +2,7 @@
 
 namespace SpartaDungeon_GLSK
 {
-    internal class Program
+    public class Program
     {
         static SceneManager sceneManager = new SceneManager();
 
@@ -10,11 +10,12 @@ namespace SpartaDungeon_GLSK
         public static PlayerData playerData = new PlayerData();
         public static IngameData ingameData = new IngameData();
 
-        public static ItemData itemData = new ItemData();
-        public static MonsterData monsterData = new MonsterData();
-
         static void Main(string[] args)
         {
+            //정적 클래스 초기화
+            ItemData.Set();
+            MonsterData.Set();
+
             sceneManager.Start();
         }
     }

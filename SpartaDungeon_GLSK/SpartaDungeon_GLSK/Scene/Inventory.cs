@@ -22,7 +22,7 @@ namespace SpartaDungeon_GLSK.Scene
             return false;
         }
 
-        public static bool DisplyInventory(out Scenes next, KeyController keyController)
+        /*public static bool DisplyInventory(out Scenes next, KeyController keyController)
         {
             ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
             ConsoleKey keyInput;
@@ -42,6 +42,6 @@ namespace SpartaDungeon_GLSK.Scene
 
             next = Scenes.MainScene; //false를 반환하는 순간 next Scene은 중요치 않음
             return false;
-        }
+        }*/
     }
 }
