@@ -4,6 +4,7 @@ using SpartaDungeon_GLSK.Data;
 
 namespace SpartaDungeon_GLSK.Scene
 {
+    //전투 관련 씬
     public class BattleScene
     {
         //배틀 진행 정보
@@ -78,7 +79,7 @@ namespace SpartaDungeon_GLSK.Scene
                             if (battleTable.Hostile[1].currentHp <= 0) battleTable.Hostile[1].isAlive = false;
                             if (battleTable.Hostile[0].isAlive == false && battleTable.Hostile[1].isAlive == false)
                             {
-                                next = Scenes.MainScene;
+                                next = Scenes.Start_TutoEnd;
                                 return true;
                             }
                             loop2 = false;
@@ -87,7 +88,7 @@ namespace SpartaDungeon_GLSK.Scene
                 }
             }
 
-            next = Scenes.MainScene;
+            next = Scenes.Start_TutoEnd;
             return true;
         }
     }

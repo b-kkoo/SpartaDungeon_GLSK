@@ -8,7 +8,7 @@ namespace SpartaDungeon_GLSK
     {
         //저장파일 경로는 실행파일과 같음
         //저장파일 이름은 SaveData1, SaveData2, SaveData3 세개
-        public static bool SaveData(int saveSocket)
+        public static bool SaveDatafile(int saveSocket)
         {
             if (saveSocket < 1 || saveSocket > 3)
             {
@@ -21,7 +21,7 @@ namespace SpartaDungeon_GLSK
 
             //Player Data -> Save Data
             saveData.inventory = new Dictionary<int, int>();
-            foreach (WorldItem i in Program.playerData.inventory) saveData.inventory.Add((int)i.item.code, i.stack);
+            foreach (KeyValuePair<PotionCode, int> i in Program.playerData.inventory) saveData.inventory.Add((int)i.Key, i.Value);
 
             try
             {
@@ -42,10 +42,8 @@ namespace SpartaDungeon_GLSK
 
         //저장파일 경로는 실행파일과 같음
         //저장파일 이름은 SaveData1, SaveData2, SaveData3 세개
-        public static bool LoadData(int saveSocket, out SaveData SaveData)
+        public static bool LoadDatafile(int saveSocket)
         {
-            SaveData = null;
-
             if (saveSocket < 1 || saveSocket > 3)
             {
                 return false;
@@ -58,17 +56,26 @@ namespace SpartaDungeon_GLSK
                 {
                     // JSON 파일을 읽어서 객체로 역직렬화
                     string jsonString = File.ReadAllText(filePath);
-                    SaveData = JsonSerializer.Deserialize<SaveData>(jsonString);
+                    SaveData saveData = JsonSerializer.Deserialize<SaveData>(jsonString);
                     Console.WriteLine($"\n - {saveSocket}번 데이터 불러오기 완료! - \n");
 
                     //Save Data -> Player Data
-                    if (SaveData.inventory != null)
+                    Program.playerData.Name = saveData.Name;
+                    Program.playerData.Chad = (Chad)saveData.Chad;
+                    Program.playerData.ChadName = saveData.ChadName;
+                    Program.playerData.Lv = saveData.Lv;
+                    Program.playerData.Hp = saveData.Hp;
+                    Program.playerData.currentHp = saveData.currentHp;
+                    Program.playerData.Atk = saveData.Atk;
+                    Program.playerData.Def = saveData.Def;
+                    Program.playerData.CriRate = saveData.CriRate;
+                    if (saveData.inventory != null)
                     {
-                        foreach (KeyValuePair<int, int> pair in SaveData.inventory)
+                        foreach (KeyValuePair<int, int> pair in saveData.inventory)
                         {
-                            if (ItemData.GetItem((IC)pair.Key) != null)
+                            if (PotionDatabase.GetPotion((PotionCode)pair.Key) != null)
                             {
-                                Program.playerData.inventory.Add(new WorldItem((IC)pair.Key, pair.Value));
+                                Program.playerData.inventory.Add((PotionCode)pair.Key, pair.Value);
                             }
                         }
                     }
@@ -76,14 +83,12 @@ namespace SpartaDungeon_GLSK
                 else
                 {
                     Console.WriteLine($"\n - {saveSocket}번 데이터 파일을 찾을 수 없습니다! - \n");
-                    SaveData = null;
                     return false;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"\n데이터 불러오기 중 오류가 발생했습니다: {ex.Message}\n");
-                SaveData = null;
                 return false;
             }
 
@@ -92,10 +97,54 @@ namespace SpartaDungeon_GLSK
             return true;
         }
 
+
+        //세이브 파일의 대략적인 정보를 반환
+        public static bool GetSavefileStatus(int saveSocket, out string info)
+        {
+            if (saveSocket < 1 || saveSocket > 3)
+            {
+                info = "매개변수가 잘못되었습니다";
+                return false;
+            }
+
+            string filePath = $"SaveData{saveSocket}";
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    // JSON 파일을 읽어서 객체로 역직렬화
+                    string jsonString = File.ReadAllText(filePath);
+                    SaveData saveData = JsonSerializer.Deserialize<SaveData>(jsonString);
+                    info = $"LV {saveData.Lv}  {saveData.Name}  {saveData.ChadName}";
+                }
+                else
+                {
+                    info = "빈 데이터";
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                info = "데이터 오류";
+                return false;
+            }
+
+            return true;
+        }
     }
 
+    //인게임 데이터를 json 형식으로 저장할 수 있도록 변환한 클래스
     public class SaveData
     {
+        public string Name { get; set; }
+        public int Chad { get; set; }
+        public string ChadName { get; set; }
+        public int Lv { get; set; }
+        public int Hp { get; set; }
+        public int currentHp { get; set; }
+        public int Atk { get; set; }
+        public int Def { get; set; }
+        public int CriRate { get; set; }
         public Dictionary<int, int> inventory { get; set; }
     }
 }

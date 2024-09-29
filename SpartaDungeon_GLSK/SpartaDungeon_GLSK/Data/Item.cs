@@ -2,77 +2,70 @@
 
 namespace SpartaDungeon_GLSK.Data
 {
-    public class WorldItem
+    //정적(static) 클래스 : 일반적인 클래스가 객체를 만들어 사용하는 것과 달리, 정적 클래스는 객체를 만들 수 없다.
+    //                      static 클래스는 그 안의 필드와 메서드도 전부 static 키워드를 써야 한다.
+    //                      데이터베이스를 정적 클래스로 만든 이유는 그렇게 하면 데이터는 프로그램 전반에서 공유되며, 메모리에 한 번만 로드되고 내용이 변경되지 않도록 관리할 수 있기 때문.
+    //                      또한 정적 클래스의 정적 생성자는 아무 멤버가 참조되기 전에 자동으로 호출되기 때문에 초기화하지 않은 객체의 멤버에 접근하려는 NullReferenceException 에러를 방지할 수 있다.
+    public static class GearDatabase
     {
-        public Item item { get; }
-        public int stack { get; set; } //갯수
+        // 모든 아이템 데이터를 저장하는 읽기 전용 Dictionary
+        private static readonly Dictionary<GearCode, Gear> Gears;
 
-        public WorldItem(IC _code, int _num)
+        //정적 생성자에는 public, private와 같은 액세스 한정자를 사용할 수 없음
+        static GearDatabase()
         {
-            item = ItemData.GetItem(_code);
-            stack = _num;
+            Gears = new Dictionary<GearCode, Gear>();
+
+            //        코드(중복X!!)                     이름            타입                   Atk    Def
+            Gears.Add(GearCode.Sword1,      new Gear(   "검1",          GearType.WeaponS,      5,     0));
+            Gears.Add(GearCode.Sword2,      new Gear(   "검2",          GearType.WeaponS,      7,     0));
+            Gears.Add(GearCode.Bow1,        new Gear(   "활1",          GearType.WeaponB,      6,     0));
+            Gears.Add(GearCode.Bow2,        new Gear(   "활2",          GearType.WeaponB,      8,     0));
+            Gears.Add(GearCode.Wand1,       new Gear(   "지팡이1",      GearType.WeaponW,      7,     0));
+            Gears.Add(GearCode.Wand2,       new Gear(   "지팡이2",      GearType.WeaponW,      9,     0));
+            Gears.Add(GearCode.HeavyArmor1, new Gear(   "중갑옷1",      GearType.ArmorHA,      0,     7));
+            Gears.Add(GearCode.HeavyArmor2, new Gear(   "중갑옷2",      GearType.ArmorHA,      0,     9));
+            Gears.Add(GearCode.LightArmor1, new Gear(   "경갑옷1",      GearType.ArmorLA,      0,     6));
+            Gears.Add(GearCode.LightArmor2, new Gear(   "경갑옷2",      GearType.ArmorLA,      0,     8));
+            Gears.Add(GearCode.Robe1,       new Gear(   "로브1",        GearType.ArmorR,       0,     5));
+            Gears.Add(GearCode.Robe2,       new Gear(   "로브2",        GearType.ArmorR,       0,     7));
+
+            //아이템을 계속 추가해 보자
+        }
+
+        public static Gear GetGear(GearCode code)
+        {
+            //Dictionary 내장 함수 TryGetValue : 해당 key값이 없으면 false를 반환
+            if (Gears.TryGetValue(code, out Gear gear))
+            {
+                return gear;
+            }
+
+            Console.WriteLine("해당 ID의 아이템을 찾을 수 없습니다.");
+            return null;
         }
     }
 
-    public static class ItemData
+    public class Gear
     {
-        private static List<Item> Items { get; set; }
-
-        public static void Set()
-        {
-            Items = new List<Item>();
-            Items.Capacity = 100;
-
-            //                코드(중복X!!)     이름            타입            Atk    Def
-            Items.Add(new Item(IC.Potion1,      "포션1",        IT.PotionHP,     0,     0));
-            Items.Add(new Item(IC.Potion2,      "포션2",        IT.PotionHP,     0,     0));
-            Items.Add(new Item(IC.Sword1,       "검1",          IT.WeaponS,      5,     0));
-            Items.Add(new Item(IC.Sword2,       "검2",          IT.WeaponS,      7,     0));
-            Items.Add(new Item(IC.Bow1,         "활1",          IT.WeaponB,      6,     0));
-            Items.Add(new Item(IC.Bow2,         "활2",          IT.WeaponB,      8,     0));
-            Items.Add(new Item(IC.Wand1,        "지팡이1",      IT.WeaponW,      7,     0));
-            Items.Add(new Item(IC.Wand2,        "지팡이2",      IT.WeaponW,      9,     0));
-            Items.Add(new Item(IC.HeavyArmor1,  "중갑옷1",      IT.ArmorHA,      0,     7));
-            Items.Add(new Item(IC.HeavyArmor2,  "중갑옷2",      IT.ArmorHA,      0,     9));
-            Items.Add(new Item(IC.LightArmor1,  "경갑옷1",      IT.ArmorLA,      0,     6));
-            Items.Add(new Item(IC.LightArmor2,  "경갑옷2",      IT.ArmorLA,      0,     8));
-            Items.Add(new Item(IC.Robe1,        "로브1",        IT.ArmorR,       0,     5));
-            Items.Add(new Item(IC.Robe2,        "로브2",        IT.ArmorR,       0,     7));
-
-            //아이템 추가
-        }
-
-        public static Item GetItem(IC code)
-        {
-            return Items.Find(i => i.code == code);
-        }
-    }
-
-    public class Item
-    {
-        public IC code { get; }
         public string name { get; }
-        public IT type { get; }
+        public GearType type { get; }
         public int atk { get; }
         public int def {  get; }
 
+        //필드를 계속 추가해 보자
 
-        //필드 추가
-
-        public Item(IC _code, string _name, IT _type, int _atk, int _def)
+        public Gear(string _name, GearType _type, int _atk, int _def)
         {
-            code = _code;
             name = _name;
             type = _type;
             atk = _atk;
             def = _def;
-
-            //필드 추가
         }
     }
 
     //아이템 식별자
-    public enum IC
+    public enum GearCode
     {
         Potion1,
         Potion2,
@@ -91,14 +84,78 @@ namespace SpartaDungeon_GLSK.Data
     }
 
     //아이템 타입
-    public enum IT
+    public enum GearType
     {
-        PotionHP,
         WeaponS,
         WeaponB,
         WeaponW,
         ArmorHA,
         ArmorLA,
         ArmorR
+    }
+
+
+
+
+
+
+
+    public static class PotionDatabase
+    {
+        // 모든 아이템 데이터를 저장하는 읽기 전용 Dictionary
+        private static readonly Dictionary<PotionCode, Potion> Potions;
+
+        //정적 생성자에는 public, private와 같은 액세스 한정자를 사용할 수 없음
+        static PotionDatabase()
+        {
+            Potions = new Dictionary<PotionCode, Potion>();
+
+            //          코드(중복X!!)                   이름          타입                    power
+            Potions.Add(PotionCode.Potion1, new Potion("포션1",       PotionType.PotionHP,    20));
+            Potions.Add(PotionCode.Potion2, new Potion("포션2",       PotionType.PotionHP,    50));
+
+            //아이템을 계속 추가해 보자
+        }
+
+        public static Potion GetPotion(PotionCode code)
+        {
+            //Dictionary 내장 함수 TryGetValue : 해당 key값이 없으면 false를 반환
+            if (Potions.TryGetValue(code, out Potion item))
+            {
+                return item;
+            }
+
+            Console.WriteLine("해당 ID의 아이템을 찾을 수 없습니다.");
+            return null;
+        }
+    }
+
+    public class Potion
+    {
+        public string name { get; }
+        public PotionType type { get; }
+        public int power { get; }
+
+        //필드를 계속 추가해 보자
+
+        public Potion(string _name, PotionType _type, int _atk)
+        {
+            name = _name;
+            type = _type;
+            power = _atk;
+        }
+    }
+
+    //아이템 식별자
+    public enum PotionCode
+    {
+        Potion1,
+        Potion2,
+    }
+
+    //아이템 타입
+    public enum PotionType
+    {
+        PotionHP
     }
 }

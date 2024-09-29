@@ -13,7 +13,7 @@ namespace SpartaDungeon_GLSK
         public void Start()
         {
             //초기 씬 설정
-            currentScene = Scenes.TutorialBattle;
+            currentScene = Scenes.Main_Menu;
 
             bool loop = true;
             //게임 루프
@@ -30,34 +30,56 @@ namespace SpartaDungeon_GLSK
         //Start 함수에 의해 씬을 새로 불러올 때마다 호출됨
         private bool Execute(out Scenes next)
         {
-            next = Scenes.MainScene; //디폴트값 지정
+            next = Scenes.Main_Menu; //디폴트값 지정
 
             bool loop = false;
 
             switch (currentScene)
             {
-                case Scenes.Start_Prolog_Scene:
-                    loop = StartScene.StartPrologScene(out next, keyController);
+                //Main Scene : 메인 메뉴
+                case Scenes.Main_Menu:
+                    loop = MainScene.MainMenu(out next, keyController);
+                    break;
+                case Scenes.Main_Load:
+                    loop = MainScene.MainLoad(out next, keyController);
                     break;
 
-                case Scenes.Prolog_Battel:
-                    loop = PrologBatlles.PrologBattle(out next, keyController);
+                //Start Scene : 프롤로그, 튜토리얼 후
+                case Scenes.Start_Prolog:
+                    loop = StartScene.Prolog(out next, keyController);
+                    break;
+                case Scenes.Start_TutoEnd:
+                    //loop = StartScene.
                     break;
 
-                case Scenes.Prolog_End:
-                    loop = PrologEnd.PrologBattleEnd(out next, keyController);
-                    break;
-
-                case Scenes.Test_Main:
-                    loop = MainScene.TestMainScene(out next, keyController);
-                    break;
-
-                case Scenes.Test_Inventory:
-                    loop = InventoryScene.TestInventoryScene(out next, keyController);
-                    break;
-
-                case Scenes.TutorialBattle:
+                //Battle Scene : 튜토리얼 배틀, 배틀 프리셋
+                case Scenes.Battle_Tutorial:
                     loop = BattleScene.TutorialBattle(out next, keyController);
+                    break;
+
+                //Town Scene : 마을, 장비 상점, 소모품 상점
+                case Scenes.Town_Default:
+                    //loop = Town.
+                    break;
+
+
+
+
+                //Test
+                case Scenes.Test_Default:
+                    _Test_jsj2518.TestMain(out next, keyController);
+                    break;
+                case Scenes.Test_altkzs:
+                    _Test_altkzs.Test(out next, keyController);
+                    break;
+                case Scenes.Test_bkkoo:
+                    _Test_bkkoo.Test(out next, keyController);
+                    break;
+                case Scenes.Test_jsj2518:
+                    _Test_jsj2518.Test(out next, keyController);
+                    break;
+                case Scenes.Test_leecoading:
+                    _Test_leecoading.Test(out next, keyController);
                     break;
 
                 default:
@@ -73,19 +95,29 @@ namespace SpartaDungeon_GLSK
 
     public enum Scenes
     {
-        //테스트용 씬
-        Test_Main,
-        Test_Dungeon,
-        Test_Inventory,
-        Test_Shop,
-        Test_Status,
+        //Main Scene : 메인 메뉴
+        Main_Menu,
+        Main_Load,
 
-        //
-        Start_Prolog_Scene,
-        Prolog_Battel,
-        Prolog_End,
-        MainScene,
-        TutorialBattle
+        //Start Scene : 프롤로그, 튜토리얼 후
+        Start_Prolog,
+        Start_TutoEnd,
+
+        //Battle Scene : 튜토리얼 배틀, 배틀 프리셋
+        Battle_Tutorial,
+
+        //Town Scene : 마을, 장비 상점, 소모품 상점
+        Town_Default,
+
+
+
+
+        //Test Menu
+        Test_Default,
+        Test_altkzs,
+        Test_bkkoo,
+        Test_jsj2518,
+        Test_leecoading
     }
 }
 

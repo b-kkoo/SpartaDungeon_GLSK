@@ -9,12 +9,15 @@ using System.Xml.Linq;
 
 namespace SpartaDungeon_GLSK
 {
-    internal class PlayerData
+    public class PlayerData
     {
+        //스테이터스 영역
         public string Name { get; set; }
         public Chad Chad { get; set; }
+        public string ChadName { get; set; }
         public int Lv { get; set; }
         public int Hp { get; set; }
+        public int currentHp { get; set; }
         public int Atk { get; set; }
         public int Def { get; set; }
         public int CriRate { get; set; }
@@ -50,5 +53,10 @@ namespace SpartaDungeon_GLSK
             }
 
         }
+
+
+        //인벤토리 영역
+        public Dictionary<PotionCode, int> inventory = new Dictionary<PotionCode, int>();
+
     }
 }
