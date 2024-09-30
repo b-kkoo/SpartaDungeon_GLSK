@@ -13,50 +13,46 @@ namespace SpartaDungeon_GLSK
     {
         //스테이터스 영역
         public string Name { get; set; }
-        public Chad Chad { get; set; }
+        public JobCode Chad { get; set; }
         public string ChadName { get; set; }
         public int Lv { get; set; }
         public int Hp { get; set; }
         public int currentHp { get; set; }
         public int Atk { get; set; }
+        public int MAtk { get; set; }
         public int Def { get; set; }
+        public int Speed { get; set; }
         public int CriRate { get; set; }
 
+        //이 함수가 호출되기 전에 플레이어의 직업은 정해져 있어야 됨
         public void SetLv1() //set lv1함수
         {
-            
+            Lv = 1;
+            Job playerClass = JobDatabase.GetJob(Chad);
+            Hp = playerClass.initialHp;
+            currentHp = playerClass.initialHp;
+            Atk = playerClass.initialAtk;
+            MAtk = playerClass.initialMAtk;
+            Def = playerClass.initialDef;
+            Speed = playerClass.initialSpeed;
+            CriRate = playerClass.initialCriRate;
+
+            if      (Chad == JobCode.Warrior)  skillList.Add(PSkillCode.W_Basic);
+            else if (Chad == JobCode.Archer)   skillList.Add(PSkillCode.A_Basic);
+            else if (Chad == JobCode.Mage)     skillList.Add(PSkillCode.M_Basic);
+
         }
 
         public void LvUp() //lv up함수
         {
-            if (Chad == Chad.Warrior)
-            {
-                Lv++;
-                Hp += 10;
-                Atk += 1;
-                Def += 3;
-            }
-            else if (Chad == Chad.Archer)
-            {
-                Lv++;
-                Hp += 5;
-                Atk += 2;
-                Def += 2;
-                CriRate++;
-            }
-            else
-            {
-                Lv++;
-                Hp += 5;
-                Atk += 3;
-                Def += 1;
-            }
 
         }
 
 
-        //인벤토리 영역
-        public Dictionary<PotionCode, int> inventory = new Dictionary<PotionCode, int>();
+        //리스트 영역
+        public Dictionary<PotionCode, int> invenPotion = new Dictionary<PotionCode, int>();
+        public Dictionary<GearCode, bool> invenGear = new Dictionary<GearCode, bool>(); //현재 장비 아이템은 중복으로 소지 못하게 함(Dictionary)
+        public List<PSkillCode> skillList = new List<PSkillCode>();
 
     }
 }

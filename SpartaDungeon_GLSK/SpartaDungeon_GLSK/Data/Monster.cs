@@ -49,13 +49,6 @@ namespace SpartaDungeon_GLSK.Data
     }
 
 
-
-
-
-
-
-
-
     public class Monster
     {
         public string name { get; }
@@ -77,24 +70,6 @@ namespace SpartaDungeon_GLSK.Data
 
     }
 
-    //필드에 나타난 몬스터
-    public class WorldMonster
-    {
-        public Monster monster { get;}
-        public bool isAlive { get; set; }
-        public int currentHp { get; set; }
-
-        public WorldMonster(MonsterCode code)
-        {
-            monster = MonsterDatabase.GetMonster(code);
-            isAlive = true;
-            currentHp = monster.hp;
-        }
-
-    }
-
-
-
     public enum MonsterCode
     {
         CommonMonster1,
@@ -115,5 +90,27 @@ namespace SpartaDungeon_GLSK.Data
         Common, // 일반 몬스터
         Special, // 특수 몬스터
         Boss // 보스 몬스터
+    }
+
+
+
+
+
+
+
+    //필드에 구현된 몬스터
+    public class WorldMonster
+    {
+        public Monster monster { get; }
+        public bool isAlive { get; set; }
+        public int currentHp { get; set; }
+
+        public WorldMonster(MonsterCode code)
+        {
+            monster = MonsterDatabase.GetMonster(code);
+            isAlive = true;
+            currentHp = monster.hp;
+        }
+
     }
 }

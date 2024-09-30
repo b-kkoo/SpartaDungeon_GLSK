@@ -3,6 +3,7 @@
     //메인메뉴 씬 : 메인메뉴, 불러오기
     public class MainScene
     {
+        //메인화면
         public static bool MainMenu(out Scenes next, KeyController keyController)
         {
 
@@ -35,16 +36,17 @@
 
                     case ConsoleKey.D3:
                         next = Scenes.Main_Load; //false를 반환하는 순간 next Scene은 중요치 않음
-                        return false;
+                        return true;
 
                     //히든키 T를 눌러 테스트 옵션으로 이동
                     case ConsoleKey.T:
-                        next = Scenes.Main_Load; //false를 반환하는 순간 next Scene은 중요치 않음
-                        return false;
+                        next = Scenes.Test_Default;
+                        return true;
                 }
             }
         }
 
+        //메인화면 - 불러오기
         public static bool MainLoad(out Scenes next, KeyController keyController)
         {
 

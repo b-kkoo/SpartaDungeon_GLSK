@@ -21,7 +21,7 @@ namespace SpartaDungeon_GLSK
 
             //Player Data -> Save Data
             saveData.inventory = new Dictionary<int, int>();
-            foreach (KeyValuePair<PotionCode, int> i in Program.playerData.inventory) saveData.inventory.Add((int)i.Key, i.Value);
+            foreach (KeyValuePair<PotionCode, int> i in Program.playerData.invenPotion) saveData.inventory.Add((int)i.Key, i.Value);
 
             try
             {
@@ -61,7 +61,7 @@ namespace SpartaDungeon_GLSK
 
                     //Save Data -> Player Data
                     Program.playerData.Name = saveData.Name;
-                    Program.playerData.Chad = (Chad)saveData.Chad;
+                    Program.playerData.Chad = (JobCode)saveData.Chad;
                     Program.playerData.ChadName = saveData.ChadName;
                     Program.playerData.Lv = saveData.Lv;
                     Program.playerData.Hp = saveData.Hp;
@@ -75,7 +75,7 @@ namespace SpartaDungeon_GLSK
                         {
                             if (PotionDatabase.GetPotion((PotionCode)pair.Key) != null)
                             {
-                                Program.playerData.inventory.Add((PotionCode)pair.Key, pair.Value);
+                                Program.playerData.invenPotion.Add((PotionCode)pair.Key, pair.Value);
                             }
                         }
                     }

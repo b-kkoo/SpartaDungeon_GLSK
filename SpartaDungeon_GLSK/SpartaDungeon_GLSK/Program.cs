@@ -1,4 +1,5 @@
 ﻿using SpartaDungeon_GLSK.Data;
+using SpartaDungeon_GLSK.Scene;
 
 namespace SpartaDungeon_GLSK
 {

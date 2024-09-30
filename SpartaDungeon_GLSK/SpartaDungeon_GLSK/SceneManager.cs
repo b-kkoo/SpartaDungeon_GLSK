@@ -67,19 +67,19 @@ namespace SpartaDungeon_GLSK
 
                 //Test
                 case Scenes.Test_Default:
-                    _Test_jsj2518.TestMain(out next, keyController);
+                    loop = _Test_jsj2518.TestMain(out next, keyController);
                     break;
                 case Scenes.Test_altkzs:
-                    _Test_altkzs.Test(out next, keyController);
+                    loop = _Test_altkzs.Test(out next, keyController);
                     break;
                 case Scenes.Test_bkkoo:
-                    _Test_bkkoo.Test(out next, keyController);
+                    loop = _Test_bkkoo.Test(out next, keyController);
                     break;
                 case Scenes.Test_jsj2518:
-                    _Test_jsj2518.Test(out next, keyController);
+                    loop = _Test_jsj2518.Test(out next, keyController);
                     break;
                 case Scenes.Test_leecoading:
-                    _Test_leecoading.Test(out next, keyController);
+                    loop = _Test_leecoading.Test(out next, keyController);
                     break;
 
                 default:
