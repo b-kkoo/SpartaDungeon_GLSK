@@ -48,7 +48,7 @@ namespace SpartaDungeon_GLSK
                 case Scenes.Start_Prolog:
                     loop = StartScene.Prolog(out next, keyController);
                     break;
-                case Scenes.Start_TutoEnd:
+                case Scenes.Start_PrologEnd:
                     //loop = StartScene.
                     break;
 
@@ -108,7 +108,7 @@ namespace SpartaDungeon_GLSK
 
         //Start Scene : 프롤로그, 튜토리얼 후
         Start_Prolog,
-        Start_TutoEnd,
+        Start_PrologEnd,
 
         //Battle Scene : 튜토리얼 배틀, 배틀 프리셋
         Battle_Tutorial,
