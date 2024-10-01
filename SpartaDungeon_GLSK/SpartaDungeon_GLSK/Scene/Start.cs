@@ -22,7 +22,6 @@ namespace SpartaDungeon_GLSK.Scene
             keyController.GetUserInput(keyFilter, out cheatActivated); //반환값 안받으면 입력버퍼 지우라는 뜻
 
             //playerData 초기화 필요
-            Program.playerData = new PlayerData();
             tConversation = new string[4];
             tConversation[0] = "어서 일어나게. 지금 잘 시간이 아니야!";
             tConversation[1] = "마을에 던전의 몬스터가 나타났어!";
@@ -63,7 +62,7 @@ namespace SpartaDungeon_GLSK.Scene
                 }
                 else
                 {
-                    Console.WriteLine($"\"{strInput}\"으로 정하시겠습니까?");                    
+                    Console.WriteLine($"\n\"{strInput}\"으로 정하시겠습니까?");                    
                     Console.WriteLine("                                                  Z : 예  X : 아니오");
                     Console.WriteLine("한글로 입력하셨으면 한영키를 눌러주세요");
                     while (true)
@@ -94,8 +93,9 @@ namespace SpartaDungeon_GLSK.Scene
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("사용하던 무기를 선택해주세요(원하는 무기의 숫자를 입력해주세요)");
+                Console.WriteLine("사용하던 무기를 선택해주세요");
                 Console.WriteLine("1. 검\n2. 활\n3. 지팡이");
+                Console.WriteLine("                                              숫자 버튼을 눌러 선택!");
                 while (true)
                 {
                     keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3 };
@@ -155,7 +155,7 @@ namespace SpartaDungeon_GLSK.Scene
                 else
                 {
                     Console.WriteLine($"\n\"마법사\"로 정하시겠습니까?");
-                    Console.WriteLine("                                                  Z : 예  X : 아니오");
+                    Console.WriteLine("                                                  Z : 예  X : 아니오");                    
                     while (true)
                     {
                         keyFilter = new ConsoleKey[] { ConsoleKey.Z, ConsoleKey.X };
@@ -180,18 +180,38 @@ namespace SpartaDungeon_GLSK.Scene
                 }                
             }
             Program.playerData.SetLv1();
+                        
+            while (true)
+            {
+                keyFilter = new ConsoleKey[] { ConsoleKey.Z };
+                keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
 
-            //이름 입력, 직업 선택, SetLv1 잘 되었는지 확인
-            Console.WriteLine($"{Program.playerData.Name}"); //이름
-            Console.WriteLine($"{Program.playerData.PClassName}"); //직업
-            Console.WriteLine($"{Program.playerData.Lv}"); //레벨
-            Console.WriteLine($"{Program.playerData.Hp}"); //HP
-            Console.WriteLine($"{Program.playerData.Atk}"); //Atk
-            Console.WriteLine($"{Program.playerData.MAtk}"); //MAtk
-            Console.WriteLine($"{Program.playerData.Def}"); //Def
-            Console.WriteLine($"{Program.playerData.Speed}"); //Speed
-            Console.WriteLine($"{Program.playerData.CriRate}"); //CriRate
+                switch (keyInput)
+                {
+                    case ConsoleKey.Z:
+                        next = Scenes.Start_PrologEnd;  //Battle_Tutorial;
+                        return true;
+                }
+            }
+        }
 
+        public static bool PrologEnd(out Scenes next, KeyController keyController)
+        {
+            ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
+            ConsoleKey keyInput;
+
+            int cheatActivated;
+            string[] tConversation;
+
+            keyController.GetUserInput(keyFilter, out cheatActivated);
+
+            tConversation = new string[3];
+            tConversation[0] = "자네가 이렇게 잘 싸우는지 몰랐군";
+            tConversation[1] = "자네도 앞으로는 직접 던전으로 가서 싸워도 되겠어";
+            tConversation[2] = $"앞으로 잘 부탁하네 \"{Program.playerData.Name}\"";
+            ScenePreset.Conversation(tConversation, keyController);
+
+            Console.WriteLine("마을로 이동합니다");
 
             while (true)
             {
@@ -201,7 +221,7 @@ namespace SpartaDungeon_GLSK.Scene
                 switch (keyInput)
                 {
                     case ConsoleKey.Z:
-                        next = Scenes.Battle_Tutorial;
+                        next = Scenes.Town_Default;
                         return true;
                 }
             }

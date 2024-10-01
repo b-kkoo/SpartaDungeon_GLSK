@@ -49,7 +49,7 @@ namespace SpartaDungeon_GLSK
                     loop = StartScene.Prolog(out next, keyController);
                     break;
                 case Scenes.Start_PrologEnd:
-                    //loop = StartScene.
+                    loop = StartScene.PrologEnd(out next, keyController);
                     break;
 
                 //Battle Scene : 튜토리얼 배틀, 배틀 프리셋
@@ -59,7 +59,12 @@ namespace SpartaDungeon_GLSK
 
                 //Town Scene : 마을, 장비 상점, 소모품 상점
                 case Scenes.Town_Default:
-                    //loop = Town.
+                    loop = Town.Default(out next, keyController);
+                    break;
+
+                //PlayerMenu Scene : 상태창, 인벤토리, 장비, 스킬, 저장
+                case Scenes.PlayerMenu_Menu:
+                    loop = PlayerMenuScene.GameMenu(out next, keyController);
                     break;
 
 
@@ -115,6 +120,9 @@ namespace SpartaDungeon_GLSK
 
         //Town Scene : 마을, 장비 상점, 소모품 상점
         Town_Default,
+
+        //게임 메뉴
+        PlayerMenu_Menu,
 
 
 

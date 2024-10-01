@@ -23,17 +23,28 @@ namespace SpartaDungeon_GLSK.Data
             monsters.Add(MonsterCode.TutoralMonster,    new Monster(  "슬라임",       MonsterType.Common,          1,     1,      10,        1,       0,      0,        1,        5/*%*/,    null)); // 튜토리얼 몬스터
 
             monsters.Add(MonsterCode.CommonMonster1,    new Monster(  "고블린",       MonsterType.Common,          3,     3,      20,        2,       0,      0,        3,        6/*%*/,    null)); // 초기 몬스터
-            monsters.Add(MonsterCode.CommonMonster2,    new Monster(  "정예 고블린",  MonsterType.Common,          4,     4,      25,        3,       0,      1,        4,        8/*%*/,    null)); // 초기 몬스터
-            monsters.Add(MonsterCode.SpecialMonster1,   new Monster(  "고블린 법사",  MonsterType.Special,         5,     5,      15,        0,       4,      0,        3,       10/*%*/,    null)); // 초기 특수 몬스터
+            monsters.Add(MonsterCode.CommonMonster2,    new Monster(  "홉 고블린",    MonsterType.Common,          4,     4,      25,        3,       0,      1,        4,        8/*%*/,    null)); // 초기 몬스터
+            monsters.Add(MonsterCode.SpecialMonster1,   new Monster(  "고블린 법사",  MonsterType.Special,         5,     5,      15,        1,       8,      0,        3,       10/*%*/,    null)); // 초기 특수 몬스터
             monsters.Add(MonsterCode.BossMonster1,      new Monster(  "고블린 로드",  MonsterType.Boss,           10,    30,      50,        5,       5,      2,        4,       10/*%*/,    null)); // 초기 보스 몬스터
 
-            monsters.Add(MonsterCode.CommonMonster3,    new Monster(  "스켈레톤",     MonsterType.Common,          7,    15,      30,        4,       0,      1,        2,       12/*%*/,    null)); // 초 중반부 몬스터
-            monsters.Add(MonsterCode.CommonMonster4,    new Monster(  "구울",         MonsterType.Common,          9,    20,      40,        5,       0,      1,        3,       13/*%*/,    null)); // 초 중반부 몬스터
-            monsters.Add(MonsterCode.CommonMonster5,    new Monster(  "데스나이트",   MonsterType.Common,         10,    30,      50,        5,       0,      1,        2,       13/*%*/,    null)); // 초 중반부 몬스터
-            monsters.Add(MonsterCode.SpecialMonster2,   new Monster(  "리치",         MonsterType.Special,        13,    50,      30,        2,       9,      2,        5,       15/*%*/,    null)); // 초 중반부 특수 몬스터
-            monsters.Add(MonsterCode.BossMonster2,      new Monster(  "네크로맨서",   MonsterType.Boss,           20,   100,     100,        9,      10,      3,        7,       20/*%*/,    null)); // 초 중반부 보스 몬스터
+            monsters.Add(MonsterCode.CommonMonster3,    new Monster(  "스켈레톤",     MonsterType.Common,          7,    15,      30,        4,       0,      1,        2,       12/*%*/,    null)); // 중반부 몬스터
+            monsters.Add(MonsterCode.CommonMonster4,    new Monster(  "구울",         MonsterType.Common,          9,    20,      40,        5,       0,      1,        3,       13/*%*/,    null)); // 중반부 몬스터
+            monsters.Add(MonsterCode.CommonMonster5,    new Monster(  "데스나이트",   MonsterType.Common,         10,    30,      50,        5,       0,      1,        2,       13/*%*/,    null)); // 중반부 몬스터
+            monsters.Add(MonsterCode.SpecialMonster2,   new Monster(  "리치",         MonsterType.Special,        13,    50,      30,        2,      17,      2,        5,       15/*%*/,    null)); // 중반부 특수 몬스터
+            monsters.Add(MonsterCode.BossMonster2,      new Monster(  "네크로맨서",   MonsterType.Boss,           20,   100,     100,        9,      10,      3,        7,       20/*%*/,    null)); // 중반부 보스 몬스터
 
-            monsters.Add(MonsterCode.CommonMonster6,    new Monster(  "보스 몬스터3", MonsterType.Common));
+            monsters.Add(MonsterCode.CommonMonster6,    new Monster(  "해츨링",       MonsterType.Common,         15,    70,      70,        7,       7,      2,       10,       20/*%*/,    null)); // 후반부 몬스터
+            monsters.Add(MonsterCode.CommonMonster7,    new Monster(  "성룡",         MonsterType.Common,         20,   100,      90,        8,       8,      3,       12,       20/*%*/,    null)); // 후반부 몬스터
+            monsters.Add(MonsterCode.SpecialMonster3,   new Monster(  "고룡",         MonsterType.Common,         22,   120,     110,       10,      15,      3,       15,       20/*%*/,    null)); // 후반부 특수 몬스터
+            monsters.Add(MonsterCode.CommonMonster3,    new Monster("에인션트 드래곤",MonsterType.Common,         30,   250,     300,       15,      17,      4,       20,       30/*%*/,    null)); // 후반부 특수 몬스터
+
+            monsters.Add(MonsterCode.CommonMonster8,    new Monster(  "헬 하운드",    MonsterType.Common,         30,   200,     220,       12,      12,      4,       15,       30/*%*/,    null)); // 최종 일반 몬스터
+            monsters.Add(MonsterCode.CommonMonster9,    new Monster(  "하급 마족",    MonsterType.Common,         32,   250,     300,       15,      15,      5,       20,       30/*%*/,    null)); // 최종 일반 몬스터
+            monsters.Add(MonsterCode.CommonMonster10,   new Monster(  "중급 마족",    MonsterType.Common,         35,   300,     330,       19,      18,      5,       20,       30/*%*/,    null)); // 최종 일반 몬스터
+            monsters.Add(MonsterCode.CommonMonster11,   new Monster(  "상급 마족",    MonsterType.Common,         40,   350,     370,       24,      26,      6,       20,       30/*%*/,    null)); // 최종 일반 몬스터
+            monsters.Add(MonsterCode.SpecialMonster4,   new Monster(  "켈베로스",     MonsterType.Special,        45,   400,     500,       30,      33,      8,       20,       35/*%*/,    null)); // 최종 특수 몬스터
+            monsters.Add(MonsterCode.BossMonster4,      new Monster(  "마왕 ",        MonsterType.Boss,           50,  1000,    1000,       50,      60,     10,       25,       40/*%*/,    null)); // 최종 보스 몬스터
+
 
         }
 
@@ -99,14 +110,23 @@ namespace SpartaDungeon_GLSK.Data
         CommonMonster3,
         CommonMonster4,
         CommonMonster5,
+        CommonMonster6,
+        CommonMonster7,
+        CommonMonster8,
+        CommonMonster9,
+        CommonMonster10,
+        CommonMonster11,
 
         SpecialMonster1,
         SpecialMonster2,
         SpecialMonster3,
+        SpecialMonster4,
 
         BossMonster1,
         BossMonster2,
-        BossMonster3
+        BossMonster3,
+        BossMonster4
+       
     }
 
     public enum MonsterType
