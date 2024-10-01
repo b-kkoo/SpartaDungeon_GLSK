@@ -59,7 +59,7 @@ namespace SpartaDungeon_GLSK.Scene
                 else
                 {
                     Console.WriteLine($"\"{strInput}\"으로 정하시겠습니까?");                    
-                    Console.WriteLine("                    z : 예  x : 아니오");
+                    Console.WriteLine("                                   z : 예  x : 아니오");
                     Console.WriteLine("한글로 입력하셨으면 한영키를 눌러주세요");
                     while (true)
                     {
@@ -97,21 +97,21 @@ namespace SpartaDungeon_GLSK.Scene
                 {
                     Console.WriteLine("자네는 전사로군. 어서 이 검을 들고 전투에 참여해주게.");
                     Console.WriteLine("                                             z : 확인");
-                    Program.playerData.Chad = Data.JobCode.Warrior;
+                    Program.playerData.PClass = Data.JobCode.Warrior;
                     break;
                 }
                 else if (keyInput == ConsoleKey.D2)
                 {
                     Console.WriteLine("자네는 궁수로군. 어서 이 활을 들고 전투에 참여해주게.");
                     Console.WriteLine("                                             z : 확인");
-                    Program.playerData.Chad = Data.JobCode.Archer;
+                    Program.playerData.PClass = Data.JobCode.Archer;
                     break;
                 }
                 else
                 {
                     Console.WriteLine("자네는 마법사로군. 어서 이 지팡이를 들고 전투에 참여해주게");
                     Console.WriteLine("                                                  z : 확인");
-                    Program.playerData.Chad = Data.JobCode.Mage;
+                    Program.playerData.PClass = Data.JobCode.Mage;
                     break;
                 }                                    
             }
