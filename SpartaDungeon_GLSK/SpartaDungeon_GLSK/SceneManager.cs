@@ -81,6 +81,13 @@ namespace SpartaDungeon_GLSK
                 case Scenes.Test_leecoading:
                     loop = _Test_leecoading.Test(out next, keyController);
                     break;
+                case Scenes.Test1_kkoo:
+                    loop = _Test_bkkoo.Test1(out next, keyController);
+                    break;
+                case Scenes.TestTab_kkoo:
+                    loop = _Test_bkkoo.TestTab(out next, keyController);
+                    break;
+
 
                 default:
                     return false; //유효하지 않은 씬
@@ -117,7 +124,9 @@ namespace SpartaDungeon_GLSK
         Test_altkzs,
         Test_bkkoo,
         Test_jsj2518,
-        Test_leecoading
+        Test_leecoading,
+        Test1_kkoo,
+        TestTab_kkoo
     }
 }
 
