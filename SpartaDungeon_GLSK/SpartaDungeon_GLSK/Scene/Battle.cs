@@ -24,11 +24,12 @@ namespace SpartaDungeon_GLSK.Scene
                 Hostile = enemies;
             }
         }
-
+        private static BattleTable battleTable;
+             
         public static bool TutorialBattle(out Scenes next, KeyController keyController)
         {
             MonsterCode[] enemies = new MonsterCode[] { MonsterCode.CommonMonster1, MonsterCode.CommonMonster2 };
-            BattleTable battleTable = new BattleTable(Program.playerData/*나중에 다대다 전투 구현 가능하면 PlayerData에 함수 추가*/, IngameData.GetWorldMonsters(enemies));
+            battleTable = new BattleTable(Program.playerData/*나중에 다대다 전투 구현 가능하면 PlayerData에 함수 추가*/, MonsterData.GetWorldMonsters(enemies));
 
             ConsoleKey keyInput;
             int cheatActivated;
@@ -50,8 +51,10 @@ namespace SpartaDungeon_GLSK.Scene
                 // AP 000 %
                 //
                 // ㅇㅇㅇ의 턴!
+                // 
                 // 1. 전투 스킬
                 // 2. 아이템
+                
                 if (battleTable.Hostile[0].isAlive)
                 {
                     Console.SetCursorPosition(0, screenTop);
@@ -69,13 +72,13 @@ namespace SpartaDungeon_GLSK.Scene
                 Console.SetCursorPosition(0, screenTop + 5);
                 Console.WriteLine($"LV {battleTable.Ally[0].Lv}   {battleTable.Ally[0].Name}");
                 Console.SetCursorPosition(0, screenTop + 6);
-                Console.WriteLine($"{battleTable.Ally[0].currentHp} / {battleTable.Ally[0].Hp}");
-                Console.SetCursorPosition(0, screenTop + 8);
-                Console.WriteLine("Z를 눌러 적을 공격!");
+                Console.WriteLine($"{battleTable.Ally[0].CurrentHp} / {battleTable.Ally[0].Hp}");
 
                 Console.SetCursorPosition(0, screenTop + 50);
                 Console.SetCursorPosition(0, screenTop);
                 Console.SetCursorPosition(0, screenTop + 9);
+
+                GetPlayerOrder(battleTable.Ally[0], screenTop, keyController, out int a, out int b, out int c);
 
                 bool loop2 = true;
                 while (loop2)
@@ -107,8 +110,12 @@ namespace SpartaDungeon_GLSK.Scene
 
 
         //플레이어 턴에 행동명령 받기   selectedAct : 0-스킬사용 1-아이템사용   selectedIdx : 사용항목인덱스   selectedTarget : 사용대상
-        /*private void GetPlayerOrder(PlayerData playerData, int screenTop, KeyController keyController, out int selectedAct, out int selectedIdx, out int selectedTarget)
+        private static void GetPlayerOrder(PlayerData playerData, int screenTop, KeyController keyController, out int selectedAct, out int selectedIdx, out int selectedTarget)
         {
+            selectedAct = 0;
+            selectedIdx = 0;
+            selectedTarget = 0;
+
             ConsoleKey keyInput;
             int cheatActivated;
 
@@ -126,42 +133,49 @@ namespace SpartaDungeon_GLSK.Scene
             {
                 Console.SetCursorPosition(0, screenTop + 9);
                 Console.WriteLine($"{playerData.Name}의 턴!");
+
                 //10 ~ 16줄 Clear
                 for (int i = 10; i <= 16; i++)
                 {
                     Console.WriteLine(new string(' ', Console.WindowWidth));
                 }
 
+
                 //행동 선택
                 if (orderState == 0)
                 {
                     Console.SetCursorPosition(0, screenTop + 10);
+                    Console.WriteLine("");
                     Console.WriteLine($"1. 전투 스킬");
                     Console.WriteLine($"2. 아이템");
 
+                    keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2 };
                     bool loop2 = true;
                     while (loop2)
                     {
-                        keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2 };
                         keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
 
                         switch (keyInput)
                         {
                             case ConsoleKey.D1:
+                                //스킬 선택으로 이동
                                 orderState = 1;
                                 loop2 = false;
                                 break;
                             case ConsoleKey.D2:
-                                orderState = 2;
+                                //아이템 선택으로 이동
+                                orderState = 3;
                                 loop2 = false;
                                 break;
                         }
                     }
                 }
+
                 //전투 스킬 선택
                 else if (orderState == 1)
                 {
                     Console.SetCursorPosition(0, screenTop + 10);
+                    Console.WriteLine("스킬 선택");
 
                     bool tabActivate = (skillNum > 5);
 
@@ -169,15 +183,15 @@ namespace SpartaDungeon_GLSK.Scene
                     if (dispSkillNum > 5) dispSkillNum = 5; //한번에 표시할 스킬 수 5개로 제한
                     for (int i = 0; i < dispSkillNum; i++)
                     {
-                        Console.WriteLine($"{i+1}. {PSkillDatabase.GetPSkill(playerData.skillList[skillTab + i]).skillName}");
+                        Console.WriteLine($"{i + 1}. {PSkillDatabase.GetPSkill(playerData.skillList[skillTab + i]).skillName}");
                     }
                     if (dispSkillNum == 1) Console.WriteLine($"(1 : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
                     else Console.WriteLine($"(1 ~ {dispSkillNum} : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
 
+                    keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.Tab, ConsoleKey.X };
                     bool loop2 = true;
                     while (loop2)
                     {
-                        keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.Tab, ConsoleKey.X };
                         keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
 
                         switch (keyInput)
@@ -188,28 +202,242 @@ namespace SpartaDungeon_GLSK.Scene
                             case ConsoleKey.D4:
                             case ConsoleKey.D5:
                                 selectedIdx = skillTab + (keyInput - ConsoleKey.D1); //선택 스킬 인덱스
-                                PSkill seletedSkill = PSkillDatabase.GetPSkill(playerData.skillList[selectedIdx]);
-                                if (seletedSkill.isSplash == true)
+                                if (selectedIdx < playerData.skillList.Count)
                                 {
-                                    selectedAct = 0;
-                                    selectedTarget = 0;
+                                    PSkill seletedSkill = PSkillDatabase.GetPSkill(playerData.skillList[selectedIdx]);
+                                    if (seletedSkill.isSplash == true)
+                                    {
+                                        //선택 확정
+                                        selectedAct = 0;
+                                        selectedTarget = 0;
+                                        loop2 = false;
+                                        loop = false;
+                                    }
+                                    else
+                                    {
+                                        //대상 선택으로 이동
+                                        orderState = 2;
+                                        loop2 = false;
+                                    }
+                                }
+                                break;
+                            case ConsoleKey.Tab:
+                                if (tabActivate == true)
+                                {
+                                    //다음 리스트 보기
+                                    if (skillTab + 5 >= skillNum) skillTab = 0;
+                                    else skillTab += 5;
                                     loop2 = false;
-                                    loop = false;
                                 }
-                                else
-                                {
-
-                                }
+                                break;
+                            case ConsoleKey.X:
+                                //행동 선택으로 되돌아가기
+                                orderState = 0;
+                                loop2 = false;
                                 break;
                         }
                     }
                 }
-                //아이템
+
+                //스킬 대상 선택(적대 몬스터는 무조건 5개 이하임)
+                else if (orderState == 2)
+                {
+                    Console.SetCursorPosition(0, screenTop + 10);
+                    Console.WriteLine($"스킬 대상 선택 - {PSkillDatabase.GetPSkill(playerData.skillList[selectedIdx]).skillName}");
+
+                    int dispTargetNum = 0;
+                    Dictionary<int, int> aliveMonsterIdx = new Dictionary<int, int>(); //살아있는 몬스터의 실제 인덱스<표시된 인덱스, Hostile 내 인덱스>
+                    for (int i = 0; i < battleTable.Hostile.Length; i++)
+                    {
+                        if (battleTable.Hostile[i].isAlive == true)
+                        {
+                            aliveMonsterIdx.Add(dispTargetNum, i);
+                            Console.WriteLine($"{++dispTargetNum}. {battleTable.Hostile[i].monster.name}");
+                        }
+                    }
+                    if (dispTargetNum == 1) Console.WriteLine($"(1 : 선택, X : 취소)");
+                    else Console.WriteLine($"(1 ~ {dispTargetNum} : 선택, X : 취소)");
+
+                    keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.X };
+                    bool loop2 = true;
+                    while (loop2)
+                    {
+                        keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+
+                        switch (keyInput)
+                        {
+                            case ConsoleKey.D1:
+                            case ConsoleKey.D2:
+                            case ConsoleKey.D3:
+                            case ConsoleKey.D4:
+                            case ConsoleKey.D5:
+                                if (keyInput - ConsoleKey.D1 < dispTargetNum)
+                                {
+                                    aliveMonsterIdx.TryGetValue(keyInput - ConsoleKey.D1, out selectedTarget); //선택된 대상 인덱스
+                                    //선택 확정
+                                    selectedAct = 0;
+                                    loop2 = false;
+                                    loop = false;
+                                }
+                                break;
+                            case ConsoleKey.X:
+                                //스킬 선택으로 되돌아가기
+                                orderState = 1;
+                                loop2 = false;
+                                break;
+                        }
+                    }
+                }
+
+                //아이템 선택
+                else if (orderState == 3)
+                {
+                    Console.SetCursorPosition(0, screenTop + 10);
+                    
+                    if (potionNum == 0) //아이템이 하나도 없는 경우(취소하여 행동 선택으로 돌아가기)
+                    {
+                        Console.WriteLine("사용할 수 있는 아이템이 없습니다!");
+                        Console.WriteLine("(X : 취소)");
+
+                        keyFilter = new ConsoleKey[] { ConsoleKey.X };
+                        while (true)
+                        {
+                            keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+                            if (keyInput == ConsoleKey.X)
+                            {
+                                break;
+                            }
+                        }
+                        orderState = 0;
+                        continue;
+                    }
+                    
+                    Console.WriteLine("아이템 선택");
+
+                    bool tabActivate = (potionNum > 5);
+
+                    int dispPotionNum = potionNum - potionTab;
+                    if (dispPotionNum > 5) dispPotionNum = 5; //한번에 표시할 아이템 수 5개로 제한
+                    for (int i = 0; i < dispPotionNum; i++)
+                    {
+                        Console.WriteLine($"{i + 1}. {PotionDatabase.GetPotion(playerData.invenPotion[potionTab + i].Key).name} X {playerData.invenPotion[potionTab + i].Value}");
+                    }
+                    if (dispPotionNum == 1) Console.WriteLine($"(1 : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
+                    else Console.WriteLine($"(1 ~ {dispPotionNum} : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
+
+                    keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.Tab, ConsoleKey.X };
+                    bool loop2 = true;
+                    while (loop2)
+                    {
+                        keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+
+                        switch (keyInput)
+                        {
+                            case ConsoleKey.D1:
+                            case ConsoleKey.D2:
+                            case ConsoleKey.D3:
+                            case ConsoleKey.D4:
+                            case ConsoleKey.D5:
+                                selectedIdx = potionTab + (keyInput - ConsoleKey.D1); //선택 아이템 인덱스
+                                if (selectedIdx < playerData.invenPotion.Count)
+                                {
+                                    //대상 선택으로 이동
+                                    orderState = 4;
+                                    loop2 = false;
+                                }
+                                break;
+                            case ConsoleKey.Tab:
+                                if (tabActivate == true)
+                                {
+                                    //다음 리스트 보기
+                                    if (potionTab + 5 >= potionNum) potionTab = 0;
+                                    else potionTab += 5;
+                                    loop2 = false;
+                                }
+                                break;
+                            case ConsoleKey.X:
+                                //행동 선택으로 되돌아가기
+                                orderState = 0;
+                                loop2 = false;
+                                break;
+                        }
+                    }
+                }
+
+                //아이템 대상 선택(아군 유닛은 무조건 5개 이하임)
                 else
                 {
+                    Console.SetCursorPosition(0, screenTop + 10);
+                    Console.WriteLine($"아이템 대상 선택 - {PotionDatabase.GetPotion(playerData.invenPotion[selectedIdx].Key).name}");
 
+                    int dispTargetNum = 0;
+                    Dictionary<int, int> aliveAllyIdx = new Dictionary<int, int>(); //살아있는 아군의 실제 인덱스<표시된 인덱스, Ally 내 인덱스>
+                    for (int i = 0; i < battleTable.Ally.Length; i++)
+                    {
+                        if (battleTable.Ally[i].IsAlive == true)
+                        {
+                            aliveAllyIdx.Add(dispTargetNum, i);
+                            Console.WriteLine($"{++dispTargetNum}. {battleTable.Ally[i].Name}");
+                        }
+                    }
+                    if (dispTargetNum == 1) Console.WriteLine($"(1 : 선택, X : 취소)");
+                    else Console.WriteLine($"(1 ~ {dispTargetNum} : 선택, X : 취소)");
+
+                    keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.Z };
+                    bool loop2 = true;
+                    while (loop2)
+                    {
+                        keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+
+                        switch (keyInput)
+                        {
+                            case ConsoleKey.D1:
+                            case ConsoleKey.D2:
+                            case ConsoleKey.D3:
+                            case ConsoleKey.D4:
+                            case ConsoleKey.D5:
+                                if (keyInput - ConsoleKey.D1 < dispTargetNum)
+                                {
+                                    aliveAllyIdx.TryGetValue(keyInput - ConsoleKey.D1, out selectedTarget); //선택된 대상 인덱스
+                                    //선택 확정
+                                    selectedAct = 1;
+                                    loop2 = false;
+                                    loop = false;
+                                }
+                                break;
+                            case ConsoleKey.X:
+                                //스킬 선택으로 되돌아가기
+                                orderState = 1;
+                                loop2 = false;
+                                break;
+                        }
+                    }
                 }
             }
-        }*/
+        }
+
+        //플레이어 캐릭터 액션 수행   selectedAct : 0-스킬사용 1-아이템사용   selectedIdx : 사용항목인덱스   selectedTarget : 사용대상
+        private static void DoPlayerAction(PlayerData playerData, int screenTop, KeyController keyController, int selectedAct, int selectedIdx, int selectedTarget)
+        {
+            ConsoleKey keyInput;
+            int cheatActivated;
+
+            ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
+            keyController.GetUserInput(keyFilter, out cheatActivated); //반환값 안받으면 입력버퍼 지우라는 뜻
+
+            //10 ~ 16줄 Clear
+            for (int i = 10; i <= 16; i++)
+            {
+                Console.WriteLine(new string(' ', Console.WindowWidth));
+            }
+
+
+            // 스킬 사용
+            if (selectedAct == 0)
+            {
+                Console.SetCursorPosition(0,0);
+                Console.WriteLine(new string(' ', Console.WindowWidth));
+            }
+        }
     }
 }

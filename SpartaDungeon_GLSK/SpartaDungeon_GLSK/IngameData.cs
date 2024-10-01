@@ -25,16 +25,7 @@ namespace SpartaDungeon_GLSK
 
 
 
-        //Battle Scene에 넘겨 줄 필드 몬스터 
-        public static WorldMonster[] GetWorldMonsters(MonsterCode[] monsterCodes)
-        {
-            WorldMonster[] worldMonsters = new WorldMonster[monsterCodes.Length];
-            for (int i = 0; i < worldMonsters.Length; i++)
-            {
-                worldMonsters[i] = new WorldMonster(monsterCodes[i]);
-            }
-            return worldMonsters;
-        }
+        
     }
 
     

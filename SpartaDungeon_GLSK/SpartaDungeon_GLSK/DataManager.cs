@@ -61,11 +61,11 @@ namespace SpartaDungeon_GLSK
 
                     //Save Data -> Player Data
                     Program.playerData.Name = saveData.Name;
-                    Program.playerData.Chad = (JobCode)saveData.Chad;
-                    Program.playerData.ChadName = saveData.ChadName;
+                    Program.playerData.PClass = (JobCode)saveData.Chad;
+                    Program.playerData.PClassName = saveData.PClassName;
                     Program.playerData.Lv = saveData.Lv;
                     Program.playerData.Hp = saveData.Hp;
-                    Program.playerData.currentHp = saveData.currentHp;
+                    Program.playerData.CurrentHp = saveData.currentHp;
                     Program.playerData.Atk = saveData.Atk;
                     Program.playerData.Def = saveData.Def;
                     Program.playerData.CriRate = saveData.CriRate;
@@ -75,7 +75,7 @@ namespace SpartaDungeon_GLSK
                         {
                             if (PotionDatabase.GetPotion((PotionCode)pair.Key) != null)
                             {
-                                Program.playerData.invenPotion.Add((PotionCode)pair.Key, pair.Value);
+                                Program.playerData.invenPotion.Add(new KeyValuePair<PotionCode, int>((PotionCode)pair.Key, pair.Value));
                             }
                         }
                     }
@@ -115,7 +115,7 @@ namespace SpartaDungeon_GLSK
                     // JSON 파일을 읽어서 객체로 역직렬화
                     string jsonString = File.ReadAllText(filePath);
                     SaveData saveData = JsonSerializer.Deserialize<SaveData>(jsonString);
-                    info = $"LV {saveData.Lv}  {saveData.Name}  {saveData.ChadName}";
+                    info = $"LV {saveData.Lv}  {saveData.Name}  {saveData.PClassName}";
                 }
                 else
                 {
@@ -138,7 +138,7 @@ namespace SpartaDungeon_GLSK
     {
         public string Name { get; set; }
         public int Chad { get; set; }
-        public string ChadName { get; set; }
+        public string PClassName { get; set; }
         public int Lv { get; set; }
         public int Hp { get; set; }
         public int currentHp { get; set; }

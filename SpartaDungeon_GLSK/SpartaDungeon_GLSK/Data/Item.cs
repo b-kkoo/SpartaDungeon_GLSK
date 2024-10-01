@@ -2,6 +2,9 @@
 
 namespace SpartaDungeon_GLSK.Data
 {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // GEAR - 장비 아이템
+
     //정적(static) 클래스 : 일반적인 클래스가 객체를 만들어 사용하는 것과 달리, 정적 클래스는 객체를 만들 수 없다.
     //                      static 클래스는 그 안의 필드와 메서드도 전부 static 키워드를 써야 한다.
     //                      데이터베이스를 정적 클래스로 만든 이유는 그렇게 하면 데이터는 프로그램 전반에서 공유되며, 메모리에 한 번만 로드되고 내용이 변경되지 않도록 관리할 수 있기 때문.
@@ -49,11 +52,18 @@ namespace SpartaDungeon_GLSK.Data
     public class Gear
     {
         public string name { get; }
+        public string info { get; }
         public GearType type { get; }
-        public int atk { get; }
-        public int def {  get; }
 
-        //필드를 계속 추가해 보자
+        //장비 옵션
+        public int hp { get; }
+        public int mp { get; }
+        public int atk { get; }
+        public int mAtk { get; }
+        public int def { get; }
+        public int speed { get; }
+        public int criRate { get; }
+
 
         public Gear(string _name, GearType _type, int _atk, int _def)
         {
@@ -67,8 +77,6 @@ namespace SpartaDungeon_GLSK.Data
     //아이템 식별자
     public enum GearCode
     {
-        Potion1,
-        Potion2,
         Sword1,
         Sword2,
         Bow1,
@@ -86,18 +94,20 @@ namespace SpartaDungeon_GLSK.Data
     //아이템 타입
     public enum GearType
     {
-        WeaponS,
-        WeaponB,
-        WeaponW,
-        ArmorHA,
-        ArmorLA,
-        ArmorR
+        WeaponS, // Sword
+        WeaponB, // Bow
+        WeaponW, // Wand
+        ArmorHA, // Heavy Armor
+        ArmorLA, // Light Armor
+        ArmorR,  // Robe
+        Ring     // Ring
     }
 
 
 
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // POTION - 소모성 아이템
 
 
     public static class PotionDatabase
@@ -111,8 +121,8 @@ namespace SpartaDungeon_GLSK.Data
             Potions = new Dictionary<PotionCode, Potion>();
 
             //          코드(중복X!!)                   이름          타입                    power
-            Potions.Add(PotionCode.Potion1, new Potion("포션1",       PotionType.PotionHP,    20));
-            Potions.Add(PotionCode.Potion2, new Potion("포션2",       PotionType.PotionHP,    50));
+            Potions.Add(PotionCode.Potion1, new Potion("포션1",       PotionType.HP,    20));
+            Potions.Add(PotionCode.Potion2, new Potion("포션2",       PotionType.HP,    50));
 
             //아이템을 계속 추가해 보자
         }
@@ -156,6 +166,7 @@ namespace SpartaDungeon_GLSK.Data
     //아이템 타입
     public enum PotionType
     {
-        PotionHP
+        HP,
+        MP
     }
 }

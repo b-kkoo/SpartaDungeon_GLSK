@@ -20,8 +20,15 @@ namespace SpartaDungeon_GLSK.Scene
             keyFilter = new ConsoleKey[] { ConsoleKey.Z };
             for (int i = 0; i < conversationPreset.Length; i++)
             {
+                //(Z : 확인) <- 계속 지우고 다음줄에 다시 디스플레이
+                if (i != 0)
+                {
+                    Console.SetCursorPosition(0, Console.GetCursorPosition().Top - 1);
+                    Console.WriteLine(new string(' ', Console.WindowWidth));
+                }
+
                 Console.WriteLine(conversationPreset[i]);
-                Console.WriteLine("                                                          Z-확인");
+                Console.WriteLine("                                                          (Z : 확인)");
                 while (true)
                 {
                     keyInput = keyController.GetUserInput(keyFilter, out cheatActivate);

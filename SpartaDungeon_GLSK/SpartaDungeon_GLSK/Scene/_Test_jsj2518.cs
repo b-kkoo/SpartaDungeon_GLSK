@@ -51,12 +51,8 @@
 
         public static bool Test(out Scenes next, KeyController keyController)
         {
-            Console.WriteLine("sldknflksnfdd");
-            Console.SetCursorPosition(0, 0);
-            Console.WriteLine(new string(' ', Console.WindowWidth));
-            Console.WriteLine(new string(' ', Console.WindowWidth));
-            Console.WriteLine(new string(' ', Console.WindowWidth));
-            Console.ReadLine();
+            string[] aaa = { "sjkbndfk", "dkshklfnd", "aaaaaaaaa" };
+            ScenePreset.Conversation(aaa, keyController);
 
             next = Scenes.Main_Menu;
             return true;

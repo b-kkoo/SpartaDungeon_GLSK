@@ -9,6 +9,8 @@ using System.Xml.Linq;
 
 namespace SpartaDungeon_GLSK.Data
 {
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // PLAYER JOB
 
     public static class JobDatabase
     {
@@ -18,10 +20,10 @@ namespace SpartaDungeon_GLSK.Data
         {
             jobs = new Dictionary<JobCode, Job>();
 
-            //                                 name      hp       atk     matk    def    speed  cri
-            jobs.Add(JobCode.Warrior, new Job( "전사",   100,     10,     2,      7,     5,     20));
-            jobs.Add(JobCode.Archer, new Job(  "궁수",   80,      8,      3,      4,     8,     30));
-            jobs.Add(JobCode.Mage, new Job(    "마법사", 70,      5,      6,      3,     3,     20));
+            //                                 name      hp      mp      atk     matk    def    speed  cri    //LvUp//    hp      mp      atk     matk    def    speed  cri
+            jobs.Add(JobCode.Warrior, new Job( "전사",   100,    20,     10,     2,      7,     5,     20,                10,     2,      2,      1,      2,     1,     0    ));
+            jobs.Add(JobCode.Archer,  new Job( "궁수",   80,     30,     8,      3,      4,     8,     30,                8,      3,      2,      2,      1,     3,     1    ));
+            jobs.Add(JobCode.Mage,    new Job( "마법사", 70,     50,     5,      6,      3,     3,     20,                7,      5,      1,      3,      0,     1,     0    ));
         }
 
         public static Job GetJob(JobCode code)
@@ -40,9 +42,11 @@ namespace SpartaDungeon_GLSK.Data
 
     public class Job
     {
-        //기본 스텟
         public string jobName { get; }
+
+        //기본 스텟
         public int initialHp { get; }
+        public int initialMp { get; }
         public int initialAtk { get; }
         public int initialMAtk { get; }
         public int initialDef { get; }
@@ -50,17 +54,33 @@ namespace SpartaDungeon_GLSK.Data
         public int initialCriRate {  get; }
 
         //레벨업 시 상승 스텟
-        //public int lvUpHp { get; }
+        public int lvUpHp { get; }
+        public int lvUpMp { get; }
+        public int lvUpAtk { get; }
+        public int lvUpMAtk { get; }
+        public int lvUpDef { get; }
+        public int lvUpSpeed { get; }
+        public int lvUpCriRate { get; }
 
-        public Job(string _name, int _hp, int _atk, int _matk, int _def, int _speed, int _CriRate)
+        public Job(string _name, int _hp, int _mp, int _atk, int _matk, int _def, int _speed, int _CriRate, int _hpUp, int _mpUp, int _atkUp, int _matkUp, int _defUp, int _speedUp, int _CriRateUp)
         {
             jobName = _name;
+
             initialHp = _hp;
+            initialMp = _mp;
             initialAtk = _atk;
             initialMAtk = _matk;
             initialDef = _def;
             initialSpeed = _speed;
             initialCriRate = _CriRate;
+
+            lvUpHp = _hpUp;
+            lvUpMp = _mpUp;
+            lvUpAtk = _atkUp;
+            lvUpMAtk = _matkUp;
+            lvUpDef = _defUp;
+            lvUpSpeed = _speedUp;
+            lvUpCriRate = _CriRateUp;
         }
     }
 
@@ -72,8 +92,11 @@ namespace SpartaDungeon_GLSK.Data
     }
 
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // SKILL
 
     public static class PSkillDatabase
     {
@@ -83,14 +106,15 @@ namespace SpartaDungeon_GLSK.Data
         {
             skills = new Dictionary<PSkillCode, PSkill>();
 
-            //                                                            Warrior         level    ratio    splash     info
-            skills.Add(PSkillCode.W_Basic, new PSkill("베기",               JobCode.Warrior,   1,       1.0,     false,     "전방의 적을 벤다."));
-
-            //                                                            Archer          level    ratio    splash
-            skills.Add(PSkillCode.A_Basic, new PSkill("사격",               JobCode.Archer,    1,       1.0,     false,     "적에게 화살을 발사한다."));
-
-            //                                                            Mage            level    ratio    splash
-            skills.Add(PSkillCode.M_Basic, new PSkill("지팡이 휘두르기",    JobCode.Mage,      1,       0.8,     false,     "지팡이를 휘둘러 적을 공격한다."));
+            //                                                              Warrior           level    a.ratio    m.ratio    mpConsum      splash     info
+            skills.Add(PSkillCode.W_Basic,   new PSkill("베기",             JobCode.Warrior,   1,       1.0,       0.0,      0,            false,     "전방의 적을 벤다."));
+                                                                                                                            
+            //                                                              Archer            level    a.ratio    m.ratio    mpConsum      splash
+            skills.Add(PSkillCode.A_Basic,   new PSkill("사격",             JobCode.Archer,    1,       1.0,       0.0,      0,            false,     "적에게 화살을 발사한다."));
+                                                                                                                            
+            //                                                              Mage              level    a.ratio    m.ratio    mpConsum      splash
+            skills.Add(PSkillCode.M_Basic,   new PSkill("지팡이 휘두르기",  JobCode.Mage,      1,       0.8,       0.0,      0,            false,     "지팡이를 휘둘러 적을 공격한다."));
+            skills.Add(PSkillCode.M_Magic1,  new PSkill("파이어볼",         JobCode.Mage,      1,       0.0,       3.0,      10,           false,     "불로 된 구체를 상대에게 날린다."));
         }
 
         public static PSkill GetPSkill(PSkillCode code)
@@ -110,24 +134,31 @@ namespace SpartaDungeon_GLSK.Data
     //플레이어 스킬
     public class PSkill
     {
+        // 스킬 개요
         public string skillName {  get; }
+        public string info { get; }
         public JobCode useClass { get; }
         public int unlockLv { get; }
+
+        // 스킬 성능
         public double atkRatio { get; }
+        public double matkRatio { get; }
+        public int mpConsum { get; }
         public bool isSplash { get; }
 
-        public string info { get; }
 
 
-        public PSkill(string _skillName, JobCode _useClass, int _unlockLv, double _atkRatio, bool _isSplash, string _info)
+        public PSkill(string _skillName, JobCode _useClass, int _unlockLv, double _atkRatio, double _matkRatio, int _mpConsum, bool _isSplash, string _info)
         {
             skillName = _skillName;
+            info = _info;
             useClass = _useClass;
             unlockLv = _unlockLv;
-            atkRatio = _atkRatio;
-            isSplash = _isSplash;
 
-            info = _info;
+            atkRatio = _atkRatio;
+            matkRatio = _matkRatio;
+            mpConsum = _mpConsum;
+            isSplash = _isSplash;
         }
     }
 
@@ -137,7 +168,8 @@ namespace SpartaDungeon_GLSK.Data
 
         A_Basic,
 
-        M_Basic
+        M_Basic,
+        M_Magic1
     }
 }
        

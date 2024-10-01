@@ -20,17 +20,17 @@ namespace SpartaDungeon_GLSK.Data
             monsters = new Dictionary<MonsterCode, Monster>();
 
             //                                                                                           level   hp      attack
-            monsters.Add(MonsterCode.CommonMonster1, new Monster(   "일반 몬스터1", MonsterType.Common,  1,      50,     5));
-            monsters.Add(MonsterCode.CommonMonster2, new Monster(   "일반 몬스터2", MonsterType.Common,  1,      50,     5));
-            monsters.Add(MonsterCode.CommonMonster3, new Monster(   "일반 몬스터3", MonsterType.Common,  1,  50, 5));
-            monsters.Add(MonsterCode.CommonMonster4, new Monster(   "일반 몬스터4", MonsterType.Common,  1,  50, 5));
-            monsters.Add(MonsterCode.CommonMonster5, new Monster(   "일반 몬스터5", MonsterType.Common, 1, 50, 5));
-            monsters.Add(MonsterCode.SpecialMonster1, new Monster(  "특수 몬스터1", MonsterType.Special,  1,  50, 5));
-            monsters.Add(MonsterCode.SpecialMonster2, new Monster(  "특수 몬스터2", MonsterType.Special,  1,  50, 5));
-            monsters.Add(MonsterCode.SpecialMonster3, new Monster(  "특수 몬스터3", MonsterType.Special, 1, 50, 5));
-            monsters.Add(MonsterCode.BossMonster1, new Monster(     "보스 몬스터1", MonsterType.Boss,  1,  50, 5));
-            monsters.Add(MonsterCode.BossMonster2, new Monster(     "보스 몬스터2", MonsterType.Boss,  1,  50, 5));
-            monsters.Add(MonsterCode.BossMonster3, new Monster(     "보스 몬스터3", MonsterType.Boss, 1, 50, 5));
+            /*monsters.Add(MonsterCode.CommonMonster1,    new Monster(  "일반 몬스터1", MonsterType.Common,  1,      50,     5));
+            monsters.Add(MonsterCode.CommonMonster2,    new Monster(  "일반 몬스터2", MonsterType.Common,  1,      50,     5));
+            monsters.Add(MonsterCode.CommonMonster3,    new Monster(  "일반 몬스터3", MonsterType.Common,  1,  50, 5));
+            monsters.Add(MonsterCode.CommonMonster4,    new Monster(  "일반 몬스터4", MonsterType.Common,  1,  50, 5));
+            monsters.Add(MonsterCode.CommonMonster5,    new Monster(  "일반 몬스터5", MonsterType.Common, 1, 50, 5));
+            monsters.Add(MonsterCode.SpecialMonster1,   new Monster(  "특수 몬스터1", MonsterType.Special,  1,  50, 5));
+            monsters.Add(MonsterCode.SpecialMonster2,   new Monster(  "특수 몬스터2", MonsterType.Special,  1,  50, 5));
+            monsters.Add(MonsterCode.SpecialMonster3,   new Monster(  "특수 몬스터3", MonsterType.Special, 1, 50, 5));
+            monsters.Add(MonsterCode.BossMonster1,      new Monster(  "보스 몬스터1", MonsterType.Boss,  1,  50, 5));
+            monsters.Add(MonsterCode.BossMonster2,      new Monster(  "보스 몬스터2", MonsterType.Boss,  1,  50, 5));
+            monsters.Add(MonsterCode.BossMonster3,      new Monster(  "보스 몬스터3", MonsterType.Boss, 1, 50, 5));*/
 
         }
 
@@ -51,21 +51,31 @@ namespace SpartaDungeon_GLSK.Data
 
     public class Monster
     {
+        // 몬스터 개요
         public string name { get; }
         public MonsterType type { get; }
-
         public int level { get; }
+        public int exp { get; } // 처치 시 경험치
+
+        // 몬스터 스텟
         public int hp { get; }
         public int attack { get; }
+        public int Mattack { get; }
+        public int def { get; }
+        public int speed { get; }
+        public int criRate { get; }
 
-        public Monster(string _name, MonsterType _type, int _level, int _hp, int _attack)
+
+        public Monster(string _name, MonsterType _type, int _level, int _exp, int _hp, int _attack, int _Mattack)
         {
             name = _name;
             type = _type;
+            level = _level;
+            exp = _exp;
 
             hp = _hp;
-            level = _level;
             attack = _attack;
+            Mattack = _Mattack;
         }
 
     }
@@ -77,9 +87,11 @@ namespace SpartaDungeon_GLSK.Data
         CommonMonster3,
         CommonMonster4,
         CommonMonster5,
+
         SpecialMonster1,
         SpecialMonster2,
         SpecialMonster3,
+
         BossMonster1,
         BossMonster2,
         BossMonster3
@@ -104,12 +116,14 @@ namespace SpartaDungeon_GLSK.Data
         public Monster monster { get; }
         public bool isAlive { get; set; }
         public int currentHp { get; set; }
+        public int anger { get; set; } // 분노 게이지. 공격하거나 피격당할 때 쌓이며, 스킬을 쓸 때 소모함
 
         public WorldMonster(MonsterCode code)
         {
             monster = MonsterDatabase.GetMonster(code);
             isAlive = true;
             currentHp = monster.hp;
+            anger = 0;
         }
 
     }
