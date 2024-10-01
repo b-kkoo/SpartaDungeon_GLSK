@@ -64,7 +64,7 @@ namespace SpartaDungeon_GLSK.Scene
                 else
                 {
                     Console.WriteLine($"\"{strInput}\"으로 정하시겠습니까?");                    
-                    Console.WriteLine("                                   z : 예  x : 아니오");
+                    Console.WriteLine("                                                  Z : 예  X : 아니오");
                     Console.WriteLine("한글로 입력하셨으면 한영키를 눌러주세요");
                     while (true)
                     {
@@ -105,7 +105,7 @@ namespace SpartaDungeon_GLSK.Scene
                 if (keyInput == ConsoleKey.D1)
                 {
                     Console.WriteLine($"\n\"전사\"로 정하시겠습니까?");
-                    Console.WriteLine("                                   z : 예  x : 아니오");
+                    Console.WriteLine("                                                  Z : 예  X : 아니오");
                     while (true)
                     {
                         keyFilter = new ConsoleKey[] { ConsoleKey.Z, ConsoleKey.X };
@@ -116,7 +116,7 @@ namespace SpartaDungeon_GLSK.Scene
                     {
                         Console.Clear();
                         Console.WriteLine("자네는 전사로군. 어서 이 검을 들고 전투에 참여해주게.");
-                        Console.WriteLine("                                             z : 확인");
+                        Console.WriteLine("                                                          (Z : 확인)");
                         Program.playerData.PClass = Data.JobCode.Warrior;
                         break;
                     }
@@ -130,7 +130,7 @@ namespace SpartaDungeon_GLSK.Scene
                 else if (keyInput == ConsoleKey.D2)
                 {
                     Console.WriteLine($"\n\"궁수\"로 정하시겠습니까?");
-                    Console.WriteLine("                                   z : 예  x : 아니오");
+                    Console.WriteLine("                                                  Z : 예  X : 아니오");
                     while (true)
                     {
                         keyFilter = new ConsoleKey[] { ConsoleKey.Z, ConsoleKey.X };
@@ -141,7 +141,7 @@ namespace SpartaDungeon_GLSK.Scene
                     {
                         Console.Clear();
                         Console.WriteLine("자네는 궁수로군. 어서 이 활을 들고 전투에 참여해주게.");
-                        Console.WriteLine("                                             z : 확인");
+                        Console.WriteLine("                                                          (Z : 확인)");
                         Program.playerData.PClass = Data.JobCode.Archer;
                         break;
                     }
@@ -155,7 +155,7 @@ namespace SpartaDungeon_GLSK.Scene
                 else
                 {
                     Console.WriteLine($"\n\"마법사\"로 정하시겠습니까?");
-                    Console.WriteLine("                                   z : 예  x : 아니오");
+                    Console.WriteLine("                                                  Z : 예  X : 아니오");
                     while (true)
                     {
                         keyFilter = new ConsoleKey[] { ConsoleKey.Z, ConsoleKey.X };
@@ -166,8 +166,9 @@ namespace SpartaDungeon_GLSK.Scene
                     {
                         Console.Clear();
                         Console.WriteLine("자네는 마법사로군. 어서 이 지팡이를 들고 전투에 참여해주게");
-                        Console.WriteLine("                                                  z : 확인");
+                        Console.WriteLine("                                                          (Z : 확인)");
                         Program.playerData.PClass = Data.JobCode.Mage;
+                        Program.playerData.PClassName = "마법사";
                         break;
                     }
                     else
@@ -179,6 +180,18 @@ namespace SpartaDungeon_GLSK.Scene
                 }                
             }
             Program.playerData.SetLv1();
+
+            //이름 입력, 직업 선택, SetLv1 잘 되었는지 확인
+            Console.WriteLine($"{Program.playerData.Name}"); //이름
+            Console.WriteLine($"{Program.playerData.PClassName}"); //직업
+            Console.WriteLine($"{Program.playerData.Lv}"); //레벨
+            Console.WriteLine($"{Program.playerData.Hp}"); //HP
+            Console.WriteLine($"{Program.playerData.Atk}"); //Atk
+            Console.WriteLine($"{Program.playerData.MAtk}"); //MAtk
+            Console.WriteLine($"{Program.playerData.Def}"); //Def
+            Console.WriteLine($"{Program.playerData.Speed}"); //Speed
+            Console.WriteLine($"{Program.playerData.CriRate}"); //CriRate
+
 
             while (true)
             {
