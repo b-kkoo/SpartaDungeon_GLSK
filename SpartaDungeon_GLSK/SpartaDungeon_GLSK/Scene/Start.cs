@@ -11,6 +11,8 @@ namespace SpartaDungeon_GLSK.Scene
             ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
             ConsoleKey keyInput;
 
+            Program.playerData = new PlayerData();
+            
             int cheatActivated;
 
             string strInput;
@@ -30,7 +32,8 @@ namespace SpartaDungeon_GLSK.Scene
 
             while (true)
             {
-                Console.WriteLine("이름을 입력해주세요");
+                Console.Clear();
+                Console.WriteLine("이름을 입력해주세요(최대 14자, 한글은 글자당 2자)");
                 Console.Write("");
                 strInput = Console.ReadLine();
                 strInput = strInput.Trim();
@@ -50,11 +53,13 @@ namespace SpartaDungeon_GLSK.Scene
                 {
                     Console.WriteLine("14 글자가 넘습니다");
                     Thread.Sleep(1000);
+                    keyController.GetUserInput(keyFilter, out cheatActivated);
                 }
                 else if (intVal == 0)
                 {
                     Console.WriteLine("이름을 공백으로 설정할 수 없습니다.");
                     Thread.Sleep(1000);
+                    keyController.GetUserInput(keyFilter, out cheatActivated);
                 }
                 else
                 {
@@ -68,12 +73,15 @@ namespace SpartaDungeon_GLSK.Scene
                         if (keyInput == ConsoleKey.Z || keyInput == ConsoleKey.X) break;
                     }
                     if (keyInput == ConsoleKey.Z) //이름 확정
-                    {                        
+                    {
+                        Console.Clear();
                         break;
                     }
                     else
                     {
-                        
+                        Console.WriteLine("다시 입력해주세요");
+                        Thread.Sleep(1000);
+                        keyController.GetUserInput(keyFilter, out cheatActivated);
                     }
                 }
             }
@@ -85,7 +93,8 @@ namespace SpartaDungeon_GLSK.Scene
             ScenePreset.Conversation(tConversation, keyController);
             while (true)
             {
-                Console.WriteLine("사용하던 무기를 선택해주세요");
+                Console.Clear();
+                Console.WriteLine("사용하던 무기를 선택해주세요(원하는 무기의 숫자를 입력해주세요)");
                 Console.WriteLine("1. 검\n2. 활\n3. 지팡이");
                 while (true)
                 {
@@ -95,26 +104,81 @@ namespace SpartaDungeon_GLSK.Scene
                 }
                 if (keyInput == ConsoleKey.D1)
                 {
-                    Console.WriteLine("자네는 전사로군. 어서 이 검을 들고 전투에 참여해주게.");
-                    Console.WriteLine("                                             z : 확인");
-                    Program.playerData.PClass = Data.JobCode.Warrior;
-                    break;
+                    Console.WriteLine($"\n\"전사\"로 정하시겠습니까?");
+                    Console.WriteLine("                                   z : 예  x : 아니오");
+                    while (true)
+                    {
+                        keyFilter = new ConsoleKey[] { ConsoleKey.Z, ConsoleKey.X };
+                        keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+                        if (keyInput == ConsoleKey.Z || keyInput == ConsoleKey.X) break;
+                    }
+                    if (keyInput == ConsoleKey.Z) //직업 확정
+                    {
+                        Console.Clear();
+                        Console.WriteLine("자네는 전사로군. 어서 이 검을 들고 전투에 참여해주게.");
+                        Console.WriteLine("                                             z : 확인");
+                        Program.playerData.PClass = Data.JobCode.Warrior;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("다시 입력해주세요");
+                        Thread.Sleep(1000);
+                        keyController.GetUserInput(keyFilter, out cheatActivated);
+                    }
                 }
                 else if (keyInput == ConsoleKey.D2)
                 {
-                    Console.WriteLine("자네는 궁수로군. 어서 이 활을 들고 전투에 참여해주게.");
-                    Console.WriteLine("                                             z : 확인");
-                    Program.playerData.PClass = Data.JobCode.Archer;
-                    break;
+                    Console.WriteLine($"\n\"궁수\"로 정하시겠습니까?");
+                    Console.WriteLine("                                   z : 예  x : 아니오");
+                    while (true)
+                    {
+                        keyFilter = new ConsoleKey[] { ConsoleKey.Z, ConsoleKey.X };
+                        keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+                        if (keyInput == ConsoleKey.Z || keyInput == ConsoleKey.X) break;
+                    }
+                    if (keyInput == ConsoleKey.Z) //직업 확정
+                    {
+                        Console.Clear();
+                        Console.WriteLine("자네는 궁수로군. 어서 이 활을 들고 전투에 참여해주게.");
+                        Console.WriteLine("                                             z : 확인");
+                        Program.playerData.PClass = Data.JobCode.Archer;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("다시 입력해주세요");
+                        Thread.Sleep(1000);
+                        keyController.GetUserInput(keyFilter, out cheatActivated);
+                    }                    
                 }
                 else
                 {
-                    Console.WriteLine("자네는 마법사로군. 어서 이 지팡이를 들고 전투에 참여해주게");
-                    Console.WriteLine("                                                  z : 확인");
-                    Program.playerData.PClass = Data.JobCode.Mage;
-                    break;
-                }                                    
+                    Console.WriteLine($"\n\"마법사\"로 정하시겠습니까?");
+                    Console.WriteLine("                                   z : 예  x : 아니오");
+                    while (true)
+                    {
+                        keyFilter = new ConsoleKey[] { ConsoleKey.Z, ConsoleKey.X };
+                        keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+                        if (keyInput == ConsoleKey.Z || keyInput == ConsoleKey.X) break;
+                    }
+                    if (keyInput == ConsoleKey.Z) //직업 확정
+                    {
+                        Console.Clear();
+                        Console.WriteLine("자네는 마법사로군. 어서 이 지팡이를 들고 전투에 참여해주게");
+                        Console.WriteLine("                                                  z : 확인");
+                        Program.playerData.PClass = Data.JobCode.Mage;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("다시 입력해주세요");
+                        Thread.Sleep(1000);
+                        keyController.GetUserInput(keyFilter, out cheatActivated);
+                    }                    
+                }                
             }
+            Program.playerData.SetLv1();
 
             while (true)
             {
