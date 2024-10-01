@@ -49,7 +49,7 @@ namespace SpartaDungeon_GLSK.Scene
             switch (battleStage)
             {
                 case BattleStage.Tutorial:
-                    enemies = new MonsterCode[2] { };
+                    enemies = new MonsterCode[2] { MonsterCode.TutoralMonster, MonsterCode.TutoralMonster };
                     Console.WriteLine("튜토리얼 전투");
                     screenTop = 2;
                     break;
@@ -94,6 +94,7 @@ namespace SpartaDungeon_GLSK.Scene
                 //
                 // LV 00  플레이어
                 // HP 000 / 000
+                // MP 000 / 000
                 // AP 000 %
                 //
                 // ㅇㅇㅇ의 턴!
@@ -132,12 +133,21 @@ namespace SpartaDungeon_GLSK.Scene
                 //턴을 가진 유닛 행동 수행
                 while (actionTurn.Count > 0)
                 {
+                    DrawBattleField(screenTop);
+
                     int actionUnit = actionTurn.Dequeue();
                     // 플레이어 턴
                     if (actionUnit < battleTable.Ally.Length)
                     {
-                        if (battleTable.Ally[actionUnit].IsAlive)
+                        if (battleTable.Ally[actionUnit] != null && battleTable.Ally[actionUnit].IsAlive)
                         {
+                            //9 ~ 16줄 Clear
+                            Console.SetCursorPosition(0, screenTop + 9);
+                            for (int i = 9; i <= 16; i++)
+                            {
+                                Console.WriteLine(new string(' ', Console.WindowWidth));
+                            }
+
                             // 차징한 스킬이 있을 경우
                             if (battleTable.Ally[actionUnit].Concentrating)
                             {
@@ -149,6 +159,14 @@ namespace SpartaDungeon_GLSK.Scene
                                 GetPlayerOrder(battleTable.Ally[actionUnit], screenTop + 1, keyController, out int selectedAct, out int selectedIdx, out int selectedTarget);
                                 DoPlayerAction(battleTable.Ally[actionUnit], screenTop + 1, keyController, selectedAct, selectedIdx, selectedTarget);
                             }
+
+                            //0 ~ 16줄 Clear
+                            Console.SetCursorPosition(0, screenTop);
+                            for (int i = 0; i <= 16; i++)
+                            {
+                                Console.WriteLine(new string(' ', Console.WindowWidth));
+                            }
+                            DrawBattleField(screenTop);
 
                             // 게임 승리 여부 확인
                             bool victory = true;
@@ -164,14 +182,23 @@ namespace SpartaDungeon_GLSK.Scene
                             {
                                 return true;
                             }
+
+                            battleTable.Ally[actionUnit].AP = 0;
                         }
                     }
                     // 적 턴
                     else
                     {
                         actionUnit -= battleTable.Ally.Length;
-                        if (battleTable.Hostile[actionUnit].isAlive)
+                        if (battleTable.Hostile[actionUnit] != null && battleTable.Hostile[actionUnit].isAlive)
                         {
+                            //9 ~ 16줄 Clear
+                            Console.SetCursorPosition(0, screenTop + 9);
+                            for (int i = 9; i <= 16; i++)
+                            {
+                                Console.WriteLine(new string(' ', Console.WindowWidth));
+                            }
+
                             // 차징한 스킬이 있을 경우
                             if (battleTable.Hostile[actionUnit].concentrating)
                             {
@@ -183,6 +210,14 @@ namespace SpartaDungeon_GLSK.Scene
                                 GetHostileOrder(battleTable.Hostile[actionUnit], out int selectedIdx, out int selectedTarget);
                                 DoHostileAction(battleTable.Hostile[actionUnit], screenTop + 1, keyController, selectedIdx, selectedTarget);
                             }
+
+                            //0 ~ 16줄 Clear
+                            Console.SetCursorPosition(0, screenTop);
+                            for (int i = 0; i <= 16; i++)
+                            {
+                                Console.WriteLine(new string(' ', Console.WindowWidth));
+                            }
+                            DrawBattleField(screenTop);
 
                             // 게임 패배 여부 확인
                             bool defeat = true;
@@ -198,6 +233,8 @@ namespace SpartaDungeon_GLSK.Scene
                             {
                                 return false;
                             }
+
+                            battleTable.Hostile[actionUnit].AP = 0;
                         }
                     }
                 }
@@ -217,7 +254,7 @@ namespace SpartaDungeon_GLSK.Scene
                     Console.SetCursorPosition(i * 30, screenTop + 1);
                     Console.WriteLine($"HP {battleTable.Hostile[i].currentHp} / {battleTable.Hostile[i].monster.hp}");
                     Console.SetCursorPosition(i * 30, screenTop + 2);
-                    Console.WriteLine($"AP {battleTable.Hostile[i].AP:000} %{(battleTable.Hostile[i].concentrating ? " (집중)" : "")}");
+                    Console.WriteLine($"AP {Math.Floor(battleTable.Hostile[i].AP)} %{(battleTable.Hostile[i].concentrating ? " (집중)" : "")}");
                 }
             }
             for (int i = 0; i < 3; i++)
@@ -229,9 +266,9 @@ namespace SpartaDungeon_GLSK.Scene
                     Console.SetCursorPosition(i * 50, screenTop + 6);
                     Console.WriteLine($"HP {battleTable.Ally[i].CurrentHp} / {battleTable.Ally[i].Hp}");
                     Console.SetCursorPosition(i * 50, screenTop + 7);
-                    Console.WriteLine($"HP {battleTable.Ally[i].CurrentMp} / {battleTable.Ally[i].Mp}");
+                    Console.WriteLine($"MP {battleTable.Ally[i].CurrentMp} / {battleTable.Ally[i].Mp}");
                     Console.SetCursorPosition(i * 50, screenTop + 8);
-                    Console.WriteLine($"AP {battleTable.Ally[i].AP:000} %{(battleTable.Ally[i].Concentrating ? " (집중)" : "")}");
+                    Console.WriteLine($"AP {Math.Floor(battleTable.Ally[i].AP)} %{(battleTable.Ally[i].Concentrating ? " (집중)" : "")}");
                 }
             }
         }
@@ -259,15 +296,15 @@ namespace SpartaDungeon_GLSK.Scene
             bool loop = true;
             while (loop)
             {
+                //9 ~ 16줄 Clear
                 Console.SetCursorPosition(0, screenTop + 9);
-                Console.WriteLine($"{playerData.Name}의 턴!");
-
-                //10 ~ 16줄 Clear
-                for (int i = 10; i <= 16; i++)
+                for (int i = 9; i <= 16; i++)
                 {
                     Console.WriteLine(new string(' ', Console.WindowWidth));
                 }
 
+                Console.SetCursorPosition(0, screenTop + 9);
+                Console.WriteLine($"{playerData.Name}의 턴!");
 
                 //행동 선택
                 if (orderState == 0)
@@ -402,7 +439,7 @@ namespace SpartaDungeon_GLSK.Scene
                     Dictionary<int, int> aliveMonsterIdx = new Dictionary<int, int>(); //살아있는 몬스터의 실제 인덱스<표시된 인덱스, Hostile 내 인덱스>
                     for (int i = 0; i < battleTable.Hostile.Length; i++)
                     {
-                        if (battleTable.Hostile[i].isAlive == true)
+                        if (battleTable.Hostile[i] != null && battleTable.Hostile[i].isAlive == true)
                         {
                             aliveMonsterIdx.Add(dispTargetNum, i);
                             Console.WriteLine($"{++dispTargetNum}. {battleTable.Hostile[i].monster.name}");
@@ -537,7 +574,7 @@ namespace SpartaDungeon_GLSK.Scene
                     Dictionary<int, int> aliveAllyIdx = new Dictionary<int, int>(); //살아있는 아군의 실제 인덱스<표시된 인덱스, Ally 내 인덱스>
                     for (int i = 0; i < battleTable.Ally.Length; i++)
                     {
-                        if (battleTable.Ally[i].IsAlive == true)
+                        if (battleTable.Ally[i] != null && battleTable.Ally[i].IsAlive == true)
                         {
                             aliveAllyIdx.Add(dispTargetNum, i);
                             Console.WriteLine($"{++dispTargetNum}. {battleTable.Ally[i].Name}");
@@ -604,7 +641,7 @@ namespace SpartaDungeon_GLSK.Scene
                 //차징 스킬을 사용한 경우
                 if (selectedSkill.needCharging && playerData.Concentrating == false)
                 {
-                    Console.SetCursorPosition(0, 11);
+                    Console.SetCursorPosition(0, screenTop + 11);
                     Console.WriteLine(new string($"{playerData.Name}이 {selectedSkill.skillName}의 시전 준비에 돌입!"));
                     Console.WriteLine(new string("                                      (Z : 확인)"));
                     playerData.Concentrating = true;
@@ -617,11 +654,11 @@ namespace SpartaDungeon_GLSK.Scene
                     if (selectedSkill.isSplash == false)
                     {
                         WorldMonster victim = battleTable.Hostile[selectedTarget];
-                        if (victim.isAlive == false) 
+                        if (victim != null && victim.isAlive == false) 
                         { 
                             for (int i = 0; i < battleTable.Hostile.Length; i++)
                             {
-                                if (battleTable.Hostile[i].isAlive)
+                                if (battleTable.Hostile[i] != null && battleTable.Hostile[i].isAlive)
                                 {
                                     selectedTarget = i;
                                     break;
@@ -637,7 +674,7 @@ namespace SpartaDungeon_GLSK.Scene
                 int rand = random.Next(100);
                 bool critcalHit = (rand < playerData.CriRate);
 
-                Console.SetCursorPosition(0,11);
+                Console.SetCursorPosition(0, screenTop + 11);
                 Console.WriteLine(new string($"{playerData.Name}의 {selectedSkill.skillName}!"));
                 if (critcalHit) Console.WriteLine("크리티컬로 적중!");
                 Console.WriteLine(new string("                                      (Z : 확인)"));
@@ -657,7 +694,7 @@ namespace SpartaDungeon_GLSK.Scene
                 {
                     for (int i = 0; i < battleTable.Hostile.Length; i++)
                     {
-                        if (battleTable.Hostile[i].isAlive)
+                        if (battleTable.Hostile[i] != null && battleTable.Hostile[i].isAlive)
                         {
                             WorldMonster victim = battleTable.Hostile[i];
                             int finalDamage = (int)(damage - victim.monster.def);
@@ -702,7 +739,7 @@ namespace SpartaDungeon_GLSK.Scene
             {
                 Potion selectedPotion = PotionDatabase.GetPotion(playerData.invenPotion[selectedIdx].Key);
 
-                Console.SetCursorPosition(0, 11);
+                Console.SetCursorPosition(0, screenTop + 11);
                 Console.WriteLine(new string($"{playerData.Name}가 {selectedPotion.name} 사용!"));
                 Console.WriteLine(new string("                                      (Z : 확인)"));
 
@@ -733,34 +770,30 @@ namespace SpartaDungeon_GLSK.Scene
         //적 턴 행동명령 받기
         private static void GetHostileOrder(WorldMonster worldMonster, out int selectedIdx, out int selectedTarget)
         {
-            selectedIdx = -1; //기본공격
+            selectedIdx = 0; //기본공격
 
             Random rand = new Random();
             int randResult;
 
-            // 스킬 선택
-            if (worldMonster.monster.skillList != null) 
+            // 특수 스킬 선택
+            int anger = worldMonster.anger;
+            MSkill mSkill;
+            int angerConsum;
+            for (int i = 1; i < worldMonster.monster.skillList.Count; i++)
             {
-                int anger = worldMonster.anger;
-                MSkill mSkill;
-                int angerConsum;
+                mSkill = MSkillDatabase.GetMSkill(worldMonster.monster.skillList[i]);
+                angerConsum = mSkill.angerConsum;
 
-                for (int i=0; i< worldMonster.monster.skillList.Count; i++)
+                if (anger < angerConsum) continue;
+                else
                 {
-                    mSkill = MSkillDatabase.GetMSkill(worldMonster.monster.skillList[i]);
-                    angerConsum = mSkill.angerConsum;
-
-                    if (anger < angerConsum) continue;
-                    else
+                    // 현재 분노게이지가 높을 수록 시전 확률 높아짐
+                    int chance = 40 + (anger - angerConsum) * 20 / angerConsum;
+                    randResult = rand.Next(100);
+                    if (randResult < chance)
                     {
-                        // 현재 분노게이지가 높을 수록 시전 확률 높아짐
-                        int chance = 40 + (anger - angerConsum) * 20 / angerConsum;
-                        randResult = rand.Next(100);
-                        if (randResult < chance)
-                        {
-                            selectedIdx = i;
-                            break;
-                        }
+                        selectedIdx = i;
+                        break;
                     }
                 }
             }
@@ -770,7 +803,7 @@ namespace SpartaDungeon_GLSK.Scene
             int targetNum = 0;
             for (int i = 0; i < battleTable.Ally.Length; i++)
             {
-                if (battleTable.Ally[i].IsAlive == true)
+                if (battleTable.Ally[i] != null && battleTable.Ally[i].IsAlive == true)
                 {
                     aliveAllyIdx.Add(targetNum++, i);
                 }
@@ -821,7 +854,7 @@ namespace SpartaDungeon_GLSK.Scene
                     {
                         for (int i = 0; i < battleTable.Ally.Length; i++)
                         {
-                            if (battleTable.Ally[i].IsAlive)
+                            if (battleTable.Ally[i] != null && battleTable.Ally[i].IsAlive)
                             {
                                 selectedTarget = i;
                                 break;
@@ -837,7 +870,7 @@ namespace SpartaDungeon_GLSK.Scene
             int rand = random.Next(100);
             bool critcalHit = (rand < worldMonster.monster.criRate);
 
-            Console.SetCursorPosition(0, 11);
+            Console.SetCursorPosition(0, screenTop + 11);
             Console.WriteLine(new string($"{worldMonster.monster.name}의 {selectedSkill.skillName}!"));
             if (critcalHit) Console.WriteLine("크리티컬로 적중!");
             Console.WriteLine(new string("                                      (Z : 확인)"));
@@ -857,7 +890,7 @@ namespace SpartaDungeon_GLSK.Scene
             {
                 for (int i = 0; i < battleTable.Ally.Length; i++)
                 {
-                    if (battleTable.Ally[i].IsAlive)
+                    if (battleTable.Ally[i] != null && battleTable.Ally[i].IsAlive)
                     {
                         PlayerData victim = battleTable.Ally[i];
                         int finalDamage = (int)(damage - victim.Def);
@@ -873,6 +906,7 @@ namespace SpartaDungeon_GLSK.Scene
                         {
                             victim.Concentrating = false; // 시전집중 끊기
                         }
+                        worldMonster.anger += finalDamage; //분노게이지 때린만큼 상승
                     }
                 }
             }
