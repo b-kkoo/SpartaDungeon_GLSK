@@ -1,6 +1,8 @@
 ﻿
 
 using SpartaDungeon_GLSK.Data;
+using System;
+using static SpartaDungeon_GLSK.MonsterData;
 using static SpartaDungeon_GLSK.Scene.BattleScene;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -9,6 +11,7 @@ namespace SpartaDungeon_GLSK.Scene
     //전투 관련 씬
     public class BattleScene
     {
+        private static BattleTable battleTable;
         //배틀 진행 정보
         public class BattleTable
         {
@@ -24,7 +27,6 @@ namespace SpartaDungeon_GLSK.Scene
                 Hostile = enemies;
             }
         }
-        private static BattleTable battleTable;
              
         public static bool TutorialBattle(out Scenes next, KeyController keyController)
         {
@@ -179,6 +181,7 @@ namespace SpartaDungeon_GLSK.Scene
 
                     bool tabActivate = (skillNum > 5);
 
+                    //스킬목록 디스플레이
                     int dispSkillNum = skillNum - skillTab;
                     if (dispSkillNum > 5) dispSkillNum = 5; //한번에 표시할 스킬 수 5개로 제한
                     for (int i = 0; i < dispSkillNum; i++)
@@ -188,6 +191,7 @@ namespace SpartaDungeon_GLSK.Scene
                     if (dispSkillNum == 1) Console.WriteLine($"(1 : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
                     else Console.WriteLine($"(1 ~ {dispSkillNum} : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
 
+                    //입력 처리
                     keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.Tab, ConsoleKey.X };
                     bool loop2 = true;
                     while (loop2)
@@ -205,19 +209,34 @@ namespace SpartaDungeon_GLSK.Scene
                                 if (selectedIdx < playerData.skillList.Count)
                                 {
                                     PSkill seletedSkill = PSkillDatabase.GetPSkill(playerData.skillList[selectedIdx]);
-                                    if (seletedSkill.isSplash == true)
+                                    if (playerData.CurrentMp < seletedSkill.mpConsum) //스킬시전에 필요한 마나가 부족한 경우
                                     {
-                                        //선택 확정
-                                        selectedAct = 0;
-                                        selectedTarget = 0;
+                                        Console.SetCursorPosition(0, screenTop + 10);
+                                        for (int i = 10; i <= 16; i++)
+                                        {
+                                            Console.WriteLine(new string(' ', Console.WindowWidth));
+                                        }
+                                        Console.WriteLine("MP가 부족합니다!");
+                                        Thread.Sleep(1000);
+                                        keyController.GetUserInput(keyFilter, out cheatActivated);
                                         loop2 = false;
-                                        loop = false;
                                     }
                                     else
                                     {
-                                        //대상 선택으로 이동
-                                        orderState = 2;
-                                        loop2 = false;
+                                        if (seletedSkill.isSplash == true) //스킬이 전체공격인 경우
+                                        {
+                                            //선택 확정
+                                            selectedAct = 0;
+                                            selectedTarget = 0;
+                                            loop2 = false;
+                                            loop = false;
+                                        }
+                                        else //스킬이 단일공격인 경우
+                                        {
+                                            //대상 선택으로 이동
+                                            orderState = 2;
+                                            loop2 = false;
+                                        }
                                     }
                                 }
                                 break;
@@ -245,6 +264,7 @@ namespace SpartaDungeon_GLSK.Scene
                     Console.SetCursorPosition(0, screenTop + 10);
                     Console.WriteLine($"스킬 대상 선택 - {PSkillDatabase.GetPSkill(playerData.skillList[selectedIdx]).skillName}");
 
+                    //스킬 대상 목록 디스플레이
                     int dispTargetNum = 0;
                     Dictionary<int, int> aliveMonsterIdx = new Dictionary<int, int>(); //살아있는 몬스터의 실제 인덱스<표시된 인덱스, Hostile 내 인덱스>
                     for (int i = 0; i < battleTable.Hostile.Length; i++)
@@ -258,6 +278,7 @@ namespace SpartaDungeon_GLSK.Scene
                     if (dispTargetNum == 1) Console.WriteLine($"(1 : 선택, X : 취소)");
                     else Console.WriteLine($"(1 ~ {dispTargetNum} : 선택, X : 취소)");
 
+                    //입력 처리
                     keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.X };
                     bool loop2 = true;
                     while (loop2)
@@ -316,6 +337,7 @@ namespace SpartaDungeon_GLSK.Scene
 
                     bool tabActivate = (potionNum > 5);
 
+                    //아이템 목록 디스플레이
                     int dispPotionNum = potionNum - potionTab;
                     if (dispPotionNum > 5) dispPotionNum = 5; //한번에 표시할 아이템 수 5개로 제한
                     for (int i = 0; i < dispPotionNum; i++)
@@ -325,6 +347,7 @@ namespace SpartaDungeon_GLSK.Scene
                     if (dispPotionNum == 1) Console.WriteLine($"(1 : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
                     else Console.WriteLine($"(1 ~ {dispPotionNum} : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
 
+                    //입력 처리
                     keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.Tab, ConsoleKey.X };
                     bool loop2 = true;
                     while (loop2)
@@ -370,6 +393,7 @@ namespace SpartaDungeon_GLSK.Scene
                     Console.SetCursorPosition(0, screenTop + 10);
                     Console.WriteLine($"아이템 대상 선택 - {PotionDatabase.GetPotion(playerData.invenPotion[selectedIdx].Key).name}");
 
+                    //아이템 사용 대상 목록 디스플레이
                     int dispTargetNum = 0;
                     Dictionary<int, int> aliveAllyIdx = new Dictionary<int, int>(); //살아있는 아군의 실제 인덱스<표시된 인덱스, Ally 내 인덱스>
                     for (int i = 0; i < battleTable.Ally.Length; i++)
@@ -383,6 +407,7 @@ namespace SpartaDungeon_GLSK.Scene
                     if (dispTargetNum == 1) Console.WriteLine($"(1 : 선택, X : 취소)");
                     else Console.WriteLine($"(1 ~ {dispTargetNum} : 선택, X : 취소)");
 
+                    //입력 처리
                     keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.Z };
                     bool loop2 = true;
                     while (loop2)
@@ -426,17 +451,307 @@ namespace SpartaDungeon_GLSK.Scene
             keyController.GetUserInput(keyFilter, out cheatActivated); //반환값 안받으면 입력버퍼 지우라는 뜻
 
             //10 ~ 16줄 Clear
+            Console.SetCursorPosition(0, screenTop + 10);
             for (int i = 10; i <= 16; i++)
             {
                 Console.WriteLine(new string(' ', Console.WindowWidth));
             }
 
-
             // 스킬 사용
             if (selectedAct == 0)
             {
-                Console.SetCursorPosition(0,0);
+                PSkill selectedSkill = PSkillDatabase.GetPSkill(playerData.skillList[selectedIdx]);
+
+                //차징 스킬을 사용한 경우
+                if (selectedSkill.needCharging && playerData.Concentrating == false)
+                {
+                    Console.SetCursorPosition(0, 11);
+                    Console.WriteLine(new string($"{playerData.Name}이 {selectedSkill.skillName}의 시전 준비에 돌입!"));
+                    Console.WriteLine(new string("                                      (Z : 확인)"));
+                    playerData.Concentrating = true;
+                    playerData.ReservedSkill = selectedIdx;
+                    return;
+                }
+                else if (playerData.Concentrating == true)
+                {
+                    //시전집중 중에 대상이 죽었을 경우 
+                    if (selectedSkill.isSplash == false)
+                    {
+                        WorldMonster victim = battleTable.Hostile[selectedTarget];
+                        if (victim.isAlive == false) 
+                        { 
+                            for (int i = 0; i < battleTable.Hostile.Length; i++)
+                            {
+                                if (battleTable.Hostile[i].isAlive)
+                                {
+                                    selectedTarget = i;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    playerData.Concentrating = false;
+                }
+
+                Random random = new Random();
+                int rand = random.Next(100);
+                bool critcalHit = (rand < playerData.CriRate);
+
+                Console.SetCursorPosition(0,11);
+                Console.WriteLine(new string($"{playerData.Name}의 {selectedSkill.skillName}!"));
+                if (critcalHit) Console.WriteLine("크리티컬로 적중!");
+                Console.WriteLine(new string("                                      (Z : 확인)"));
+
+                keyFilter = new ConsoleKey[] { ConsoleKey.Z };
+                bool loop = true;
+                while (loop)
+                {
+                    keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+                    if (keyInput == ConsoleKey.Z) loop = false;
+                }
+
+                // 피격 구현
+                double damage = selectedSkill.CalcDamage(playerData);
+                if (critcalHit) damage *= 1.5;  //크리티컬 적중 시 1.5배의 데미지
+                if (selectedSkill.isSplash) //전체공격
+                {
+                    for (int i = 0; i < battleTable.Hostile.Length; i++)
+                    {
+                        if (battleTable.Hostile[i].isAlive)
+                        {
+                            WorldMonster victim = battleTable.Hostile[i];
+                            int finalDamage = (int)(damage - victim.monster.def);
+                            if (finalDamage < 0) finalDamage = 0;
+                            victim.currentHp -= finalDamage;
+                            //몬스터 사망
+                            if (victim.currentHp <= 0)
+                            {
+                                victim.isAlive = false;
+                            }
+                            //몬스터 생존
+                            else
+                            {
+                                victim.anger += finalDamage; //분노게이지 맞은만큼 상승
+                                victim.concentrating = false; // 시전집중 끊기
+                            }
+                        }
+                    }
+                }
+                else //단일공격
+                {
+                    WorldMonster victim = battleTable.Hostile[selectedTarget];
+                    int finalDamage = (int)(damage - victim.monster.def);
+                    if (finalDamage < 0) finalDamage = 0;
+                    victim.currentHp -= finalDamage;
+                    //몬스터 사망
+                    if (victim.currentHp <= 0)
+                    {
+                        victim.isAlive = false;
+                    }
+                    //몬스터 생존
+                    else
+                    {
+                        victim.anger += finalDamage; //분노게이지 맞은만큼 상승
+                        victim.concentrating = false; // 시전집중 끊기
+                    }
+                }
+            }
+
+            // 아이템 사용
+            else
+            {
+                Potion selectedPotion = PotionDatabase.GetPotion(playerData.invenPotion[selectedIdx].Key);
+
+                Console.SetCursorPosition(0, 11);
+                Console.WriteLine(new string($"{playerData.Name}가 {selectedPotion.name} 사용!"));
+                Console.WriteLine(new string("                                      (Z : 확인)"));
+
+                keyFilter = new ConsoleKey[] { ConsoleKey.Z };
+                bool loop = true;
+                while (loop)
+                {
+                    keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+                    if (keyInput == ConsoleKey.Z) loop = false;
+                }
+
+                // 아이템 효과 구현
+                switch (selectedPotion.type)
+                {
+                    case PotionType.HP:
+                        battleTable.Ally[selectedTarget].CurrentHp += selectedPotion.power;
+                        if (battleTable.Ally[selectedTarget].CurrentHp > playerData.Hp) battleTable.Ally[selectedTarget].CurrentHp = playerData.Hp;
+                        break;
+                    case PotionType.MP:
+                        battleTable.Ally[selectedTarget].CurrentMp += selectedPotion.power;
+                        if (battleTable.Ally[selectedTarget].CurrentMp > playerData.Mp) battleTable.Ally[selectedTarget].CurrentMp = playerData.Mp;
+                        break;
+                }
+            }
+        }
+
+
+        //적 턴 행동명령 받기
+        private static void GetHostileOrder(WorldMonster worldMonster, out int selectedIdx, out int selectedTarget)
+        {
+            selectedIdx = -1; //기본공격
+
+            Random rand = new Random();
+            int randResult;
+
+            // 스킬 선택
+            if (worldMonster.monster.skillList != null) 
+            {
+                int anger = worldMonster.anger;
+                MSkill mSkill;
+                int angerConsum;
+
+                for (int i=0; i< worldMonster.monster.skillList.Count; i++)
+                {
+                    mSkill = MSkillDatabase.GetMSkill(worldMonster.monster.skillList[i]);
+                    angerConsum = mSkill.angerConsum;
+
+                    if (anger < angerConsum) continue;
+                    else
+                    {
+                        // 현재 분노게이지가 높을 수록 시전 확률 높아짐
+                        int chance = 40 + (anger - angerConsum) * 20 / angerConsum;
+                        randResult = rand.Next(100);
+                        if (randResult < chance)
+                        {
+                            selectedIdx = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // 공격 대상 선택
+            Dictionary<int, int> aliveAllyIdx = new Dictionary<int, int>(); //살아있는 플레이어 진영의 실제 인덱스<표시된 인덱스, Ally 내 인덱스>
+            int targetNum = 0;
+            for (int i = 0; i < battleTable.Ally.Length; i++)
+            {
+                if (battleTable.Ally[i].IsAlive == true)
+                {
+                    aliveAllyIdx.Add(targetNum++, i);
+                }
+            }
+            randResult = rand.Next(targetNum);
+            aliveAllyIdx.TryGetValue(randResult, out selectedTarget); //선택된 대상 인덱스
+        }
+
+        // 적 턴 액션 수행
+        private static void DoHostileAction(WorldMonster worldMonster, int screenTop, KeyController keyController, int selectedIdx, int selectedTarget)
+        {
+            ConsoleKey keyInput;
+            int cheatActivated;
+
+            ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
+            keyController.GetUserInput(keyFilter, out cheatActivated); //반환값 안받으면 입력버퍼 지우라는 뜻
+
+            //9 ~ 16줄 Clear
+            Console.SetCursorPosition(0, screenTop + 9);
+            for (int i = 9; i <= 16; i++)
+            {
                 Console.WriteLine(new string(' ', Console.WindowWidth));
+            }
+
+            Console.SetCursorPosition(0, screenTop + 9);
+            Console.WriteLine($"{worldMonster.monster.name}의 턴!");
+
+            MSkill selectedSkill = MSkillDatabase.GetMSkill(worldMonster.monster.skillList[selectedIdx]);
+
+            //차징 스킬을 사용한 경우
+            if (selectedSkill.needCharging && worldMonster.concentrating == false)
+            {
+                Console.SetCursorPosition(0, 11);
+                Console.WriteLine(new string($"{worldMonster.monster.name}이 {selectedSkill.skillName}의 시전 준비에 돌입!"));
+                Console.WriteLine(new string("                                      (Z : 확인)"));
+                worldMonster.concentrating = true;
+                worldMonster.reservedSkill = selectedIdx;
+                return;
+            }
+            else if (worldMonster.concentrating == true)
+            {
+                //시전집중 중에 대상이 죽었을 경우 
+                if (selectedSkill.isSplash == false)
+                {
+                    PlayerData victim = battleTable.Ally[selectedTarget];
+                    if (victim.IsAlive == false)
+                    {
+                        for (int i = 0; i < battleTable.Ally.Length; i++)
+                        {
+                            if (battleTable.Ally[i].IsAlive)
+                            {
+                                selectedTarget = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                worldMonster.concentrating = false;
+            }
+
+            Random random = new Random();
+            int rand = random.Next(100);
+            bool critcalHit = (rand < worldMonster.monster.criRate);
+
+            Console.SetCursorPosition(0, 11);
+            Console.WriteLine(new string($"{worldMonster.monster.name}의 {selectedSkill.skillName}!"));
+            if (critcalHit) Console.WriteLine("크리티컬로 적중!");
+            Console.WriteLine(new string("                                      (Z : 확인)"));
+
+            keyFilter = new ConsoleKey[] { ConsoleKey.Z };
+            bool loop = true;
+            while (loop)
+            {
+                keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+                if (keyInput == ConsoleKey.Z) loop = false;
+            }
+
+            // 피격 구현
+            double damage = selectedSkill.CalcDamage(worldMonster.monster);
+            if (critcalHit) damage *= 1.5;  //크리티컬 적중 시 1.5배의 데미지
+            if (selectedSkill.isSplash) //전체공격
+            {
+                for (int i = 0; i < battleTable.Ally.Length; i++)
+                {
+                    if (battleTable.Ally[i].IsAlive)
+                    {
+                        PlayerData victim = battleTable.Ally[i];
+                        int finalDamage = (int)(damage - victim.Def);
+                        if (finalDamage < 0) finalDamage = 0;
+                        victim.CurrentHp -= finalDamage;
+                        //몬스터 사망
+                        if (victim.CurrentHp <= 0)
+                        {
+                            victim.IsAlive = false;
+                        }
+                        //몬스터 생존
+                        else
+                        {
+                            victim.Concentrating = false; // 시전집중 끊기
+                        }
+                    }
+                }
+            }
+            else //단일공격
+            {
+                PlayerData victim = battleTable.Ally[selectedTarget];
+                int finalDamage = (int)(damage - victim.Def);
+                if (finalDamage < 0) finalDamage = 0;
+                victim.CurrentHp -= finalDamage;
+                //몬스터 사망
+                if (victim.CurrentHp <= 0)
+                {
+                    victim.IsAlive = false;
+                }
+                //몬스터 생존
+                else
+                {
+                    victim.Concentrating = false; // 시전집중 끊기
+                }
             }
         }
     }

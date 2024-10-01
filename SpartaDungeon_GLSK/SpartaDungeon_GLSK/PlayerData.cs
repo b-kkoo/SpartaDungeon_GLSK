@@ -17,6 +17,7 @@ namespace SpartaDungeon_GLSK
         public int Lv { get; set; }
         public int Exp { get; set; }
         public int ExpNextLevel { get; set; }
+        public int Gold { get; set; }
 
         //직업 관련 스테이터스
         public string PClassName { get; set; }
@@ -29,8 +30,13 @@ namespace SpartaDungeon_GLSK
         public int CriRate { get; set; }
 
         //전투 관련 스테이터스
-        public int CurrentHp { get; set; }
         public bool IsAlive { get; set; }
+        public int CurrentHp { get; set; }
+        public int CurrentMp { get; set; }
+        //전투 시작 시 초기화
+        public double AP { get; set; } // 행동력 (100이 돼야 턴이 돌아옴)
+        public bool Concentrating { get; set; } // 시전 집중 상태
+        public int ReservedSkill { get; set; } // 시전 준비중인 스킬 인덱스
 
         //리스트 영역
         public List<KeyValuePair<PotionCode, int>> invenPotion = new List<KeyValuePair<PotionCode, int>>();
@@ -40,15 +46,17 @@ namespace SpartaDungeon_GLSK
 
 
         //이 함수가 호출되기 전에 플레이어의 직업은 정해져 있어야 됨
-        public void SetLv1() //set lv1함수
+        public void SetLv1() //초기 스테이터스
         {
             //캐릭터 기본 스테이터스(이름, 직업은 정해져 있음)
             Lv = 1;
             Exp = 0;
             ExpNextLevel = 150;
+            Gold = 0;
 
             //직업 관련 스테이터스
             Job playerClass = JobDatabase.GetJob(PClass);
+            PClassName = playerClass.jobName;
             Hp = playerClass.initialHp;
             Mp = playerClass.initialMp;
             Atk = playerClass.initialAtk;
@@ -58,8 +66,9 @@ namespace SpartaDungeon_GLSK
             CriRate = playerClass.initialCriRate;
 
             //전투 관련 스테이터스
-            CurrentHp = playerClass.initialHp;
             IsAlive = true;
+            CurrentHp = playerClass.initialHp;
+            CurrentMp = playerClass.initialMp;
 
             //스킬셋
             if (PClass == JobCode.Warrior)
@@ -77,7 +86,7 @@ namespace SpartaDungeon_GLSK
             }
         }
 
-        public void LvUp() //lv up함수
+        public void LvUp() //레벨업 시 스텟 증가
         {
 
         }

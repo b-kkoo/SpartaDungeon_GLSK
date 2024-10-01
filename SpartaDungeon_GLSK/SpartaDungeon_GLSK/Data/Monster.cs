@@ -20,9 +20,9 @@ namespace SpartaDungeon_GLSK.Data
             monsters = new Dictionary<MonsterCode, Monster>();
 
             //                                                                                           level   hp      attack
-            /*monsters.Add(MonsterCode.CommonMonster1,    new Monster(  "일반 몬스터1", MonsterType.Common,  1,      50,     5));
-            monsters.Add(MonsterCode.CommonMonster2,    new Monster(  "일반 몬스터2", MonsterType.Common,  1,      50,     5));
-            monsters.Add(MonsterCode.CommonMonster3,    new Monster(  "일반 몬스터3", MonsterType.Common,  1,  50, 5));
+            monsters.Add(MonsterCode.CommonMonster1,    new Monster(  "일반 몬스터1", MonsterType.Common,  1,      50,     5));
+            monsters.Add(MonsterCode.CommonMonster2,    new Monster(  "일반 몬스터2", MonsterType.Common,  3,      50,     5));
+            monsters.Add(MonsterCode.CommonMonster3,    new Monster(  "일반 몬스터3", MonsterType.Common,  10,  50, 5));
             monsters.Add(MonsterCode.CommonMonster4,    new Monster(  "일반 몬스터4", MonsterType.Common,  1,  50, 5));
             monsters.Add(MonsterCode.CommonMonster5,    new Monster(  "일반 몬스터5", MonsterType.Common, 1, 50, 5));
             monsters.Add(MonsterCode.SpecialMonster1,   new Monster(  "특수 몬스터1", MonsterType.Special,  1,  50, 5));
@@ -30,7 +30,7 @@ namespace SpartaDungeon_GLSK.Data
             monsters.Add(MonsterCode.SpecialMonster3,   new Monster(  "특수 몬스터3", MonsterType.Special, 1, 50, 5));
             monsters.Add(MonsterCode.BossMonster1,      new Monster(  "보스 몬스터1", MonsterType.Boss,  1,  50, 5));
             monsters.Add(MonsterCode.BossMonster2,      new Monster(  "보스 몬스터2", MonsterType.Boss,  1,  50, 5));
-            monsters.Add(MonsterCode.BossMonster3,      new Monster(  "보스 몬스터3", MonsterType.Boss, 1, 50, 5));*/
+            monsters.Add(MonsterCode.BossMonster3,      new Monster(  "보스 몬스터3", MonsterType.Boss, 1, 50, 5));
 
         }
 
@@ -64,9 +64,10 @@ namespace SpartaDungeon_GLSK.Data
         public int def { get; }
         public int speed { get; }
         public int criRate { get; }
+        public List<MSkillCode> skillList { get; } // 앞선 인덱스 부터 시전 우선순위를 가짐
 
 
-        public Monster(string _name, MonsterType _type, int _level, int _exp, int _hp, int _attack, int _Mattack)
+        public Monster(string _name, MonsterType _type, int _level, int _exp, int _hp, int _attack, int _Mattack, int _def)
         {
             name = _name;
             type = _type;
@@ -76,6 +77,7 @@ namespace SpartaDungeon_GLSK.Data
             hp = _hp;
             attack = _attack;
             Mattack = _Mattack;
+            def = _def;
         }
 
     }
@@ -108,23 +110,67 @@ namespace SpartaDungeon_GLSK.Data
 
 
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // MONSTER SKILL
 
-
-    //필드에 구현된 몬스터
-    public class WorldMonster
+    public static class MSkillDatabase
     {
-        public Monster monster { get; }
-        public bool isAlive { get; set; }
-        public int currentHp { get; set; }
-        public int anger { get; set; } // 분노 게이지. 공격하거나 피격당할 때 쌓이며, 스킬을 쓸 때 소모함
+        private static readonly Dictionary<MSkillCode, MSkill> skills;
 
-        public WorldMonster(MonsterCode code)
+        static MSkillDatabase()
         {
-            monster = MonsterDatabase.GetMonster(code);
-            isAlive = true;
-            currentHp = monster.hp;
-            anger = 0;
+            skills = new Dictionary<MSkillCode, MSkill>();
         }
 
+        public static MSkill GetMSkill(MSkillCode code)
+        {
+            //Dictionary 내장 함수 TryGetValue : 해당 key값이 없으면 false를 반환
+            if (skills.TryGetValue(code, out MSkill skill))
+            {
+                return skill;
+            }
+
+            Console.WriteLine("해당 ID의 스킬을 찾을 수 없습니다.");
+            return null;
+        }
     }
+
+
+    //몬스터 특수공격
+    public class MSkill
+    {
+        // 스킬 개요
+        public string skillName { get; }
+
+        // 스킬 성능
+        public double atkRatio { get; }
+        public double matkRatio { get; }
+        public int angerConsum { get; }
+        public bool isSplash { get; } //전체공격 여부
+        public bool needCharging { get; } //시전 집중이 필요한 스킬
+
+
+
+        public MSkill(string _skillName, double _atkRatio, double _matkRatio, int _angerConsum, bool _isSplash, bool _needCharging)
+        {
+            skillName = _skillName;
+
+            atkRatio = _atkRatio;
+            matkRatio = _matkRatio;
+            angerConsum = _angerConsum;
+            isSplash = _isSplash;
+            needCharging = _needCharging;
+        }
+
+        public double CalcDamage(Monster monster)
+        {
+            return monster.attack * atkRatio + monster.Mattack * matkRatio;
+        }
+    }
+
+    public enum MSkillCode
+    {
+        
+    }
+
 }
