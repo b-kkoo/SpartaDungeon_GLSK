@@ -20,6 +20,7 @@ namespace SpartaDungeon_GLSK
             public int anger { get; set; } // 분노 게이지. 공격하거나 피격당할 때 쌓이며, 스킬을 쓸 때 소모함
             public bool concentrating { get; set; } // 시전 집중 상태
             public int reservedSkill { get; set; } // 시전 준비중인 스킬 인덱스
+            public int reservedTarget { get; set; } // 시전 준비중인 스킬 대상
 
             public WorldMonster(MonsterCode code)
             {

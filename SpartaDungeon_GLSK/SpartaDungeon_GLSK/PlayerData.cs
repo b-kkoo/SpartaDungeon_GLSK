@@ -37,6 +37,7 @@ namespace SpartaDungeon_GLSK
         public double AP { get; set; } // 행동력 (100이 돼야 턴이 돌아옴)
         public bool Concentrating { get; set; } // 시전 집중 상태
         public int ReservedSkill { get; set; } // 시전 준비중인 스킬 인덱스
+        public int ReservedTarget { get; set; } // 시전 준비중인 스킬 대상
 
         //리스트 영역
         public List<KeyValuePair<PotionCode, int>> invenPotion = new List<KeyValuePair<PotionCode, int>>();

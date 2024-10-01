@@ -2,6 +2,7 @@
 
 using SpartaDungeon_GLSK.Data;
 using System;
+using System.Collections.Generic;
 using static SpartaDungeon_GLSK.MonsterData;
 using static SpartaDungeon_GLSK.Scene.BattleScene;
 using static System.Net.Mime.MediaTypeNames;
@@ -11,8 +12,15 @@ namespace SpartaDungeon_GLSK.Scene
     //전투 관련 씬
     public class BattleScene
     {
-        private static BattleTable battleTable;
+        //배틀 인덱스
+        public static BattleStage battleStage;
+        public enum BattleStage
+        {
+            Tutorial,
+        }
+
         //배틀 진행 정보
+        private static BattleTable battleTable;
         public class BattleTable
         {
             //아군 진영
@@ -22,15 +30,51 @@ namespace SpartaDungeon_GLSK.Scene
 
             public BattleTable(PlayerData playerData, WorldMonster[] enemies)
             {
-                Ally = new PlayerData[1];
+                Ally = new PlayerData[3];
                 Ally[0] = playerData;
-                Hostile = enemies;
+                Hostile = new WorldMonster[5];
+                for (int i = 0; i < 5 && i < enemies.Length; i++)
+                {
+                    Hostile[i] = enemies[i];
+                }
             }
         }
-             
-        public static bool TutorialBattle(out Scenes next, KeyController keyController)
+
+        public static bool LoadBattleScene(out Scenes next, KeyController keyController)
         {
-            MonsterCode[] enemies = new MonsterCode[] { MonsterCode.CommonMonster1, MonsterCode.CommonMonster2 };
+            MonsterCode[] enemies = null;
+            int screenTop = 0;
+            bool victory = false;
+
+            switch (battleStage)
+            {
+                case BattleStage.Tutorial:
+                    enemies = new MonsterCode[2] { };
+                    Console.WriteLine("튜토리얼 전투");
+                    screenTop = 2;
+                    break;
+            }
+
+            victory = Battle(enemies, screenTop, keyController);
+
+            EndBattleScene(out next, keyController);
+
+            return true;
+        }
+
+        public static void EndBattleScene(out Scenes next, KeyController keyController)
+        {
+            switch (battleStage)
+            {
+                default:
+                    next = Scenes.Town_Default;
+                    break;
+            }
+        }
+
+        //승패 여부 리턴
+        private static bool Battle(MonsterCode[] enemies, int screenTop, KeyController keyController)
+        {
             battleTable = new BattleTable(Program.playerData/*나중에 다대다 전투 구현 가능하면 PlayerData에 함수 추가*/, MonsterData.GetWorldMonsters(enemies));
 
             ConsoleKey keyInput;
@@ -39,10 +83,10 @@ namespace SpartaDungeon_GLSK.Scene
             ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
             keyController.GetUserInput(keyFilter, out cheatActivated); //반환값 안받으면 입력버퍼 지우라는 뜻
 
-            int screenTop = Console.GetCursorPosition().Top; //전투가 이루어지는 화면 가장 꼭대기
+            Queue<int> actionTurn = new Queue<int>(); //AP 100% 행동턴을 획듯한 유닛. (0~2 : 플레이어, 3~7 : 적)
             bool loop = true;
             while (loop)
-            {   
+            {
                 // LV 00  몬스터
                 // HP 000 / 000
                 // AP 000 %
@@ -56,58 +100,140 @@ namespace SpartaDungeon_GLSK.Scene
                 // 
                 // 1. 전투 스킬
                 // 2. 아이템
-                
-                if (battleTable.Hostile[0].isAlive)
+
+                DrawBattleField(screenTop);
+
+                //대기 : AP 증가
+                for (int i = 0; i < battleTable.Ally.Length; i++)
                 {
-                    Console.SetCursorPosition(0, screenTop);
-                    Console.WriteLine($"LV {battleTable.Hostile[0].monster.level}   {battleTable.Hostile[0].monster.name}");
-                    Console.SetCursorPosition(0, screenTop + 1);
-                    Console.WriteLine($"HP {battleTable.Hostile[0].currentHp} / {battleTable.Hostile[0].monster.hp}");
-                }
-                if (battleTable.Hostile[1].isAlive)
-                {
-                    Console.SetCursorPosition(50, screenTop);
-                    Console.WriteLine($"LV {battleTable.Hostile[1].monster.level}   {battleTable.Hostile[1].monster.name}");
-                    Console.SetCursorPosition(50, screenTop + 1);
-                    Console.WriteLine($"{battleTable.Hostile[1].currentHp} / {battleTable.Hostile[1].monster.hp}");
-                }
-                Console.SetCursorPosition(0, screenTop + 5);
-                Console.WriteLine($"LV {battleTable.Ally[0].Lv}   {battleTable.Ally[0].Name}");
-                Console.SetCursorPosition(0, screenTop + 6);
-                Console.WriteLine($"{battleTable.Ally[0].CurrentHp} / {battleTable.Ally[0].Hp}");
-
-                Console.SetCursorPosition(0, screenTop + 50);
-                Console.SetCursorPosition(0, screenTop);
-                Console.SetCursorPosition(0, screenTop + 9);
-
-                GetPlayerOrder(battleTable.Ally[0], screenTop, keyController, out int a, out int b, out int c);
-
-                bool loop2 = true;
-                while (loop2)
-                {
-                    keyFilter = new ConsoleKey[] { ConsoleKey.Z };
-                    keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
-
-                    switch (keyInput)
+                    if (battleTable.Ally[i] != null && battleTable.Ally[i].IsAlive)
                     {
-                        case ConsoleKey.Z:
-                            battleTable.Hostile[0].currentHp -= 10;
-                            if (battleTable.Hostile[0].currentHp <= 0) battleTable.Hostile[0].isAlive = false;
-                            battleTable.Hostile[1].currentHp -= 10;
-                            if (battleTable.Hostile[1].currentHp <= 0) battleTable.Hostile[1].isAlive = false;
-                            if (battleTable.Hostile[0].isAlive == false && battleTable.Hostile[1].isAlive == false)
+                        battleTable.Ally[i].AP += battleTable.Ally[i].Speed * 0.01;
+                        if (battleTable.Ally[i].AP >= 100)
+                        {
+                            battleTable.Ally[i].AP = 100;
+                            actionTurn.Enqueue(i);
+                        }
+                    }
+                }
+                for (int i = 0; i < battleTable.Hostile.Length; i++)
+                {
+                    if (battleTable.Hostile[i] != null && battleTable.Hostile[i].isAlive)
+                    {
+                        battleTable.Hostile[i].AP += battleTable.Hostile[i].monster.speed * 0.01;
+                        if (battleTable.Hostile[i].AP >= 100)
+                        {
+                            battleTable.Hostile[i].AP = 100;
+                            actionTurn.Enqueue(3 + i);
+                        }
+                    }
+                }
+
+                //턴을 가진 유닛 행동 수행
+                while (actionTurn.Count > 0)
+                {
+                    int actionUnit = actionTurn.Dequeue();
+                    // 플레이어 턴
+                    if (actionUnit < battleTable.Ally.Length)
+                    {
+                        if (battleTable.Ally[actionUnit].IsAlive)
+                        {
+                            // 차징한 스킬이 있을 경우
+                            if (battleTable.Ally[actionUnit].Concentrating)
                             {
-                                next = Scenes.Start_TutoEnd;
+                                DoPlayerAction(battleTable.Ally[actionUnit], screenTop + 1, keyController, 0, battleTable.Ally[actionUnit].ReservedSkill, battleTable.Ally[actionUnit].ReservedTarget);
+                            }
+                            // 새로운 행동
+                            else
+                            {
+                                GetPlayerOrder(battleTable.Ally[actionUnit], screenTop + 1, keyController, out int selectedAct, out int selectedIdx, out int selectedTarget);
+                                DoPlayerAction(battleTable.Ally[actionUnit], screenTop + 1, keyController, selectedAct, selectedIdx, selectedTarget);
+                            }
+
+                            // 게임 승리 여부 확인
+                            bool victory = true;
+                            for (int i = 0; i < battleTable.Hostile.Length; i++)
+                            {
+                                if (battleTable.Hostile[i] != null && battleTable.Hostile[i].isAlive)
+                                {
+                                    victory = false;
+                                    break;
+                                }
+                            }
+                            if (victory)
+                            {
                                 return true;
                             }
-                            loop2 = false;
-                            break;
+                        }
+                    }
+                    // 적 턴
+                    else
+                    {
+                        actionUnit -= battleTable.Ally.Length;
+                        if (battleTable.Hostile[actionUnit].isAlive)
+                        {
+                            // 차징한 스킬이 있을 경우
+                            if (battleTable.Hostile[actionUnit].concentrating)
+                            {
+                                DoHostileAction(battleTable.Hostile[actionUnit], screenTop + 1, keyController, battleTable.Hostile[actionUnit].reservedSkill, battleTable.Hostile[actionUnit].reservedTarget);
+                            }
+                            // 새로운 행동
+                            else
+                            {
+                                GetHostileOrder(battleTable.Hostile[actionUnit], out int selectedIdx, out int selectedTarget);
+                                DoHostileAction(battleTable.Hostile[actionUnit], screenTop + 1, keyController, selectedIdx, selectedTarget);
+                            }
+
+                            // 게임 패배 여부 확인
+                            bool defeat = true;
+                            for (int i = 0; i < battleTable.Ally.Length; i++)
+                            {
+                                if (battleTable.Ally[i] != null && battleTable.Ally[i].IsAlive)
+                                {
+                                    defeat = false;
+                                    break;
+                                }
+                            }
+                            if (defeat)
+                            {
+                                return false;
+                            }
+                        }
                     }
                 }
             }
 
-            next = Scenes.Start_TutoEnd;
-            return true;
+            return false;
+        }
+
+        private static void DrawBattleField(int screenTop)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                if (battleTable.Hostile[i] != null && battleTable.Hostile[i].isAlive)
+                {
+                    Console.SetCursorPosition(i * 30, screenTop);
+                    Console.WriteLine($"LV {battleTable.Hostile[i].monster.level}   {battleTable.Hostile[i].monster.name}");
+                    Console.SetCursorPosition(i * 30, screenTop + 1);
+                    Console.WriteLine($"HP {battleTable.Hostile[i].currentHp} / {battleTable.Hostile[i].monster.hp}");
+                    Console.SetCursorPosition(i * 30, screenTop + 2);
+                    Console.WriteLine($"AP {battleTable.Hostile[i].AP:000} %{(battleTable.Hostile[i].concentrating ? " (집중)" : "")}");
+                }
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                if (battleTable.Ally[i] != null && battleTable.Ally[i].IsAlive)
+                {
+                    Console.SetCursorPosition(i * 50, screenTop + 5);
+                    Console.WriteLine($"LV {battleTable.Ally[i].Lv}   {battleTable.Ally[i].Name}");
+                    Console.SetCursorPosition(i * 50, screenTop + 6);
+                    Console.WriteLine($"HP {battleTable.Ally[i].CurrentHp} / {battleTable.Ally[i].Hp}");
+                    Console.SetCursorPosition(i * 50, screenTop + 7);
+                    Console.WriteLine($"HP {battleTable.Ally[i].CurrentMp} / {battleTable.Ally[i].Mp}");
+                    Console.SetCursorPosition(i * 50, screenTop + 8);
+                    Console.WriteLine($"AP {battleTable.Ally[i].AP:000} %{(battleTable.Ally[i].Concentrating ? " (집중)" : "")}");
+                }
+            }
         }
 
 
@@ -226,6 +352,12 @@ namespace SpartaDungeon_GLSK.Scene
                                         if (seletedSkill.isSplash == true) //스킬이 전체공격인 경우
                                         {
                                             //선택 확정
+                                            if (seletedSkill.isSplash) //차징 스킬인 경우
+                                            {
+                                                playerData.Concentrating = true;
+                                                playerData.ReservedSkill = selectedIdx;
+                                                playerData.ReservedTarget = 0;
+                                            }
                                             selectedAct = 0;
                                             selectedTarget = 0;
                                             loop2 = false;
@@ -262,7 +394,8 @@ namespace SpartaDungeon_GLSK.Scene
                 else if (orderState == 2)
                 {
                     Console.SetCursorPosition(0, screenTop + 10);
-                    Console.WriteLine($"스킬 대상 선택 - {PSkillDatabase.GetPSkill(playerData.skillList[selectedIdx]).skillName}");
+                    PSkill selectedSkill = PSkillDatabase.GetPSkill(playerData.skillList[selectedIdx]);
+                    Console.WriteLine($"스킬 대상 선택 - {selectedSkill.skillName}");
 
                     //스킬 대상 목록 디스플레이
                     int dispTargetNum = 0;
@@ -296,6 +429,12 @@ namespace SpartaDungeon_GLSK.Scene
                                 {
                                     aliveMonsterIdx.TryGetValue(keyInput - ConsoleKey.D1, out selectedTarget); //선택된 대상 인덱스
                                     //선택 확정
+                                    if (selectedSkill.isSplash) //차징 스킬인 경우
+                                    {
+                                        playerData.Concentrating = true;
+                                        playerData.ReservedSkill = selectedIdx;
+                                        playerData.ReservedTarget = selectedTarget;
+                                    }
                                     selectedAct = 0;
                                     loop2 = false;
                                     loop = false;
@@ -441,7 +580,7 @@ namespace SpartaDungeon_GLSK.Scene
             }
         }
 
-        //플레이어 캐릭터 액션 수행   selectedAct : 0-스킬사용 1-아이템사용   selectedIdx : 사용항목인덱스   selectedTarget : 사용대상
+        //플레이어 캐릭터 행동 수행   selectedAct : 0-스킬사용 1-아이템사용   selectedIdx : 사용항목인덱스   selectedTarget : 사용대상
         private static void DoPlayerAction(PlayerData playerData, int screenTop, KeyController keyController, int selectedAct, int selectedIdx, int selectedTarget)
         {
             ConsoleKey keyInput;
@@ -640,7 +779,7 @@ namespace SpartaDungeon_GLSK.Scene
             aliveAllyIdx.TryGetValue(randResult, out selectedTarget); //선택된 대상 인덱스
         }
 
-        // 적 턴 액션 수행
+        // 적 턴 행동 수행
         private static void DoHostileAction(WorldMonster worldMonster, int screenTop, KeyController keyController, int selectedIdx, int selectedTarget)
         {
             ConsoleKey keyInput;
@@ -669,6 +808,7 @@ namespace SpartaDungeon_GLSK.Scene
                 Console.WriteLine(new string("                                      (Z : 확인)"));
                 worldMonster.concentrating = true;
                 worldMonster.reservedSkill = selectedIdx;
+                worldMonster.reservedTarget = selectedTarget;
                 return;
             }
             else if (worldMonster.concentrating == true)

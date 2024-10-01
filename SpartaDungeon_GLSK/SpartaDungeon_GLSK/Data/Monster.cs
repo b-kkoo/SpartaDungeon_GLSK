@@ -19,18 +19,21 @@ namespace SpartaDungeon_GLSK.Data
         {
             monsters = new Dictionary<MonsterCode, Monster>();
 
-            //                                                                                           level   hp      attack
-            monsters.Add(MonsterCode.CommonMonster1,    new Monster(  "일반 몬스터1", MonsterType.Common,  1,      50,     5));
-            monsters.Add(MonsterCode.CommonMonster2,    new Monster(  "일반 몬스터2", MonsterType.Common,  3,      50,     5));
-            monsters.Add(MonsterCode.CommonMonster3,    new Monster(  "일반 몬스터3", MonsterType.Common,  10,  50, 5));
-            monsters.Add(MonsterCode.CommonMonster4,    new Monster(  "일반 몬스터4", MonsterType.Common,  1,  50, 5));
-            monsters.Add(MonsterCode.CommonMonster5,    new Monster(  "일반 몬스터5", MonsterType.Common, 1, 50, 5));
-            monsters.Add(MonsterCode.SpecialMonster1,   new Monster(  "특수 몬스터1", MonsterType.Special,  1,  50, 5));
-            monsters.Add(MonsterCode.SpecialMonster2,   new Monster(  "특수 몬스터2", MonsterType.Special,  1,  50, 5));
-            monsters.Add(MonsterCode.SpecialMonster3,   new Monster(  "특수 몬스터3", MonsterType.Special, 1, 50, 5));
-            monsters.Add(MonsterCode.BossMonster1,      new Monster(  "보스 몬스터1", MonsterType.Boss,  1,  50, 5));
-            monsters.Add(MonsterCode.BossMonster2,      new Monster(  "보스 몬스터2", MonsterType.Boss,  1,  50, 5));
-            monsters.Add(MonsterCode.BossMonster3,      new Monster(  "보스 몬스터3", MonsterType.Boss, 1, 50, 5));
+            //                                                             name              type                level   exp      hp       attack  mattack   def      speed    criRate     skilllist
+            monsters.Add(MonsterCode.TutoralMonster,    new Monster(  "슬라임",       MonsterType.Common,          1,     1,      10,        1,       0,      0,        1,        5/*%*/,    null)); // 튜토리얼 몬스터
+
+            monsters.Add(MonsterCode.CommonMonster1,    new Monster(  "고블린",       MonsterType.Common,          3,     3,      20,        2,       0,      0,        3,        6/*%*/,    null)); // 초기 몬스터
+            monsters.Add(MonsterCode.CommonMonster2,    new Monster(  "정예 고블린",  MonsterType.Common,          4,     4,      25,        3,       0,      1,        4,        8/*%*/,    null)); // 초기 몬스터
+            monsters.Add(MonsterCode.SpecialMonster1,   new Monster(  "고블린 법사",  MonsterType.Special,         5,     5,      15,        0,       4,      0,        3,       10/*%*/,    null)); // 초기 특수 몬스터
+            monsters.Add(MonsterCode.BossMonster1,      new Monster(  "고블린 로드",  MonsterType.Boss,           10,    30,      50,        5,       5,      2,        4,       10/*%*/,    null)); // 초기 보스 몬스터
+
+            monsters.Add(MonsterCode.CommonMonster3,    new Monster(  "스켈레톤",     MonsterType.Common,          7,    15,      30,        4,       0,      1,        2,       12/*%*/,    null)); // 초 중반부 몬스터
+            monsters.Add(MonsterCode.CommonMonster4,    new Monster(  "구울",         MonsterType.Common,          9,    20,      40,        5,       0,      1,        3,       13/*%*/,    null)); // 초 중반부 몬스터
+            monsters.Add(MonsterCode.CommonMonster5,    new Monster(  "데스나이트",   MonsterType.Common,         10,    30,      50,        5,       0,      1,        2,       13/*%*/,    null)); // 초 중반부 몬스터
+            monsters.Add(MonsterCode.SpecialMonster2,   new Monster(  "리치",         MonsterType.Special,        13,    50,      30,        2,       9,      2,        5,       15/*%*/,    null)); // 초 중반부 특수 몬스터
+            monsters.Add(MonsterCode.BossMonster2,      new Monster(  "네크로맨서",   MonsterType.Boss,           20,   100,     100,        9,      10,      3,        7,       20/*%*/,    null)); // 초 중반부 보스 몬스터
+
+            monsters.Add(MonsterCode.CommonMonster6,    new Monster(  "보스 몬스터3", MonsterType.Common));
 
         }
 
@@ -67,7 +70,8 @@ namespace SpartaDungeon_GLSK.Data
         public List<MSkillCode> skillList { get; } // 앞선 인덱스 부터 시전 우선순위를 가짐
 
 
-        public Monster(string _name, MonsterType _type, int _level, int _exp, int _hp, int _attack, int _Mattack, int _def)
+        public Monster(string _name, MonsterType _type, int _level, int _exp, int _hp, int _attack, int _Mattack, int _def, int _speed, int _criRate, List<MSkillCode> _skillList)
+
         {
             name = _name;
             type = _type;
@@ -78,12 +82,18 @@ namespace SpartaDungeon_GLSK.Data
             attack = _attack;
             Mattack = _Mattack;
             def = _def;
+            speed = _speed;
+            criRate = _criRate;
+            skillList = _skillList;
+            
         }
 
     }
 
     public enum MonsterCode
     {
+        TutoralMonster,
+
         CommonMonster1,
         CommonMonster2,
         CommonMonster3,
