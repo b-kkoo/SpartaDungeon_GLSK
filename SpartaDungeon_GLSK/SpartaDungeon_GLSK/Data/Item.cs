@@ -185,10 +185,10 @@ namespace SpartaDungeon_GLSK.Data
             Potions = new Dictionary<PotionCode, Potion>();
 
             //          코드(중복X!!)                   이름          타입               power  Price
-            Potions.Add(PotionCode.Potion1, new Potion("체력알약",       PotionType.HP,    20,     00));
-            Potions.Add(PotionCode.Potion2, new Potion("체력물약",       PotionType.HP,    50,     00));
-            Potions.Add(PotionCode.Potion3, new Potion("마나알약",       PotionType.MP,    10,     00));
-            Potions.Add(PotionCode.Potion4, new Potion("마나물약",       PotionType.MP,    30,     00));
+            Potions.Add(PotionCode.PotionHp1, new Potion("체력알약",       PotionType.HP,    20,     10));
+            Potions.Add(PotionCode.PotionHp2, new Potion("체력물약",       PotionType.HP,    50,     30));
+            Potions.Add(PotionCode.PotionMp1, new Potion("마나알약",       PotionType.MP,    10,     10));
+            Potions.Add(PotionCode.PotionMp2, new Potion("마나물약",       PotionType.MP,    30,     40));
 
             //아이템을 계속 추가해 보자
         }
@@ -227,10 +227,10 @@ namespace SpartaDungeon_GLSK.Data
     //아이템 식별자
     public enum PotionCode
     {
-        Potion1,
-        Potion2,
-        Potion3,
-        Potion4,
+        PotionHp1,
+        PotionHp2,
+        PotionMp1,
+        PotionMp2,
     }
 
     //아이템 타입

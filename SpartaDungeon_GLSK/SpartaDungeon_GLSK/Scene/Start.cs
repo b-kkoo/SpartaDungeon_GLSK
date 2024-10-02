@@ -33,6 +33,7 @@ namespace SpartaDungeon_GLSK.Scene
             tConversation[3] = "자네의 이름은 무엇인가?";
             ScenePreset.Conversation(tConversation, keyController);
 
+            Console.CursorVisible = true;
             while (true)
             {
                 Console.Clear();
@@ -88,6 +89,7 @@ namespace SpartaDungeon_GLSK.Scene
                     }
                 }
             }
+            Console.CursorVisible = false;
             newUnit.Name = strInput;
 
             tConversation = new string[2];

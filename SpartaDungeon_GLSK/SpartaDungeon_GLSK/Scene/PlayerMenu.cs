@@ -656,60 +656,6 @@ namespace SpartaDungeon_GLSK.Scene
             if (invenGear.Count > 9) Console.WriteLine("\n                             (Tab : 다음)");
         }
 
-        //인벤토리
-        public static bool Inventory(out Scenes next, KeyController keyController)
-        {
-            ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
-            ConsoleKey keyInput;
-
-            int cheatActivated;
-
-            keyController.GetUserInput(keyFilter, out cheatActivated);
-
-            Console.WriteLine("< 인벤토리 >");
-            Console.WriteLine("소모 아이템 목록을 확인하고 소모 아이템을 사용할 수 있습니다.\n");
-
-            while (true)
-            {
-                keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.X };
-                keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
-
-                switch (keyInput)
-                {
-                    case ConsoleKey.X:
-                        next = Scenes.PlayerMenu_Menu; //게임 메뉴로 이동
-                        return true;
-                }
-            }
-        }
-
-        //장비
-        public static bool Equipment(out Scenes next, KeyController keyController)
-        {
-            ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
-            ConsoleKey keyInput;
-
-            int cheatActivated;
-
-            keyController.GetUserInput(keyFilter, out cheatActivated);
-
-            Console.WriteLine("< 게임 메뉴 >");
-            Console.WriteLine("장비 아이템 목록을 확인하고 장착/해제할 수 있습니다.\n");
-
-            while (true)
-            {
-                keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.X };
-                keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
-
-                switch (keyInput)
-                {
-                    case ConsoleKey.X:
-                        next = Scenes.PlayerMenu_Menu; //게임 메뉴로 이동
-                        return true;
-                }
-            }
-        }
-
         //스킬
         public static bool Skill(out Scenes next, KeyController keyController)
         {
@@ -812,7 +758,7 @@ namespace SpartaDungeon_GLSK.Scene
                                 }
                                 loop2 = false;
                                 break;
-                            case ConsoleKey.Z:
+                            case ConsoleKey.X:
                                 loop2 = false;
                                 loop = false;
                                 break;
@@ -840,11 +786,11 @@ namespace SpartaDungeon_GLSK.Scene
                                 loop2 = false;
                                 break;
                             case ConsoleKey.X:
-                                confirm = false;
                                 loop2 = false;
                                 break;
                         }
                     }
+                    confirm = false;
                 }
             }
 

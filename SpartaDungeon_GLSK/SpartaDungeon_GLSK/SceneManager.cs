@@ -62,6 +62,14 @@ namespace SpartaDungeon_GLSK
                     loop = Town.Default(out next, keyController);
                     break;
 
+                //Shop Scene
+                case Scenes.Shop_Default:
+                    loop = ShopScene.Shop(out next, keyController);
+                    break;
+                case Scenes.Shop_BuyPotion:
+                    loop = ShopScene.BuyPotion(out next, keyController);
+                    break;
+
                 //Guild Scene
                 case Scenes.Guild_Hall:
                     loop = GuildScene.GuildHall(out next, keyController);
@@ -139,6 +147,13 @@ namespace SpartaDungeon_GLSK
 
         //Town Scene : 마을
         Town_Default,
+
+        //Shop Scene
+        Shop_Default,
+        Shop_BuyPotion,
+        Shop_SellPotion,
+        Shop_BuyGear,
+        Shop_SellGear,
 
         //Guild Scene
         Guild_Hall,

@@ -16,6 +16,7 @@ namespace SpartaDungeon_GLSK
         static void Main(string[] args)
         {
             ShopScene.Set();
+
             sceneManager.Start();
         }
     }

@@ -75,6 +75,30 @@ namespace SpartaDungeon_GLSK
                     saveData.team[i].SkillList[j] = (int)playerUnitData.SkillList[j];
                 }
             }
+            //엔트리
+            saveData.entry = new int[3];
+            for (int i = 0; i < 3; i++)
+            {
+                int entryNum = -1;
+                if (Program.playerData.entry[i] != null)
+                {
+                    for (int j = 0; j < Program.playerData.team.Count; j++)
+                    {
+                        if (Program.playerData.entry[i] == Program.playerData.team[j])
+                        {
+                            entryNum = j;
+                            break;
+                        }
+                    }
+                }
+                saveData.entry[i] = entryNum;
+            }
+
+            ///////////////////////////////////////////////////////////
+            // Save Data -> Ingame Data
+            saveData.DefeatHighestDungeonStage = Program.ingameData.DefeatHighestDungeonStage;
+            saveData.DungeonUnlock = Program.ingameData.DungeonUnlock;
+            saveData.QuestFlag = Program.ingameData.QuestFlag;
 
             try
             {
@@ -180,6 +204,33 @@ namespace SpartaDungeon_GLSK
                             Program.playerData.team.Add(playerUnitData);
                         }
                     }
+                    //엔트리
+                    if (saveData.entry != null)
+                    {
+                        Program.playerData.entry = new PlayerUnitData[3];
+                        for (int i = 0; i < 3; i++)
+                        {
+                            if (saveData.entry[i] < 0)
+                            {
+                                Program.playerData.entry[i] = null;
+                            }
+                            else
+                            {
+                                Program.playerData.entry[i] = Program.playerData.team[saveData.entry[i]];
+                            }
+                        }
+                    }
+
+
+
+                    ///////////////////////////////////////////////////////////
+                    // Save Data -> Ingame Data
+                    Program.ingameData.DefeatHighestDungeonStage = saveData.DefeatHighestDungeonStage;
+                    Program.ingameData.DungeonUnlock = saveData.DungeonUnlock;
+                    if (saveData.QuestFlag != null)
+                    {
+                        Program.ingameData.QuestFlag = saveData.QuestFlag;
+                    }
                 }
                 else
                 {
@@ -238,6 +289,8 @@ namespace SpartaDungeon_GLSK
     //인게임 데이터를 json 형식으로 저장할 수 있도록 변환한 클래스
     public class SaveData
     {
+        ///////////////////////////////////////////////////////////
+        // Player Data
         public struct Unit
         {
             public string Name {  get; set; }
@@ -280,5 +333,15 @@ namespace SpartaDungeon_GLSK
         //유닛
         public Unit[] team { get; set; }
         public int[] entry { get; set; }
+
+
+
+        ///////////////////////////////////////////////////////////
+        // Ingame Data
+        public int DefeatHighestDungeonStage { get; set; }
+
+        public int DungeonUnlock { get; set; }
+
+        public int[] QuestFlag { get; set; }
     }
 }

@@ -49,7 +49,7 @@
                         break;
 
                     case ConsoleKey.D2:
-                        next = Scenes.Main_Menu; //상점으로 이동
+                        next = Scenes.Shop_Default; //상점으로 이동
                         loop = false;
                         break;
 

@@ -298,6 +298,27 @@ namespace SpartaDungeon_GLSK.Scene
                         Program.ingameData.DungeonUnlock = 1;
                     }
                     break;
+
+                case 13: //
+                    if (stageUnlock == 1)
+                    {
+                        Program.ingameData.DungeonUnlock = 2;
+                    }
+                    break;
+
+                case 23: //
+                    if (stageUnlock == 2)
+                    {
+                        Program.ingameData.DungeonUnlock = 3;
+                    }
+                    break;
+
+                case 34: //
+                    if (stageUnlock == 3)
+                    {
+                        Program.ingameData.DungeonUnlock = 4;
+                    }
+                    break;
             }
 
             next = Scenes.Town_Default;
