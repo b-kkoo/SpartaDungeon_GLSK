@@ -16,7 +16,7 @@ namespace SpartaDungeon_GLSK
 
         //인벤토리
         public List<KeyValuePair<PotionCode, int>> invenPotion; //인덱스로 접근할 수 있게 List로 선언함
-        public List<GearCode> invenGear;
+        public List<WorldGear> invenGear;
 
         //유닛
         public List<PlayerUnitData> team;
@@ -27,7 +27,7 @@ namespace SpartaDungeon_GLSK
             Gold = 0;
 
             invenPotion = new List<KeyValuePair<PotionCode, int>>();
-            invenGear = new List<GearCode>();
+            invenGear = new List<WorldGear>();
 
             team = new List<PlayerUnitData>();
             entry = new PlayerUnitData[3];
@@ -109,22 +109,19 @@ namespace SpartaDungeon_GLSK
             }
         }
 
-        public void TryLvUp() //레벨업 시 스텟 증가
+        public void LvUp() //레벨업 시 스텟 증가
         {
-            if (Exp >= ExpNextLevel)
-            {
-                Lv++;
-                Exp -= ExpNextLevel;
+            Lv++;
+            Exp -= ExpNextLevel;
 
-                Job playerClass = JobDatabase.GetJob(PClass);
-                Hp += playerClass.lvUpHp;
-                Mp += playerClass.lvUpMp;
-                Atk += playerClass.lvUpAtk;
-                MAtk += playerClass.lvUpMAtk;
-                Def += playerClass.lvUpDef;
-                Speed += playerClass.lvUpSpeed;
-                CriRate += playerClass.lvUpCriRate;
-            }
+            Job playerClass = JobDatabase.GetJob(PClass);
+            Hp += playerClass.lvUpHp;
+            Mp += playerClass.lvUpMp;
+            Atk += playerClass.lvUpAtk;
+            MAtk += playerClass.lvUpMAtk;
+            Def += playerClass.lvUpDef;
+            Speed += playerClass.lvUpSpeed;
+            CriRate += playerClass.lvUpCriRate;
         }
 
 

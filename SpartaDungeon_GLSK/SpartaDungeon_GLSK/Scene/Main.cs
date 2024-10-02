@@ -49,6 +49,7 @@
         //메인화면 - 불러오기
         public static bool MainLoad(out Scenes next, KeyController keyController)
         {
+            next = Scenes.Main_Menu;
 
             ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
             ConsoleKey keyInput;
@@ -63,7 +64,7 @@
             Console.WriteLine($"1. {savefileInfo1}");
             Console.WriteLine($"2. {savefileInfo2}");
             Console.WriteLine($"3. {savefileInfo3}");
-            Console.WriteLine("                     X : 뒤로");
+            Console.WriteLine("\n                     (1 ~ 3 : 선택,  X : 뒤로)");
 
             bool loop = true;
             while (loop)
@@ -106,7 +107,6 @@
                 }
             }
 
-            next = Scenes.Main_Menu;
             return true;
         }
     }

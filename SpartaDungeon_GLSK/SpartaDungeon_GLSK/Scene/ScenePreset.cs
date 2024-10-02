@@ -28,7 +28,7 @@ namespace SpartaDungeon_GLSK.Scene
                 }
 
                 Console.WriteLine(conversationPreset[i]);
-                Console.WriteLine("                                                          (Z : 확인)");
+                Console.WriteLine("\n                                                          (Z : 확인)");
                 while (true)
                 {
                     keyInput = keyController.GetUserInput(keyFilter, out cheatActivate);
