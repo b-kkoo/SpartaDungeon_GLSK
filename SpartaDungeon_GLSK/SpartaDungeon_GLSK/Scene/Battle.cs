@@ -342,7 +342,7 @@ namespace SpartaDungeon_GLSK.Scene
             {
                 if (battleTable.Hostile[i] != null)
                 {
-                    if (battleTable.Hostile[i].isAlive == false) Console.ForegroundColor = ConsoleColor.Gray;
+                    if (battleTable.Hostile[i].isAlive == false) Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.SetCursorPosition(i * 30, screenTop);
                     Console.WriteLine($"LV {battleTable.Hostile[i].monster.level}   {battleTable.Hostile[i].monster.name}{(battleTable.Hostile[i].isAlive ? "" : "(처치됨)")}");
                     Console.SetCursorPosition(i * 30, screenTop + 1);
@@ -356,7 +356,7 @@ namespace SpartaDungeon_GLSK.Scene
             {
                 if (battleTable.Ally[i] != null)
                 {
-                    if (battleTable.Ally[i].IsAlive == false) Console.ForegroundColor = ConsoleColor.Gray;
+                    if (battleTable.Ally[i].IsAlive == false) Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.SetCursorPosition(i * 50, screenTop + 5);
                     Console.WriteLine($"LV {battleTable.Ally[i].Lv}   {battleTable.Ally[i].Name}{(battleTable.Ally[i].IsAlive ? "" : "(기절)")}");
                     Console.SetCursorPosition(i * 50, screenTop + 6);
