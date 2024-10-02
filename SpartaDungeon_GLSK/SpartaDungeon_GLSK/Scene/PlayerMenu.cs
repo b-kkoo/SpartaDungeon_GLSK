@@ -210,6 +210,8 @@ namespace SpartaDungeon_GLSK.Scene
                                 selectedIdx = keyInput - ConsoleKey.D1;
                                 if (selectedIdx + teamTab < invenPotion.Count)
                                 {
+                                    Potion potion = PotionDatabase.GetPotion(invenPotion[selectedIdx + teamTab].Key);
+
                                     Console.SetCursorPosition(0, 16);
                                     for (int i = 0; i <= 12; i++)
                                     {
@@ -217,7 +219,53 @@ namespace SpartaDungeon_GLSK.Scene
                                     }
                                     Console.SetCursorPosition(0, 16);
 
+                                    int entryNum = 0;//출전유닛 수
+                                    for (int i = 0; i < 3; i++) if (entry[i] != null) entryNum++;
 
+                                    if (entryNum == 0) //아이템 사용 대상이 없음
+                                    {
+                                        Console.WriteLine("출전중인 유닛에만 사용할 수 있습니다!");
+                                        Thread.Sleep(1000);
+                                        keyController.GetUserInput(keyFilter, out cheatActivated);
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"{potion.name}을 누구에게 사용하시겠습니까?\n");
+                                        for (int i = 0; i < entryNum; i++)
+                                            Console.WriteLine($"{i + 1}. {entry[i].Name}");
+
+                                        keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.X };
+                                        bool loop3 = true;
+                                        while (loop3)
+                                        {
+                                            keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+                                            switch (keyInput)
+                                            {
+                                                case ConsoleKey.D1:
+                                                case ConsoleKey.D2:
+                                                case ConsoleKey.D3:
+                                                    int selectedTarget = keyInput - ConsoleKey.D1;
+                                                    if (selectedTarget < entryNum)
+                                                    {
+                                                        //아이템 효과 적용
+                                                        if (potion.type == PotionType.HP)
+                                                        {
+                                                            entry[selectedTarget].CurrentHp += potion.power;
+                                                            if (entry[selectedTarget].CurrentHp > entry[selectedTarget].Hp) entry[selectedTarget].CurrentHp = entry[selectedTarget].Hp;
+                                                        }
+                                                        else
+                                                        {
+                                                            entry[selectedTarget].CurrentMp += potion.power;
+                                                            if (entry[selectedTarget].CurrentMp > entry[selectedTarget].Mp) entry[selectedTarget].CurrentMp = entry[selectedTarget].Mp;
+                                                        }
+                                                        //아이템 갯수 -1
+                                                        invenPotion[selectedIdx + teamTab].Value -= 1;
+                                                    }
+                                                    break;
+                                            }
+                                        }
+                                    }
 
 
 

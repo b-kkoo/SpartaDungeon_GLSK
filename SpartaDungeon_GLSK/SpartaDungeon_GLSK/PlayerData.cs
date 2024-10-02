@@ -15,7 +15,7 @@ namespace SpartaDungeon_GLSK
         public int Gold { get; set; }
 
         //인벤토리
-        public List<KeyValuePair<PotionCode, int>> invenPotion; //인덱스로 접근할 수 있게 List로 선언함
+        public List<WorldPotion> invenPotion; //인덱스로 접근할 수 있게 List로 선언함
         public List<WorldGear> invenGear;
 
         //유닛
@@ -26,7 +26,7 @@ namespace SpartaDungeon_GLSK
         {
             Gold = 0;
 
-            invenPotion = new List<KeyValuePair<PotionCode, int>>();
+            invenPotion = new List<WorldPotion>();
             invenGear = new List<WorldGear>();
 
             team = new List<PlayerUnitData>();
