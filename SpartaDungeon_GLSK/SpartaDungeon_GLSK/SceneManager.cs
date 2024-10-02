@@ -67,7 +67,7 @@ namespace SpartaDungeon_GLSK
                     loop = PlayerMenuScene.GameMenu(out next, keyController);
                     break;
                 case Scenes.PlayerMenu_SaveData:
-                    loop = PlayerMenuScene.GameMenu(out next, keyController);
+                    loop = PlayerMenuScene.DataSaveScene(out next, keyController);
                     break;
 
                 //Dungeon Scene : 던전 스테이지 분기
