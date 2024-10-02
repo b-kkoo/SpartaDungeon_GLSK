@@ -20,8 +20,8 @@ namespace SpartaDungeon_GLSK
             string filePath = $"SaveData{saveSocket}";
 
             //Player Data -> Save Data
-            saveData.inventory = new Dictionary<int, int>();
-            foreach (KeyValuePair<PotionCode, int> i in Program.playerData.invenPotion) saveData.inventory.Add((int)i.Key, i.Value);
+            saveData.invenPotion = new Dictionary<int, int>();
+            foreach (KeyValuePair<PotionCode, int> i in Program.playerData.invenPotion) saveData.invenPotion.Add((int)i.Key, i.Value);
 
             try
             {
@@ -60,6 +60,17 @@ namespace SpartaDungeon_GLSK
                     Console.WriteLine($"\n - {saveSocket}번 데이터 불러오기 완료! - \n");
 
                     //Save Data -> Player Data
+                    if (saveData.invenPotion != null)
+                    {
+                        foreach (KeyValuePair<int, int> pair in saveData.invenPotion)
+                        {
+                            if (PotionDatabase.GetPotion((PotionCode)pair.Key) != null)
+                            {
+                                Program.playerData.invenPotion.Add(new KeyValuePair<PotionCode, int>((PotionCode)pair.Key, pair.Value));
+                            }
+                        }
+                    }
+                    /*for (saveData.team)
                     Program.playerData.Name = saveData.Name;
                     Program.playerData.PClass = (JobCode)saveData.Chad;
                     Program.playerData.PClassName = saveData.PClassName;
@@ -68,17 +79,7 @@ namespace SpartaDungeon_GLSK
                     Program.playerData.CurrentHp = saveData.currentHp;
                     Program.playerData.Atk = saveData.Atk;
                     Program.playerData.Def = saveData.Def;
-                    Program.playerData.CriRate = saveData.CriRate;
-                    if (saveData.inventory != null)
-                    {
-                        foreach (KeyValuePair<int, int> pair in saveData.inventory)
-                        {
-                            if (PotionDatabase.GetPotion((PotionCode)pair.Key) != null)
-                            {
-                                Program.playerData.invenPotion.Add(new KeyValuePair<PotionCode, int>((PotionCode)pair.Key, pair.Value));
-                            }
-                        }
-                    }
+                    Program.playerData.CriRate = saveData.CriRate;*/
                 }
                 else
                 {
@@ -115,7 +116,7 @@ namespace SpartaDungeon_GLSK
                     // JSON 파일을 읽어서 객체로 역직렬화
                     string jsonString = File.ReadAllText(filePath);
                     SaveData saveData = JsonSerializer.Deserialize<SaveData>(jsonString);
-                    info = $"LV {saveData.Lv}  {saveData.Name}  {saveData.PClassName}";
+                    info = $"LV {saveData.team[0].Lv}  {saveData.team[0].Name}  {saveData.team[0].PClassName}, 최고주파 던전 : , 파티 {saveData.team.Length}명";
                 }
                 else
                 {
@@ -136,15 +137,42 @@ namespace SpartaDungeon_GLSK
     //인게임 데이터를 json 형식으로 저장할 수 있도록 변환한 클래스
     public class SaveData
     {
-        public string Name { get; set; }
-        public int Chad { get; set; }
-        public string PClassName { get; set; }
-        public int Lv { get; set; }
-        public int Hp { get; set; }
-        public int currentHp { get; set; }
-        public int Atk { get; set; }
-        public int Def { get; set; }
-        public int CriRate { get; set; }
-        public Dictionary<int, int> inventory { get; set; }
+        public struct Unit
+        {
+            public string Name;
+            public int PClass;
+            public int Lv;
+            public int Exp;
+            public int ExpNextLevel;
+
+            //직업 관련 스테이터스
+            public string PClassName;
+            public int Hp;
+            public int Mp;
+            public int Atk;
+            public int MAtk;
+            public int Def;
+            public int Speed;
+            public int CriRate;
+
+            //전투 관련 스테이터스
+            public bool IsAlive;
+            public int CurrentHp;
+            public int CurrentMp;
+
+            //리스트 영역
+            public int[] Equipment;
+            public int[] SkillList;
+        }
+
+        public int Gold;
+
+        //인벤토리
+        public Dictionary<int, int> invenPotion;
+        public int[] invenGear;
+
+        //유닛
+        public Unit[] team;
+        public int[] entry;
     }
 }

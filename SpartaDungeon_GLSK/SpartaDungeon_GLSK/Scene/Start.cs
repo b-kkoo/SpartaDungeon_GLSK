@@ -11,8 +11,12 @@ namespace SpartaDungeon_GLSK.Scene
             ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
             ConsoleKey keyInput;
 
+            //초기 데이터 설정
             Program.playerData = new PlayerData();
-            
+            PlayerUnitData newUnit = new PlayerUnitData();
+            Program.playerData.team.Add(newUnit);
+            Program.playerData.entry[0] = newUnit;
+
             int cheatActivated;
 
             string strInput;
@@ -84,10 +88,10 @@ namespace SpartaDungeon_GLSK.Scene
                     }
                 }
             }
-            Program.playerData.Name = strInput;
+            newUnit.Name = strInput;
 
             tConversation = new string[2];
-            tConversation[0] = $"\"{Program.playerData.Name}\"(이)라고 하는군";
+            tConversation[0] = $"\"{newUnit.Name}\"(이)라고 하는군";
             tConversation[1] = "자네가 사용하던 무기는 무엇인가?";
             ScenePreset.Conversation(tConversation, keyController);
             while (true)
@@ -117,7 +121,7 @@ namespace SpartaDungeon_GLSK.Scene
                         Console.Clear();
                         Console.WriteLine("자네는 전사로군. 어서 이 검을 들고 전투에 참여해주게.");
                         Console.WriteLine("                                                          (Z : 확인)");
-                        Program.playerData.PClass = Data.JobCode.Warrior;
+                        newUnit.PClass = Data.JobCode.Warrior;
                         break;
                     }
                     else
@@ -142,7 +146,7 @@ namespace SpartaDungeon_GLSK.Scene
                         Console.Clear();
                         Console.WriteLine("자네는 궁수로군. 어서 이 활을 들고 전투에 참여해주게.");
                         Console.WriteLine("                                                          (Z : 확인)");
-                        Program.playerData.PClass = Data.JobCode.Archer;
+                        newUnit.PClass = Data.JobCode.Archer;
                         break;
                     }
                     else
@@ -167,8 +171,8 @@ namespace SpartaDungeon_GLSK.Scene
                         Console.Clear();
                         Console.WriteLine("자네는 마법사로군. 어서 이 지팡이를 들고 전투에 참여해주게");
                         Console.WriteLine("                                                          (Z : 확인)");
-                        Program.playerData.PClass = Data.JobCode.Mage;
-                        Program.playerData.PClassName = "마법사";
+                        newUnit.PClass = Data.JobCode.Mage;
+                        newUnit.PClassName = "마법사";
                         break;
                     }
                     else
@@ -179,7 +183,7 @@ namespace SpartaDungeon_GLSK.Scene
                     }                    
                 }                
             }
-            Program.playerData.SetLv1();
+            newUnit.SetLv1();
                         
             while (true)
             {
@@ -189,7 +193,7 @@ namespace SpartaDungeon_GLSK.Scene
                 switch (keyInput)
                 {
                     case ConsoleKey.Z:
-                        next = Scenes.Start_PrologEnd;  //Battle_Tutorial;
+                        next = Scenes.Battle_Tutorial;
                         return true;
                 }
             }
@@ -208,7 +212,7 @@ namespace SpartaDungeon_GLSK.Scene
             tConversation = new string[3];
             tConversation[0] = "자네가 이렇게 잘 싸우는지 몰랐군";
             tConversation[1] = "자네도 앞으로는 직접 던전으로 가서 싸워도 되겠어";
-            tConversation[2] = $"앞으로 잘 부탁하네 \"{Program.playerData.Name}\"";
+            tConversation[2] = $"앞으로 잘 부탁하네 \"{Program.playerData.entry[0].Name}\"";
             ScenePreset.Conversation(tConversation, keyController);
 
             Console.WriteLine("마을로 이동합니다");

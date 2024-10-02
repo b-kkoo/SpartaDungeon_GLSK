@@ -22,18 +22,21 @@ namespace SpartaDungeon_GLSK.Data
             //        코드(중복X!!)                     이름            타입                   Atk    Def
             Gears.Add(GearCode.Sword1,      new Gear(   "검1",          GearType.WeaponS,      5,     0));
             Gears.Add(GearCode.Sword2,      new Gear(   "검2",          GearType.WeaponS,      7,     0));
+
             Gears.Add(GearCode.Bow1,        new Gear(   "활1",          GearType.WeaponB,      6,     0));
             Gears.Add(GearCode.Bow2,        new Gear(   "활2",          GearType.WeaponB,      8,     0));
+
             Gears.Add(GearCode.Wand1,       new Gear(   "지팡이1",      GearType.WeaponW,      7,     0));
             Gears.Add(GearCode.Wand2,       new Gear(   "지팡이2",      GearType.WeaponW,      9,     0));
+
             Gears.Add(GearCode.HeavyArmor1, new Gear(   "중갑옷1",      GearType.ArmorHA,      0,     7));
             Gears.Add(GearCode.HeavyArmor2, new Gear(   "중갑옷2",      GearType.ArmorHA,      0,     9));
+
             Gears.Add(GearCode.LightArmor1, new Gear(   "경갑옷1",      GearType.ArmorLA,      0,     6));
             Gears.Add(GearCode.LightArmor2, new Gear(   "경갑옷2",      GearType.ArmorLA,      0,     8));
+
             Gears.Add(GearCode.Robe1,       new Gear(   "로브1",        GearType.ArmorR,       0,     5));
             Gears.Add(GearCode.Robe2,       new Gear(   "로브2",        GearType.ArmorR,       0,     7));
-
-            //아이템을 계속 추가해 보자
         }
 
         public static Gear GetGear(GearCode code)
@@ -97,10 +100,21 @@ namespace SpartaDungeon_GLSK.Data
         WeaponS, // Sword
         WeaponB, // Bow
         WeaponW, // Wand
+
         ArmorHA, // Heavy Armor
         ArmorLA, // Light Armor
         ArmorR,  // Robe
+
         Ring     // Ring
+    }
+
+    //장착 타입
+    public enum GearSlot
+    {
+        Weapon,
+        Armor,
+        Ring,
+        Max
     }
 
 

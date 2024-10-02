@@ -12,8 +12,7 @@ namespace SpartaDungeon_GLSK.Scene
     //전투 관련 씬
     public class BattleScene
     {
-        //배틀 인덱스
-        public static BattleStage battleStage;
+        //배틀 스테이지 인덱스
         public enum BattleStage
         {
             Tutorial,
@@ -24,14 +23,18 @@ namespace SpartaDungeon_GLSK.Scene
         public class BattleTable
         {
             //아군 진영
-            public PlayerData[] Ally;
+            public PlayerUnitData[] Ally;
             //적군 진영
             public WorldMonster[] Hostile;
 
-            public BattleTable(PlayerData playerData, WorldMonster[] enemies)
+            public BattleTable(PlayerUnitData[] playerEntry, WorldMonster[] enemies)
             {
-                Ally = new PlayerData[3];
-                Ally[0] = playerData;
+                Ally = new PlayerUnitData[3];
+                for (int i = 0; i < 3; i++)
+                {
+                    if (playerEntry[i] != null)
+                        Ally[i] = playerEntry[i];
+                }
                 Hostile = new WorldMonster[5];
                 for (int i = 0; i < 5 && i < enemies.Length; i++)
                 {
@@ -40,16 +43,19 @@ namespace SpartaDungeon_GLSK.Scene
             }
         }
 
-        public static bool LoadBattleScene(out Scenes next, KeyController keyController)
+        public static bool LoadBattleScene(BattleStage battleStage, out Scenes next, KeyController keyController)
         {
             MonsterCode[] enemies = null;
+            int expReward = 0;
+            int goldReward = 0;
             int screenTop = 0;
             bool victory = false;
 
             switch (battleStage)
             {
                 case BattleStage.Tutorial:
-                    enemies = new MonsterCode[2] { MonsterCode.TutoralMonster, MonsterCode.TutoralMonster };
+                    enemies = new MonsterCode[2] { MonsterCode.Comm_Slime, MonsterCode.Comm_Slime };
+                    goldReward = 30;
                     Console.WriteLine("튜토리얼 전투");
                     screenTop = 2;
                     break;
@@ -57,12 +63,26 @@ namespace SpartaDungeon_GLSK.Scene
 
             victory = Battle(enemies, screenTop, keyController);
 
-            EndBattleScene(out next, keyController);
+            //패배 씬으로 이동
+            if (victory == false)
+            {
+                //next = Scenes.
+                //return true;
+            }
+
+            //경험치 획득 (살아있는 아군이 나눠가짐)
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                expReward += MonsterDatabase.GetMonster(enemies[i]).exp;
+            }
+            
+
+            EndBattleScene(battleStage, out next, keyController);
 
             return true;
         }
 
-        public static void EndBattleScene(out Scenes next, KeyController keyController)
+        public static void EndBattleScene(BattleStage battleStage, out Scenes next, KeyController keyController)
         {
             switch (battleStage)
             {
@@ -75,7 +95,7 @@ namespace SpartaDungeon_GLSK.Scene
         //승패 여부 리턴
         private static bool Battle(MonsterCode[] enemies, int screenTop, KeyController keyController)
         {
-            battleTable = new BattleTable(Program.playerData/*나중에 다대다 전투 구현 가능하면 PlayerData에 함수 추가*/, MonsterData.GetWorldMonsters(enemies));
+            battleTable = new BattleTable(Program.playerData.entry, MonsterData.GetWorldMonsters(enemies));
 
             ConsoleKey keyInput;
             int cheatActivated;
@@ -275,7 +295,7 @@ namespace SpartaDungeon_GLSK.Scene
 
 
         //플레이어 턴에 행동명령 받기   selectedAct : 0-스킬사용 1-아이템사용   selectedIdx : 사용항목인덱스   selectedTarget : 사용대상
-        private static void GetPlayerOrder(PlayerData playerData, int screenTop, KeyController keyController, out int selectedAct, out int selectedIdx, out int selectedTarget)
+        private static void GetPlayerOrder(PlayerUnitData playerUnitData, int screenTop, KeyController keyController, out int selectedAct, out int selectedIdx, out int selectedTarget)
         {
             selectedAct = 0;
             selectedIdx = 0;
@@ -289,9 +309,9 @@ namespace SpartaDungeon_GLSK.Scene
 
             int orderState = 0; // 0:행동 선택, 1:전투 스킬 선택, 2:스킬 대상 선택, 3:사용 아이템 선택, 4:아이템 대상 선택
             int skillTab = 0; //리스트를 최대 5개씩만 띄워 줄거기 때문에 현재 탭 위치를 알고 있어야 함
-            int skillNum = playerData.skillList.Count;
+            int skillNum = playerUnitData.SkillList.Count;
             int potionTab = 0;
-            int potionNum = playerData.invenPotion.Count;
+            int potionNum = Program.playerData.invenPotion.Count;
 
             bool loop = true;
             while (loop)
@@ -304,7 +324,7 @@ namespace SpartaDungeon_GLSK.Scene
                 }
 
                 Console.SetCursorPosition(0, screenTop + 9);
-                Console.WriteLine($"{playerData.Name}의 턴!");
+                Console.WriteLine($"{playerUnitData.Name}의 턴!");
 
                 //행동 선택
                 if (orderState == 0)
@@ -349,7 +369,7 @@ namespace SpartaDungeon_GLSK.Scene
                     if (dispSkillNum > 5) dispSkillNum = 5; //한번에 표시할 스킬 수 5개로 제한
                     for (int i = 0; i < dispSkillNum; i++)
                     {
-                        Console.WriteLine($"{i + 1}. {PSkillDatabase.GetPSkill(playerData.skillList[skillTab + i]).skillName}");
+                        Console.WriteLine($"{i + 1}. {PlayerSkillDatabase.GetPSkill(playerUnitData.SkillList[skillTab + i]).skillName}");
                     }
                     if (dispSkillNum == 1) Console.WriteLine($"(1 : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
                     else Console.WriteLine($"(1 ~ {dispSkillNum} : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
@@ -369,10 +389,10 @@ namespace SpartaDungeon_GLSK.Scene
                             case ConsoleKey.D4:
                             case ConsoleKey.D5:
                                 selectedIdx = skillTab + (keyInput - ConsoleKey.D1); //선택 스킬 인덱스
-                                if (selectedIdx < playerData.skillList.Count)
+                                if (selectedIdx < playerUnitData.SkillList.Count)
                                 {
-                                    PSkill seletedSkill = PSkillDatabase.GetPSkill(playerData.skillList[selectedIdx]);
-                                    if (playerData.CurrentMp < seletedSkill.mpConsum) //스킬시전에 필요한 마나가 부족한 경우
+                                    PlayerSkill seletedSkill = PlayerSkillDatabase.GetPSkill(playerUnitData.SkillList[selectedIdx]);
+                                    if (playerUnitData.CurrentMp < seletedSkill.mpConsum) //스킬시전에 필요한 마나가 부족한 경우
                                     {
                                         Console.SetCursorPosition(0, screenTop + 10);
                                         for (int i = 10; i <= 16; i++)
@@ -391,9 +411,9 @@ namespace SpartaDungeon_GLSK.Scene
                                             //선택 확정
                                             if (seletedSkill.isSplash) //차징 스킬인 경우
                                             {
-                                                playerData.Concentrating = true;
-                                                playerData.ReservedSkill = selectedIdx;
-                                                playerData.ReservedTarget = 0;
+                                                playerUnitData.Concentrating = true;
+                                                playerUnitData.ReservedSkill = selectedIdx;
+                                                playerUnitData.ReservedTarget = 0;
                                             }
                                             selectedAct = 0;
                                             selectedTarget = 0;
@@ -431,7 +451,7 @@ namespace SpartaDungeon_GLSK.Scene
                 else if (orderState == 2)
                 {
                     Console.SetCursorPosition(0, screenTop + 10);
-                    PSkill selectedSkill = PSkillDatabase.GetPSkill(playerData.skillList[selectedIdx]);
+                    PlayerSkill selectedSkill = PlayerSkillDatabase.GetPSkill(playerUnitData.SkillList[selectedIdx]);
                     Console.WriteLine($"스킬 대상 선택 - {selectedSkill.skillName}");
 
                     //스킬 대상 목록 디스플레이
@@ -468,9 +488,9 @@ namespace SpartaDungeon_GLSK.Scene
                                     //선택 확정
                                     if (selectedSkill.isSplash) //차징 스킬인 경우
                                     {
-                                        playerData.Concentrating = true;
-                                        playerData.ReservedSkill = selectedIdx;
-                                        playerData.ReservedTarget = selectedTarget;
+                                        playerUnitData.Concentrating = true;
+                                        playerUnitData.ReservedSkill = selectedIdx;
+                                        playerUnitData.ReservedTarget = selectedTarget;
                                     }
                                     selectedAct = 0;
                                     loop2 = false;
@@ -518,7 +538,7 @@ namespace SpartaDungeon_GLSK.Scene
                     if (dispPotionNum > 5) dispPotionNum = 5; //한번에 표시할 아이템 수 5개로 제한
                     for (int i = 0; i < dispPotionNum; i++)
                     {
-                        Console.WriteLine($"{i + 1}. {PotionDatabase.GetPotion(playerData.invenPotion[potionTab + i].Key).name} X {playerData.invenPotion[potionTab + i].Value}");
+                        Console.WriteLine($"{i + 1}. {PotionDatabase.GetPotion(Program.playerData.invenPotion[potionTab + i].Key).name} X {Program.playerData.invenPotion[potionTab + i].Value}");
                     }
                     if (dispPotionNum == 1) Console.WriteLine($"(1 : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
                     else Console.WriteLine($"(1 ~ {dispPotionNum} : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
@@ -538,7 +558,7 @@ namespace SpartaDungeon_GLSK.Scene
                             case ConsoleKey.D4:
                             case ConsoleKey.D5:
                                 selectedIdx = potionTab + (keyInput - ConsoleKey.D1); //선택 아이템 인덱스
-                                if (selectedIdx < playerData.invenPotion.Count)
+                                if (selectedIdx < Program.playerData.invenPotion.Count)
                                 {
                                     //대상 선택으로 이동
                                     orderState = 4;
@@ -567,7 +587,7 @@ namespace SpartaDungeon_GLSK.Scene
                 else
                 {
                     Console.SetCursorPosition(0, screenTop + 10);
-                    Console.WriteLine($"아이템 대상 선택 - {PotionDatabase.GetPotion(playerData.invenPotion[selectedIdx].Key).name}");
+                    Console.WriteLine($"아이템 대상 선택 - {PotionDatabase.GetPotion(Program.playerData.invenPotion[selectedIdx].Key).name}");
 
                     //아이템 사용 대상 목록 디스플레이
                     int dispTargetNum = 0;
@@ -618,7 +638,7 @@ namespace SpartaDungeon_GLSK.Scene
         }
 
         //플레이어 캐릭터 행동 수행   selectedAct : 0-스킬사용 1-아이템사용   selectedIdx : 사용항목인덱스   selectedTarget : 사용대상
-        private static void DoPlayerAction(PlayerData playerData, int screenTop, KeyController keyController, int selectedAct, int selectedIdx, int selectedTarget)
+        private static void DoPlayerAction(PlayerUnitData playerData, int screenTop, KeyController keyController, int selectedAct, int selectedIdx, int selectedTarget)
         {
             ConsoleKey keyInput;
             int cheatActivated;
@@ -636,7 +656,7 @@ namespace SpartaDungeon_GLSK.Scene
             // 스킬 사용
             if (selectedAct == 0)
             {
-                PSkill selectedSkill = PSkillDatabase.GetPSkill(playerData.skillList[selectedIdx]);
+                PlayerSkill selectedSkill = PlayerSkillDatabase.GetPSkill(playerData.SkillList[selectedIdx]);
 
                 //차징 스킬을 사용한 경우
                 if (selectedSkill.needCharging && playerData.Concentrating == false)
@@ -737,7 +757,7 @@ namespace SpartaDungeon_GLSK.Scene
             // 아이템 사용
             else
             {
-                Potion selectedPotion = PotionDatabase.GetPotion(playerData.invenPotion[selectedIdx].Key);
+                Potion selectedPotion = PotionDatabase.GetPotion(Program.playerData.invenPotion[selectedIdx].Key);
 
                 Console.SetCursorPosition(0, screenTop + 11);
                 Console.WriteLine(new string($"{playerData.Name}가 {selectedPotion.name} 사용!"));
@@ -777,11 +797,11 @@ namespace SpartaDungeon_GLSK.Scene
 
             // 특수 스킬 선택
             int anger = worldMonster.anger;
-            MSkill mSkill;
+            MonsterSkill mSkill;
             int angerConsum;
             for (int i = 1; i < worldMonster.monster.skillList.Count; i++)
             {
-                mSkill = MSkillDatabase.GetMSkill(worldMonster.monster.skillList[i]);
+                mSkill = MonsterSkillDatabase.GetMSkill(worldMonster.monster.skillList[i]);
                 angerConsum = mSkill.angerConsum;
 
                 if (anger < angerConsum) continue;
@@ -831,7 +851,7 @@ namespace SpartaDungeon_GLSK.Scene
             Console.SetCursorPosition(0, screenTop + 9);
             Console.WriteLine($"{worldMonster.monster.name}의 턴!");
 
-            MSkill selectedSkill = MSkillDatabase.GetMSkill(worldMonster.monster.skillList[selectedIdx]);
+            MonsterSkill selectedSkill = MonsterSkillDatabase.GetMSkill(worldMonster.monster.skillList[selectedIdx]);
 
             //차징 스킬을 사용한 경우
             if (selectedSkill.needCharging && worldMonster.concentrating == false)
@@ -849,7 +869,7 @@ namespace SpartaDungeon_GLSK.Scene
                 //시전집중 중에 대상이 죽었을 경우 
                 if (selectedSkill.isSplash == false)
                 {
-                    PlayerData victim = battleTable.Ally[selectedTarget];
+                    PlayerUnitData victim = battleTable.Ally[selectedTarget];
                     if (victim.IsAlive == false)
                     {
                         for (int i = 0; i < battleTable.Ally.Length; i++)
@@ -892,7 +912,7 @@ namespace SpartaDungeon_GLSK.Scene
                 {
                     if (battleTable.Ally[i] != null && battleTable.Ally[i].IsAlive)
                     {
-                        PlayerData victim = battleTable.Ally[i];
+                        PlayerUnitData victim = battleTable.Ally[i];
                         int finalDamage = (int)(damage - victim.Def);
                         if (finalDamage < 0) finalDamage = 0;
                         victim.CurrentHp -= finalDamage;
@@ -912,7 +932,7 @@ namespace SpartaDungeon_GLSK.Scene
             }
             else //단일공격
             {
-                PlayerData victim = battleTable.Ally[selectedTarget];
+                PlayerUnitData victim = battleTable.Ally[selectedTarget];
                 int finalDamage = (int)(damage - victim.Def);
                 if (finalDamage < 0) finalDamage = 0;
                 victim.CurrentHp -= finalDamage;

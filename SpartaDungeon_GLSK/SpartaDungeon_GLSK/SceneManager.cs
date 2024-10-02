@@ -54,7 +54,7 @@ namespace SpartaDungeon_GLSK
 
                 //Battle Scene : 튜토리얼 배틀, 배틀 프리셋
                 case Scenes.Battle_Tutorial:
-                    loop = BattleScene.TutorialBattle(out next, keyController);
+                    loop = BattleScene.LoadBattleScene(BattleScene.BattleStage.Tutorial, out next, keyController);
                     break;
 
                 //Town Scene : 마을, 장비 상점, 소모품 상점

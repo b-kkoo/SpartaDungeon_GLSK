@@ -9,7 +9,32 @@ using System.Xml.Linq;
 
 namespace SpartaDungeon_GLSK
 {
+    // 공유 데이터
     public class PlayerData
+    {
+        public int Gold { get; set; }
+
+        //인벤토리
+        public List<KeyValuePair<PotionCode, int>> invenPotion; //인덱스로 접근할 수 있게 List로 선언함
+        public List<GearCode> invenGear;
+
+        //유닛
+        public List<PlayerUnitData> team;
+        public PlayerUnitData[] entry;
+
+        public PlayerData()
+        {
+            Gold = 0;
+
+            invenPotion = new List<KeyValuePair<PotionCode, int>>();
+            invenGear = new List<GearCode>();
+
+            team = new List<PlayerUnitData>();
+            entry = new PlayerUnitData[3];
+        }
+    }
+
+    public class PlayerUnitData
     {
         //캐릭터 기본 스테이터스
         public string Name { get; set; }
@@ -17,7 +42,6 @@ namespace SpartaDungeon_GLSK
         public int Lv { get; set; }
         public int Exp { get; set; }
         public int ExpNextLevel { get; set; }
-        public int Gold { get; set; }
 
         //직업 관련 스테이터스
         public string PClassName { get; set; }
@@ -40,9 +64,8 @@ namespace SpartaDungeon_GLSK
         public int ReservedTarget { get; set; } // 시전 준비중인 스킬 대상
 
         //리스트 영역
-        public List<KeyValuePair<PotionCode, int>> invenPotion = new List<KeyValuePair<PotionCode, int>>();
-        public Dictionary<GearCode, bool> invenGear = new Dictionary<GearCode, bool>(); //현재 장비 아이템은 중복으로 소지 못하게 함(Dictionary)
-        public List<PSkillCode> skillList = new List<PSkillCode>();
+        public GearCode[] Equipment = new GearCode[(int)GearSlot.Max]; //3
+        public List<PlayerSkillCode> SkillList = new List<PlayerSkillCode>();
 
 
 
@@ -52,8 +75,7 @@ namespace SpartaDungeon_GLSK
             //캐릭터 기본 스테이터스(이름, 직업은 정해져 있음)
             Lv = 1;
             Exp = 0;
-            ExpNextLevel = 150;
-            Gold = 0;
+            ExpNextLevel = 10;
 
             //직업 관련 스테이터스
             Job playerClass = JobDatabase.GetJob(PClass);
@@ -74,22 +96,35 @@ namespace SpartaDungeon_GLSK
             //스킬셋
             if (PClass == JobCode.Warrior)
             {
-                skillList.Add(PSkillCode.W_Basic);
+                SkillList.Add(PlayerSkillCode.W_Basic);
             }
             else if (PClass == JobCode.Archer)
             {
-                skillList.Add(PSkillCode.A_Basic);
+                SkillList.Add(PlayerSkillCode.A_Basic);
             }
             else if (PClass == JobCode.Mage)
             {
-                skillList.Add(PSkillCode.M_Basic);
-                skillList.Add(PSkillCode.M_Magic1);
+                SkillList.Add(PlayerSkillCode.M_Basic);
+                SkillList.Add(PlayerSkillCode.M_Magic1);
             }
         }
 
-        public void LvUp() //레벨업 시 스텟 증가
+        public void TryLvUp() //레벨업 시 스텟 증가
         {
+            if (Exp >= ExpNextLevel)
+            {
+                Lv++;
+                Exp -= ExpNextLevel;
 
+                Job playerClass = JobDatabase.GetJob(PClass);
+                Hp += playerClass.lvUpHp;
+                Mp += playerClass.lvUpMp;
+                Atk += playerClass.lvUpAtk;
+                MAtk += playerClass.lvUpMAtk;
+                Def += playerClass.lvUpDef;
+                Speed += playerClass.lvUpSpeed;
+                CriRate += playerClass.lvUpCriRate;
+            }
         }
 
 

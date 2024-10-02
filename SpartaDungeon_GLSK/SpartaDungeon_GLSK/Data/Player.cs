@@ -98,29 +98,29 @@ namespace SpartaDungeon_GLSK.Data
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // SKILL
 
-    public static class PSkillDatabase
+    public static class PlayerSkillDatabase
     {
-        private static readonly Dictionary<PSkillCode, PSkill> skills;
+        private static readonly Dictionary<PlayerSkillCode, PlayerSkill> skills;
 
-        static PSkillDatabase()
+        static PlayerSkillDatabase()
         {
-            skills = new Dictionary<PSkillCode, PSkill>();
+            skills = new Dictionary<PlayerSkillCode, PlayerSkill>();
 
-            //                                                              info                  Warrior              level    a.ratio    m.ratio    mpConsum      splash     charging
-            skills.Add(PSkillCode.W_Basic,   new PSkill("베기",             "전방의 적을 벤다.", JobCode.Warrior,   1,       1.0,       0.0,      0,            false,     false));
+            //                                                                                    info                  Warrior           level    a.ratio    m.ratio    mpConsum      splash     charging
+            skills.Add(PlayerSkillCode.W_Basic,   new PlayerSkill("베기",             "전방의 적을 벤다.",              JobCode.Warrior,   1,       1.0,       0.0,      0,            false,     false));
 
-            //                                                              info                            Archer            level    a.ratio    m.ratio    mpConsum      splash   charging
-            skills.Add(PSkillCode.A_Basic,   new PSkill("사격",             "적에게 화살을 발사한다.", JobCode.Archer,    1,       1.0,       0.0,      0,            false,     false));
+            //                                                                                    info                  Archer            level    a.ratio    m.ratio    mpConsum      splash   charging
+            skills.Add(PlayerSkillCode.A_Basic,   new PlayerSkill("사격",             "적에게 화살을 발사한다.",        JobCode.Archer,    1,       1.0,       0.0,      0,            false,     false));
 
-            //                                                              info                     Mage              level    a.ratio    m.ratio    mpConsum      splash   charging
-            skills.Add(PSkillCode.M_Basic,   new PSkill("지팡이 휘두르기",  "지팡이를 휘둘러 적을 공격한다.", JobCode.Mage,      1,       0.8,       0.0,      0,            false,     false));
-            skills.Add(PSkillCode.M_Magic1,  new PSkill("파이어볼",         "불로 된 구체를 상대에게 날린다.",JobCode.Mage,      1,       0.0,       3.0,      10,           false,     false));
+            //                                                                                    info                  Mage              level    a.ratio    m.ratio    mpConsum      splash   charging
+            skills.Add(PlayerSkillCode.M_Basic,   new PlayerSkill("지팡이 휘두르기",  "지팡이를 휘둘러 적을 공격한다.", JobCode.Mage,      1,       0.8,       0.0,      0,            false,     false));
+            skills.Add(PlayerSkillCode.M_Magic1,  new PlayerSkill("파이어볼",         "불로 된 구체를 상대에게 날린다.",JobCode.Mage,      1,       0.0,       3.0,      10,           false,     false));
         }
 
-        public static PSkill GetPSkill(PSkillCode code)
+        public static PlayerSkill GetPSkill(PlayerSkillCode code)
         {
             //Dictionary 내장 함수 TryGetValue : 해당 key값이 없으면 false를 반환
-            if (skills.TryGetValue(code, out PSkill skill))
+            if (skills.TryGetValue(code, out PlayerSkill skill))
             {
                 return skill;
             }
@@ -132,7 +132,7 @@ namespace SpartaDungeon_GLSK.Data
 
 
     //플레이어 스킬
-    public class PSkill
+    public class PlayerSkill
     {
         // 스킬 개요
         public string skillName {  get; }
@@ -149,7 +149,7 @@ namespace SpartaDungeon_GLSK.Data
 
 
 
-        public PSkill(string _skillName, string _info, JobCode _useClass, int _unlockLv, double _atkRatio, double _matkRatio, int _mpConsum, bool _isSplash, bool _needCharging)
+        public PlayerSkill(string _skillName, string _info, JobCode _useClass, int _unlockLv, double _atkRatio, double _matkRatio, int _mpConsum, bool _isSplash, bool _needCharging)
         {
             skillName = _skillName;
             info = _info;
@@ -163,13 +163,13 @@ namespace SpartaDungeon_GLSK.Data
             needCharging = _needCharging;
         }
 
-        public double CalcDamage(PlayerData playerData)
+        public double CalcDamage(PlayerUnitData playerData)
         {
             return playerData.Atk * atkRatio + playerData.MAtk * matkRatio;
         }
     }
 
-    public enum PSkillCode
+    public enum PlayerSkillCode
     {
         W_Basic,
 
