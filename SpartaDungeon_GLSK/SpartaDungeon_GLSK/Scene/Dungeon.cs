@@ -14,7 +14,7 @@ namespace SpartaDungeon_GLSK.Scene
             stageSignBoard[0] = "< 고블린 소굴 >";
             stageSignBoard[1] = "< 타락한 자들의 땅 >";
             stageSignBoard[2] = "< 용의 둥지 >";
-            stageSignBoard[3] = "< 이계의 틈새 >";
+            stageSignBoard[3] = "< 마계의 틈새 >";
             stageSignBoard[4] = "< ? ? ? >";
 
             string[][] stageSign = new string[5][];
@@ -24,6 +24,27 @@ namespace SpartaDungeon_GLSK.Scene
             stageSign[0][2] = "3. 우두머리의 거처";
 
             //스테이지 계속 추가 (소단위 최대 5개)
+            stageSign[1] = new string[4]; // 배열 수는 소단위 스테이지 수를 나타냄
+            stageSign[1][0] = "1. 타락한 자들의 땅 - 입구";
+            stageSign[1][1] = "2. 타락한 자들의 땅 - ";
+            stageSign[1][2] = "3. 타락한 자들의 땅 - 최심부";
+            stageSign[1][3] = "4. 타락한 자들의 땅 - 네크로멘서의 연구실";
+
+            stageSign[2] = new string[4]; // 배열 수는 소단위 스테이지 수를 나타냄
+            stageSign[2][0] = "1. 용의 둥지 입구";
+            stageSign[2][1] = "2. 성룡의 레어";
+            stageSign[2][2] = "3. 고룡의 레어";
+            stageSign[2][3] = "4. 드래곤 로드의 레어";
+
+            stageSign[3] = new string[5]; // 배열 수는 소단위 스테이지 수를 나타냄
+            stageSign[3][0] = "1. 마계의 틈새 입구";
+            stageSign[3][1] = "2. 마의 계곡";
+            stageSign[3][2] = "3. 마왕성 - 입구";
+            stageSign[3][3] = "4. 마왕성 - 연회장";
+            stageSign[3][4] = "5. 마왕성 - 마왕의 방";
+
+            stageSign[4] = new string[1]; // 배열 수는 소단위 스테이지 수를 나타냄
+            stageSign[4][0] = "< ? ? ? >";
 
 
             ConsoleKey keyInput;
@@ -133,6 +154,103 @@ namespace SpartaDungeon_GLSK.Scene
                     _battleComment = new string[] { "고블린 무리와 마주쳤다!" };
                     _goldReward = 75;
                     break;
+
+                case 01: // < 고블린 소굴 > - 2. 지하 공동
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Goblin, MonsterCode.Comm_Hobgoblin, MonsterCode.Spec_GoblinMage };
+                    _battleComment = new string[] { "고블린 무리와 마주쳤다!" };
+                    _goldReward = 90;
+                    break;
+
+                case 02: // < 고블린 소굴 > - 3. 우두머리의 거처
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Goblin, MonsterCode.Comm_Hobgoblin, MonsterCode.Boss_GoblinLord, MonsterCode.Spec_GoblinMage };
+                    _battleComment = new string[] { "우두머리 고블린과 마주쳤다!" };
+                    _goldReward = 105;
+                    break;
+
+                case 10: // < 타락한 자들의 땅 > - 1. 입구
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Skeleton, MonsterCode.Comm_Ghoul, MonsterCode.Comm_Skeleton };
+                    _battleComment = new string[] { "언데드 무리와 마주쳤다!" };
+                    _goldReward = 95;
+                    break;
+
+                case 11: // < 타락한 자들의 땅 > - 2. 중심부
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Skeleton, MonsterCode.Comm_Ghoul, MonsterCode.Comm_DeathKnight, MonsterCode.Comm_Skeleton };
+                    _battleComment = new string[] { "언데드 무리와 마주쳤다!" };
+                    _goldReward = 105;
+                    break;
+
+                case 12: // < 타락한 자들의 땅 > - 3. 최심부
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Ghoul, MonsterCode.Spec_Lich, MonsterCode.Comm_DeathKnight, MonsterCode.Comm_Skeleton };
+                    _battleComment = new string[] { "언데드 무리와 마주쳤다!" };
+                    _goldReward = 120;
+                    break;
+
+                case 13: // < 타락한 자들의 땅 > - 4. 네크로멘서의 연구실
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Ghoul, MonsterCode.Spec_Lich, MonsterCode.Boss_Necromancer, MonsterCode.Comm_DeathKnight, MonsterCode.Comm_Skeleton };
+                    _battleComment = new string[] { "네크로멘서와 마주쳤다!" };
+                    _goldReward = 135;
+                    break;
+
+                case 20: // < 용의 둥지 > - 1. 용의 둥지 입구
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Hatchling, MonsterCode.Comm_Hatchling, MonsterCode.Comm_Hatchling };
+                    _battleComment = new string[] { "드래곤 무리와 마주쳤다!" };
+                    _goldReward = 120;
+                    break;
+
+                case 21: // < 용의 둥지 > - 2. 성룡의 레어
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Hatchling, MonsterCode.Comm_Wyvern, MonsterCode.Comm_Hatchling };
+                    _battleComment = new string[] { "드래곤 무리와 마주쳤다!" };
+                    _goldReward = 135;
+                    break;
+
+                case 22: // < 용의 둥지 > - 3. 고룡의 레어
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Wyvern, MonsterCode.Spec_Dragon, MonsterCode.Comm_Wyvern, MonsterCode.Comm_Hatchling };
+                    _battleComment = new string[] { "드래곤 무리와 마주쳤다!" };
+                    _goldReward = 150;
+                    break;
+
+                case 23: // < 용의 둥지 > - 4. 드래곤 로드의 레어
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Wyvern, MonsterCode.Spec_Dragon, MonsterCode.Boss_AncientDragon, MonsterCode.Comm_Wyvern, MonsterCode.Comm_Hatchling };
+                    _battleComment = new string[] { "에인션트 드래곤과 마주쳤다!" };
+                    _goldReward = 165;
+                    break;
+
+                case 30: // < 마계의 틈새 > - 1. 틈새 입구
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_HellHound, MonsterCode.Comm_Demon1, MonsterCode.Comm_HellHound, MonsterCode.Comm_HellHound };
+                    _battleComment = new string[] { "마족 무리와 마주쳤다!" };
+                    _goldReward = 150;
+                    break;
+
+                case 31: // < 마계의 틈새 > - 2. 마의 계곡
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Demon1, MonsterCode.Comm_Demon1, MonsterCode.Comm_Demon2, MonsterCode.Comm_HellHound };
+                    _battleComment = new string[] { "마족 무리와 마주쳤다!" };
+                    _goldReward = 165;
+                    break;
+
+                case 32: // < 마계의 틈새 > - 3. 마왕성 - 입구
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Demon1, MonsterCode.Comm_Demon1, MonsterCode.Comm_Demon3, MonsterCode.Comm_Demon2, MonsterCode.Comm_HellHound };
+                    _battleComment = new string[] { "마족 무리와 마주쳤다!" };
+                    _goldReward = 180;
+                    break;
+
+                case 33: // < 마계의 틈새 > - 4. 마왕성 - 연회장
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Demon1, MonsterCode.Spec_Cerberus, MonsterCode.Comm_Demon3, MonsterCode.Comm_Demon2, MonsterCode.Comm_Demon1 };
+                    _battleComment = new string[] { "마족 무리와 마주쳤다!" };
+                    _goldReward = 195;
+                    break;
+
+                case 34: // < 마계의 틈새 > - 5. 마왕성 - 마왕의 방
+                    _enemies = new MonsterCode[] { MonsterCode.Comm_Demon2, MonsterCode.Boss_Diablo, MonsterCode.Comm_Demon3, MonsterCode.Comm_Demon3, MonsterCode.Comm_Demon2 };
+                    _battleComment = new string[] { "마왕과 마주쳤다!" };
+                    _goldReward = 210;
+                    break;
+
+                case 40: // < ? ? ? > - 1. ? ? ?
+                    _enemies = new MonsterCode[] { MonsterCode.Boss_AncientDragon, MonsterCode.Boss_GoblinLord, MonsterCode.Boss_Diablo, MonsterCode.Boss_Necromancer};
+                    _battleComment = new string[] { "???" };
+                    _goldReward = 300;
+                    break;
+
 
                     //스테이지 계속 추가
             }
