@@ -129,7 +129,7 @@ namespace SpartaDungeon_GLSK
             Speed += playerClass.lvUpSpeed;
             CriRate += playerClass.lvUpCriRate;
 
-            CurrentHp += playerClass.lvUpMp;
+            CurrentHp += playerClass.lvUpHp;
             CurrentMp += playerClass.lvUpMp;
 
             //스킬 해금

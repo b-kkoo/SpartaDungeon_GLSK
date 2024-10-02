@@ -14,7 +14,6 @@ namespace SpartaDungeon_GLSK.Scene
             ConsoleKey keyInput;
 
             int cheatActivated;
-
             keyController.GetUserInput(keyFilter, out cheatActivated);
 
             Console.WriteLine("< 게임 메뉴 >");
@@ -27,9 +26,9 @@ namespace SpartaDungeon_GLSK.Scene
             Console.WriteLine("                                               숫자 버튼을 눌러 선택!");
             Console.WriteLine("                                                             X : 뒤로");
 
+            keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.X };
             while (true)
             {
-                keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.X };
                 keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
 
                 switch (keyInput)

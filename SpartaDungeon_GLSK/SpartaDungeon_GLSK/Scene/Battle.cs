@@ -344,11 +344,11 @@ namespace SpartaDungeon_GLSK.Scene
                 {
                     if (battleTable.Hostile[i].isAlive == false) Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.SetCursorPosition(i * 30, screenTop);
-                    Console.WriteLine($"LV {battleTable.Hostile[i].monster.level}   {battleTable.Hostile[i].monster.name}{(battleTable.Hostile[i].isAlive ? "" : "(처치됨)")}");
+                    Console.WriteLine($"LV {battleTable.Hostile[i].monster.level}   {battleTable.Hostile[i].monster.name}{(battleTable.Hostile[i].isAlive ? "" : "(처치됨)")}     ");
                     Console.SetCursorPosition(i * 30, screenTop + 1);
-                    Console.WriteLine($"HP {battleTable.Hostile[i].currentHp} / {battleTable.Hostile[i].monster.hp}");
+                    Console.WriteLine($"HP {battleTable.Hostile[i].currentHp} / {battleTable.Hostile[i].monster.hp}     ");
                     Console.SetCursorPosition(i * 30, screenTop + 2);
-                    Console.WriteLine($"AP {Math.Floor(battleTable.Hostile[i].AP)} %{(battleTable.Hostile[i].concentrating ? " (집중)" : "")}");
+                    Console.WriteLine($"AP {Math.Floor(battleTable.Hostile[i].AP)} %{(battleTable.Hostile[i].concentrating ? " (집중)" : "")}     ");
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             }

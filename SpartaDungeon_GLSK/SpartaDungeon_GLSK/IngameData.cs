@@ -14,20 +14,15 @@ namespace SpartaDungeon_GLSK
 
         public int DungeonUnlock = 0; //던전 해금. 0~4
 
+        public int[] QuestFlag = new int[10]; //퀘스트 진행 상황. -1:비활성화 0:수락가능 1:진행중 2:완료가능 3:완료
 
-
-
-
-
-
-
-
-
-
-
-
-
-        
+        public IngameData()
+        {
+            for (int i = 0; i < QuestFlag.Length; i++)
+            {
+                QuestFlag[i] = -1;
+            }
+        }
     }
 
     

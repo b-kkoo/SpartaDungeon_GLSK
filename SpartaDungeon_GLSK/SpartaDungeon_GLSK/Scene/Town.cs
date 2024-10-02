@@ -54,7 +54,7 @@
                         break;
 
                     case ConsoleKey.D3:
-                        next = Scenes.Main_Menu; //길드로 이동
+                        next = Scenes.Guild_Hall; //길드로 이동
                         loop = false;
                         break;
 

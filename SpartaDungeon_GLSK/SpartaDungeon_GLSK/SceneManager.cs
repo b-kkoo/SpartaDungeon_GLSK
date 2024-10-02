@@ -62,6 +62,14 @@ namespace SpartaDungeon_GLSK
                     loop = Town.Default(out next, keyController);
                     break;
 
+                //Guild Scene
+                case Scenes.Guild_Hall:
+                    loop = GuildScene.GuildHall(out next, keyController);
+                    break;
+                case Scenes.Guild_Quest:
+                    loop = GuildScene.GuildQuest(out next, keyController);
+                    break;
+
                 //PlayerMenu Scene : 상태창, 인벤토리, 장비, 스킬, 저장
                 case Scenes.PlayerMenu_Menu:
                     loop = PlayerMenuScene.GameMenu(out next, keyController);
@@ -129,8 +137,14 @@ namespace SpartaDungeon_GLSK
         //Battle Scene : 튜토리얼 배틀, 배틀 프리셋
         Battle_Tutorial,
 
-        //Town Scene : 마을, 장비 상점, 소모품 상점
+        //Town Scene : 마을
         Town_Default,
+
+        //Guild Scene
+        Guild_Hall,
+        Guild_Quest,
+        Guild_Mercenary,
+        Guild_Inn,
 
         //게임 메뉴
         PlayerMenu_Menu,

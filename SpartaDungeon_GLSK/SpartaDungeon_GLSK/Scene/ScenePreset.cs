@@ -25,6 +25,7 @@ namespace SpartaDungeon_GLSK.Scene
                 {
                     Console.SetCursorPosition(0, Console.GetCursorPosition().Top - 1);
                     Console.WriteLine(new string(' ', Console.WindowWidth));
+                    Console.SetCursorPosition(0, Console.GetCursorPosition().Top - 1);
                 }
 
                 Console.WriteLine(conversationPreset[i]);

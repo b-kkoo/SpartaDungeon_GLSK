@@ -156,9 +156,18 @@ namespace SpartaDungeon_GLSK.Scene
                     break;
 
                 case 01: // < 고블린 소굴 > - 2. 지하 공동
-                    _enemies = new MonsterCode[] { MonsterCode.Comm_Goblin, MonsterCode.Comm_Hobgoblin, MonsterCode.Spec_GoblinMage };
-                    _battleComment = new string[] { "고블린 무리와 마주쳤다!" };
-                    _goldReward = 90;
+                    if (Program.ingameData.QuestFlag[(int)QuestCode.dungeonStage0_1] != 1)
+                    {
+                        _enemies = new MonsterCode[] { MonsterCode.Comm_Goblin, MonsterCode.Comm_Hobgoblin, MonsterCode.Spec_GoblinMage };
+                        _battleComment = new string[] { "고블린 무리와 마주쳤다!" };
+                        _goldReward = 90;
+                    }
+                    else //만드라고라 퀘스트
+                    {
+                        _enemies = new MonsterCode[] { MonsterCode.Spec_GoblinMage, MonsterCode.Comm_Hobgoblin, MonsterCode.Spec_GoblinMage };
+                        _battleComment = new string[] { "만드라고라를 재배 중이던 고블린 메이지와 마주쳤다!", "고블린 메이지는 싸움을 걸어왔다!" };
+                        _goldReward = 110;
+                    }
                     break;
 
                 case 02: // < 고블린 소굴 > - 3. 우두머리의 거처
@@ -265,22 +274,34 @@ namespace SpartaDungeon_GLSK.Scene
                 return true;
             }
 
+            //최고 주파던전 갱신
+            if (Program.ingameData.DefeatHighestDungeonStage < selectedStage)
+            {
+                Program.ingameData.DefeatHighestDungeonStage = selectedStage;
+            }
+
             //특수 스테이지 클리어 시 분기
             switch (selectedStage)
             {
-                case 02: // < 고블린 소굴 > - 3. 우두머리의 거처
+                case 01: // < 고블린 소굴 > - 2. 지하 공동 (만드라고라 퀘스트)
+                    if (Program.ingameData.QuestFlag[(int)QuestCode.dungeonStage0_1] == -1)
+                    {
+                        Program.ingameData.QuestFlag[(int)QuestCode.dungeonStage0_1] = 0;
+                    }
+                    else if (Program.ingameData.QuestFlag[(int)QuestCode.dungeonStage0_1] == 1)
+                    {
+                        Program.ingameData.QuestFlag[(int)QuestCode.dungeonStage0_1] = 2;
+                    }
+                    break;
+                case 02: // < 고블린 소굴 > - 3. 우두머리의 거처 (스테이지 해금)
                     if (stageUnlock == 0)
                     {
                         Program.ingameData.DungeonUnlock = 1;
                     }
-                    next = Scenes.Town_Default;
-                    break;
-
-                default:
-                    next = Scenes.Town_Default;
                     break;
             }
 
+            next = Scenes.Town_Default;
             return true;
         }
     }

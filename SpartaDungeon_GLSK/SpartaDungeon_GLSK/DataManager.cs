@@ -240,45 +240,45 @@ namespace SpartaDungeon_GLSK
     {
         public struct Unit
         {
-            public string Name;
-            public int PClass;
-            public int Lv;
-            public int Exp;
-            public int ExpNextLevel;
+            public string Name {  get; set; }
+            public int PClass { get; set; }
+            public int Lv { get; set; }
+            public int Exp { get; set; }
+            public int ExpNextLevel { get; set; }
 
             //직업 관련 스테이터스
-            public string PClassName;
-            public int Hp;
-            public int Mp;
-            public int Atk;
-            public int MAtk;
-            public int Def;
-            public int Speed;
-            public int CriRate;
+            public string PClassName { get; set; }
+            public int Hp { get; set; }
+            public int Mp { get; set; }
+            public int Atk { get; set; }
+            public int MAtk { get; set; }
+            public int Def { get; set; }
+            public int Speed { get; set; }
+            public int CriRate { get; set; }
 
             //전투 관련 스테이터스
-            public bool IsAlive;
-            public int CurrentHp;
-            public int CurrentMp;
+            public bool IsAlive { get; set; }
+            public int CurrentHp { get; set; }
+            public int CurrentMp { get; set; }
 
             //리스트 영역
-            public int[] Equipment;
-            public int[] SkillList;
+            public int[] Equipment { get; set; }
+            public int[] SkillList { get; set; }
         }
         public struct WorldGear
         {
-            public int gear;
-            public int wearer;
+            public int gear { get; set; }
+            public int wearer { get; set; }
         }
 
-        public int Gold;
+        public int Gold { get; set; }
 
         //인벤토리
-        public Dictionary<int, int> invenPotion;
-        public WorldGear[] invenGear;
+        public Dictionary<int, int> invenPotion { get; set; }
+        public WorldGear[] invenGear { get; set; }
 
         //유닛
-        public Unit[] team;
-        public int[] entry;
+        public Unit[] team { get; set; }
+        public int[] entry { get; set; }
     }
 }
