@@ -11,8 +11,11 @@ namespace SpartaDungeon_GLSK
         public static PlayerData playerData;
         public static IngameData ingameData = new IngameData();
 
+        public ShopScene shopScene = new ShopScene();
+
         static void Main(string[] args)
         {
+            ShopScene.Set();
             sceneManager.Start();
         }
     }

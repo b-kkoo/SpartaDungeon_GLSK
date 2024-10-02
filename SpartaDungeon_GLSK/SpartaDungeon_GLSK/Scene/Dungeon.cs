@@ -23,10 +23,9 @@ namespace SpartaDungeon_GLSK.Scene
             stageSign[0][1] = "2. 지하 공동";
             stageSign[0][2] = "3. 우두머리의 거처";
 
-            //스테이지 계속 추가 (소단위 최대 5개)
             stageSign[1] = new string[4]; // 배열 수는 소단위 스테이지 수를 나타냄
             stageSign[1][0] = "1. 타락한 자들의 땅 - 입구";
-            stageSign[1][1] = "2. 타락한 자들의 땅 - ";
+            stageSign[1][1] = "2. 타락한 자들의 땅 - 중심부";
             stageSign[1][2] = "3. 타락한 자들의 땅 - 최심부";
             stageSign[1][3] = "4. 타락한 자들의 땅 - 네크로멘서의 연구실";
 
