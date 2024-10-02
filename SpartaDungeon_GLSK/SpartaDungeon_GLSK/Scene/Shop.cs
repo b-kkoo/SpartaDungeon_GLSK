@@ -84,7 +84,7 @@ namespace SpartaDungeon_GLSK.Scene
 
             Console.WriteLine("< 포션 상점 >");
             Console.WriteLine("전투에 필요한 포션을 구매할 수 있습니다.\n");
-           
+
             bool tabActivate = (potionNum > 5);
             int dispPotionNum = potionNum - potionTab;
 
@@ -114,17 +114,33 @@ namespace SpartaDungeon_GLSK.Scene
                             //구매할 개수 입력
                             Console.WriteLine("구매할 포션 개수를 입력해주세요");
                             Console.Write("");
-                            intInput = int.Parse(Console.ReadLine());
+                            intInput = int.TryParse(Console.ReadLine());
 
-                            if (intInput * 가격 <= Program.playerData.Gold)
+                            if (intInput * PotionDatabase.GetPotion(sellingPotionList[selectedIdx + potionTab]).Price <= Program.playerData.Gold)
                             {
                                 //구매
                                 Console.WriteLine($"포션을 {intInput}개 구매하였습니다");
                                 //인벤토리에 아이템 추가, 개수 더하기
+                                bool findInventory = false;
+
+                                for (int i = 0; i < Program.playerData.invenPotion.Count; i++)
+                                {
+                                    if (Program.playerData.invenPotion[i].potion == sellingPotionList[selectedIdx + potionTab])
+                                    {
+                                        findInventory = true;
+                                        Program.playerData.invenPotion[i].stack += intInput;
+                                        break;
+                                    }
+                                }
+                                if (findInventory == false)
+                                {
+                                    Program.playerData.invenPotion.Add(new WorldPotion(sellingPotionList[selectedIdx + potionTab], intInput));
+                                }
+
                                 //골드 차감
-                                Program.playerData.Gold -= intInput * 가격;
+                                Program.playerData.Gold -= intInput * PotionDatabase.GetPotion(sellingPotionList[selectedIdx + potionTab]).Price;
                             }
-                            else if (intInput * 가격 > Program.playerData.Gold)
+                            else if (intInput * PotionDatabase.GetPotion(sellingPotionList[selectedIdx + potionTab]).Price > Program.playerData.Gold)
                             {
                                 Console.WriteLine("골드가 부족합니다");
                                 Thread.Sleep(1000);
