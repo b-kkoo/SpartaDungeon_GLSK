@@ -54,7 +54,7 @@ namespace SpartaDungeon_GLSK
 
                 //Battle Scene : 튜토리얼 배틀, 배틀 프리셋
                 case Scenes.Battle_Tutorial:
-                    loop = BattleScene.LoadBattleScene(BattleScene.BattleStage.Tutorial, out next, keyController);
+                    loop = BattleScene.LoadTutorialBattle(out next, keyController);
                     break;
 
                 //Town Scene : 마을, 장비 상점, 소모품 상점
@@ -67,7 +67,15 @@ namespace SpartaDungeon_GLSK
                     loop = PlayerMenuScene.GameMenu(out next, keyController);
                     break;
 
+                //Dungeon Scene : 던전 스테이지 분기
+                case Scenes.Dungeon_Default:
+                    loop = DungeonScene.ChallengeToDungeon(out next, keyController);
+                    break;
 
+                //Game Over Scene
+                case Scenes.Gameover_Default:
+                    loop = GameoverScene.GAMEOVER(out next, keyController);
+                    break;
 
 
                 //Test
@@ -124,7 +132,11 @@ namespace SpartaDungeon_GLSK
         //게임 메뉴
         PlayerMenu_Menu,
 
+        //던전
+        Dungeon_Default,
 
+        //게임오버
+        Gameover_Default,
 
 
         //Test Menu

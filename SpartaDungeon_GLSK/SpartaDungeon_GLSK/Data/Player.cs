@@ -176,7 +176,9 @@ namespace SpartaDungeon_GLSK.Data
         A_Basic,
 
         M_Basic,
-        M_Magic1
+        M_Magic1,
+
+        MAX
     }
 }
        

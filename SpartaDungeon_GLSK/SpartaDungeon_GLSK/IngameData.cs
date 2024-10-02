@@ -10,7 +10,7 @@ namespace SpartaDungeon_GLSK
     public class IngameData
     {
         //다양한 이벤트 플래그를 관리할 멤버가 필요
-
+        public int DungeonUnlock = 0; //던전 해금. 0~4
 
 
 

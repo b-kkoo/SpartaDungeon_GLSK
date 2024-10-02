@@ -12,13 +12,9 @@ namespace SpartaDungeon_GLSK.Scene
     //전투 관련 씬
     public class BattleScene
     {
-        //배틀 스테이지 인덱스
-        public enum BattleStage
-        {
-            Tutorial,
-
-            First_1,
-        }
+        public static MonsterCode[] _enemies { get; set; }
+        public static string[] _battleComment { get; set; }
+        public static int _goldReward { get; set; }
 
         //배틀 진행 정보
         private static BattleTable battleTable;
@@ -50,49 +46,44 @@ namespace SpartaDungeon_GLSK.Scene
             }
         }
 
-        public static bool LoadBattleScene(BattleStage battleStage, out Scenes next, KeyController keyController)
+        public static bool LoadBattleScene(KeyController keyController)
         {
-            MonsterCode[] enemies = null;
             int expReward = 0;
-            int goldReward = 0;
             int screenTop = 0;
             bool victory = false;
 
-            switch (battleStage)
+            for (int i = 0;i < _battleComment.Length; i++)
             {
-                case BattleStage.Tutorial:
-                    enemies = new MonsterCode[2] { MonsterCode.Comm_Slime, MonsterCode.Comm_Slime };
-                    goldReward = 30;
-                    Console.WriteLine("슬라임이 싸움을 걸어왔다!");
-                    screenTop = 2;
-                    break;
-                case BattleStage.First_1:
-                    enemies = new MonsterCode[3] { MonsterCode.Comm_Goblin, MonsterCode.Comm_Hobgoblin, MonsterCode.Comm_Goblin };
-                    goldReward = 100;
-                    Console.WriteLine("고블린 무리와 마주했다!");
-                    screenTop = 2;
-                    break;
+                Console.WriteLine(_battleComment[i]);
             }
+            screenTop = _battleComment.Length + 1;
 
-            victory = Battle(enemies, screenTop, keyController);
 
-            //패배 씬으로 이동
+            //////////////////////////////////////////////////////////////
+            // 전투 개시
+
+            victory = Battle(_enemies, screenTop, keyController);
+
+
+            //////////////////////////////////////////////////////////////
+            // 패배
+
             if (victory == false)
             {
-                //next = Scenes.
-                //return true;
+                return false;
             }
+
 
             //////////////////////////////////////////////////////////////
             // 승리 
 
             //골드 획득
-            Program.playerData.Gold += goldReward;
+            Program.playerData.Gold += _goldReward;
 
             //경험치 획득 (살아있는 아군이 나눠가짐)
-            for (int i = 0; i < enemies.Length; i++)
+            for (int i = 0; i < _enemies.Length; i++)
             {
-                expReward += MonsterDatabase.GetMonster(enemies[i]).exp;
+                expReward += MonsterDatabase.GetMonster(_enemies[i]).exp;
             }
             int aliveNum = 0;
             Dictionary<int, int> aliveAllyIdx = new Dictionary<int, int>(); //살아있는 아군의 실제 인덱스<표시된 인덱스, Ally 내 인덱스>
@@ -130,7 +121,7 @@ namespace SpartaDungeon_GLSK.Scene
             Console.SetCursorPosition(0, 0);
             string[] victoryComment = new string[3 + levelUpUnitNum];
             victoryComment[0] = "승리했다!";
-            victoryComment[1] = $"{goldReward} Gold를 획득했다!";
+            victoryComment[1] = $"{_goldReward} Gold를 획득했다!";
             for (int i = 0; i < aliveAllyIdx.Count; i++)
             {
                 aliveAllyIdx.TryGetValue(i, out int aliveUnit);
@@ -155,23 +146,19 @@ namespace SpartaDungeon_GLSK.Scene
             Console.SetCursorPosition(0, screenTop + 10);
             ScenePreset.Conversation(victoryComment, keyController);
 
-
-            EndBattleScene(battleStage, out next, keyController);
-
             return true;
         }
 
-        public static void EndBattleScene(BattleStage battleStage, out Scenes next, KeyController keyController)
+        public static bool LoadTutorialBattle(out Scenes next, KeyController keyController)
         {
-            switch (battleStage)
-            {
-                case BattleStage.Tutorial:
-                    next = Scenes.Start_PrologEnd;
-                    break;
-                default:
-                    next = Scenes.Town_Default;
-                    break;
-            }
+            _enemies = new MonsterCode[] { MonsterCode.Comm_Slime, MonsterCode.Comm_Slime };
+            _battleComment = new string[] { "슬라임이 싸움을 걸어왔다!" };
+            _goldReward = 30;
+
+            LoadBattleScene(keyController); //설마 지진 않겠지
+
+            next = Scenes.Start_PrologEnd;
+            return true;
         }
 
         //승패 여부 리턴
@@ -804,6 +791,7 @@ namespace SpartaDungeon_GLSK.Scene
                             //몬스터 사망
                             if (victim.currentHp <= 0)
                             {
+                                victim.currentHp = 0;
                                 victim.isAlive = false;
                                 comment.Add($"{victim.monster.name}를 처치했다!");
                             }
@@ -830,6 +818,7 @@ namespace SpartaDungeon_GLSK.Scene
                     //몬스터 사망
                     if (victim.currentHp <= 0)
                     {
+                        victim.currentHp = 0;
                         victim.isAlive = false;
                         comment.Add($"{victim.monster.name}를 처치했다!");
                     }
@@ -1012,13 +1001,14 @@ namespace SpartaDungeon_GLSK.Scene
                         if (finalDamage < 0) finalDamage = 0;
                         victim.CurrentHp -= finalDamage;
                         comment.Add($"{victim.Name}에게 {finalDamage} 데미지!");
-                        //몬스터 사망
+                        //아군 기절
                         if (victim.CurrentHp <= 0)
                         {
+                            victim.CurrentHp = 0;
                             victim.IsAlive = false;
                             comment.Add($"{victim.Name}는 기절했다!");
                         }
-                        //몬스터 생존
+                        //아군 생존
                         else
                         {
                             if (victim.Concentrating == true)
@@ -1038,13 +1028,14 @@ namespace SpartaDungeon_GLSK.Scene
                 if (finalDamage < 0) finalDamage = 0;
                 victim.CurrentHp -= finalDamage;
                 comment.Add($"{victim.Name}에게 {finalDamage} 데미지!");
-                //몬스터 사망
+                //아군 기절
                 if (victim.CurrentHp <= 0)
                 {
+                    victim.CurrentHp = 0;
                     victim.IsAlive = false;
                     comment.Add($"{victim.Name}는 기절했다!");
                 }
-                //몬스터 생존
+                //아군 생존
                 else
                 {
                     if (victim.Concentrating == true)
