@@ -7,8 +7,18 @@ using System.Threading.Tasks;
 
 namespace SpartaDungeon_GLSK.Scene
 {
-    internal class ShopScene
+    public class ShopScene
     {
+        public static List<PotionCode> sellingPotionList = new List<PotionCode>();
+
+        public static void Set()
+        {
+            sellingPotionList.Add(PotionCode.Potion1);
+            sellingPotionList.Add(PotionCode.Potion2);
+            sellingPotionList.Add(PotionCode.Potion3);
+            sellingPotionList.Add(PotionCode.Potion4);
+        }
+
         //상점
         public static bool Shop(out Scenes next, KeyController keyController)
         {
@@ -80,7 +90,7 @@ namespace SpartaDungeon_GLSK.Scene
 
             for (int i = 0; i < dispPotionNum; i++)
             {
-                //Console.WriteLine($"{i + 1}. {} X {}");
+                Console.WriteLine($"{i + 1}. {PotionDatabase.GetPotion(sellingPotionList[potionTab + i]).name}");
             }
             if (dispPotionNum == 1) Console.WriteLine($"(1 : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
             else Console.WriteLine($"(1 ~ {dispPotionNum} : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
@@ -99,22 +109,38 @@ namespace SpartaDungeon_GLSK.Scene
                     case ConsoleKey.D4:
                     case ConsoleKey.D5:
                         selectedIdx = potionTab + (keyInput - ConsoleKey.D1);
-                        if (selectedIdx < Program.playerData.invenPotion.Count)
+                        if (selectedIdx < sellingPotionList.Count)
                         {
                             //구매할 개수 입력
                             Console.WriteLine("구매할 포션 개수를 입력해주세요");
                             Console.Write("");
-                            intInput = int.Parse(Console.ReadLine());
+                            intInput = int.TryParse(Console.ReadLine());
 
-                            if (intInput * 가격 <= Program.playerData.Gold)
+                            if (intInput * PotionDatabase.GetPotion(sellingPotionList[selectedIdx + potionTab]).Price <= Program.playerData.Gold)
                             {
                                 //구매
                                 Console.WriteLine($"포션을 {intInput}개 구매하였습니다");
                                 //인벤토리에 아이템 추가, 개수 더하기
+                                bool findInventory = false;
+
+                                for (int i = 0; i < Program.playerData.invenPotion.Count; i++)
+                                {
+                                    if (Program.playerData.invenPotion[i].potion == sellingPotionList[selectedIdx + potionTab])
+                                    {
+                                        findInventory = true;
+                                        Program.playerData.invenPotion[i].stack += intInput;
+                                        break;
+                                    }
+                                }
+                                if (findInventory == false)
+                                {
+                                    Program.playerData.invenPotion.Add(new WorldPotion(sellingPotionList[selectedIdx + potionTab], intInput));
+                                }
+
                                 //골드 차감
-                                Program.playerData.Gold -= intInput * 가격;
+                                Program.playerData.Gold -= intInput * PotionDatabase.GetPotion(sellingPotionList[selectedIdx + potionTab]).Price;
                             }
-                            else if (intInput * 가격 > Program.playerData.Gold)
+                            else if (intInput * PotionDatabase.GetPotion(sellingPotionList[selectedIdx + potionTab]).Price > Program.playerData.Gold)
                             {
                                 Console.WriteLine("골드가 부족합니다");
                                 Thread.Sleep(1000);
@@ -168,7 +194,7 @@ namespace SpartaDungeon_GLSK.Scene
 
             for (int i = 0; i < dispPotionNum; i++)
             {
-                Console.WriteLine($"{i + 1}. {PotionDatabase.GetPotion(Program.playerData.invenPotion[potionTab + i].potion).name} X {Program.playerData.invenPotion[potionTab + i].Value}");
+                Console.WriteLine($"{i + 1}. {PotionDatabase.GetPotion(Program.playerData.invenPotion[potionTab + i].potion).name} X {Program.playerData.invenPotion[potionTab + i].stack}");
             }
             if (dispPotionNum == 1) Console.WriteLine($"(1 : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
             else Console.WriteLine($"(1 ~ {dispPotionNum} : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
