@@ -22,4 +22,17 @@ namespace SpartaDungeon_GLSK
             wearer = _wearer;
         }
     }
+
+
+    public class WorldPotion
+    {
+        public PotionCode potion { get; }
+        public int stack { get; set; }
+
+        public WorldPotion(PotionCode code, int _stack)
+        {
+            potion = code;
+            stack = _stack;
+        }
+    }
 }
