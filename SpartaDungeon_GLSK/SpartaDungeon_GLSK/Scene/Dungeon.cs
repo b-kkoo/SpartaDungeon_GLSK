@@ -247,7 +247,7 @@ namespace SpartaDungeon_GLSK.Scene
 
                 case 40: // < ? ? ? > - 1. ? ? ?
                     _enemies = new MonsterCode[] { MonsterCode.Boss_AncientDragon, MonsterCode.Boss_GoblinLord, MonsterCode.Boss_Diablo, MonsterCode.Boss_Necromancer};
-                    _battleComment = new string[] { "???" };
+                    _battleComment = new string[] { "? ? ?" };
                     _goldReward = 300;
                     break;
 
