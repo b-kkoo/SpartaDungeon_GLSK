@@ -106,15 +106,29 @@ namespace SpartaDungeon_GLSK.Data
         {
             skills = new Dictionary<PlayerSkillCode, PlayerSkill>();
 
-            //                                                                                    info                  Warrior           level    a.ratio    m.ratio    mpConsum      splash     charging
-            skills.Add(PlayerSkillCode.W_Basic,   new PlayerSkill("베기",             "전방의 적을 벤다.",              JobCode.Warrior,   1,       1.0,       0.0,      0,            false,     false));
+            //                                                                            info                                                        Warrior       level    a.ratio    m.ratio    mpConsum      splash     charging
+            skills.Add(PlayerSkillCode.W_Basic,   new PlayerSkill("베기",             "전방의 적을 벤다.",                                             JobCode.Warrior,    1,       1.0,       0.0,      0,            false,     false));
+            skills.Add(PlayerSkillCode.W_Basic1,   new PlayerSkill("강타",            "전방의 적을 강하게 벤다.",                                       JobCode.Warrior,    2,       2.0,       0.0,      5,            false,     false));
+            skills.Add(PlayerSkillCode.W_Basic2,   new PlayerSkill("검기",            "전방의 적에게 검기를 날린다.",                                    JobCode.Warrior,    3,       2.5,       0.0,      10,           false,     false));
+            skills.Add(PlayerSkillCode.W_Basic3,   new PlayerSkill("발도",            "전방의 적을 검으로 빠르게 벤다.",                                  JobCode.Warrior,    4,       3.5,       0.0,      20,           false,     false));
+            skills.Add(PlayerSkillCode.W_Basic4,   new PlayerSkill("회전베기",         "불꽃을 휘감아 회전하며 적들을 벤다.",                               JobCode.Warrior,    5,       4.5,       0.0,      25,            true,     false));
+            skills.Add(PlayerSkillCode.W_Basic5,   new PlayerSkill("검기방출",         "전방의 적들에게 검기를 날려 적을 벤다.",                             JobCode.Warrior,    7,       6.5,       0.0,      40,            true,     false));
 
-            //                                                                                    info                  Archer            level    a.ratio    m.ratio    mpConsum      splash   charging
-            skills.Add(PlayerSkillCode.A_Basic,   new PlayerSkill("사격",             "적에게 화살을 발사한다.",        JobCode.Archer,    1,       1.0,       0.0,      0,            false,     false));
-
-            //                                                                                    info                  Mage              level    a.ratio    m.ratio    mpConsum      splash   charging
-            skills.Add(PlayerSkillCode.M_Basic,   new PlayerSkill("지팡이 휘두르기",  "지팡이를 휘둘러 적을 공격한다.", JobCode.Mage,      1,       0.8,       0.0,      0,            false,     false));
-            skills.Add(PlayerSkillCode.M_Magic1,  new PlayerSkill("파이어볼",         "불로 된 구체를 상대에게 날린다.",JobCode.Mage,      1,       0.0,       3.0,      10,           false,     false));
+            //                                                                            info                                                        Archer        level    a.ratio    m.ratio    mpConsum       splash    charging
+            skills.Add(PlayerSkillCode.A_Basic,   new PlayerSkill("사격",             "적에게 화살을 발사한다.",                                        JobCode.Archer,       1,       1.0,       0.0,      0,           false,     false));
+            skills.Add(PlayerSkillCode.A_Basic1,   new PlayerSkill("집중사격",         "적에게 강한화살을 발사한다.",                                     JobCode.Archer,       2,       2.0,       0.0,      5,           false,     false));
+            skills.Add(PlayerSkillCode.A_Basic2,   new PlayerSkill("차징샷",           "적에게 강한화살을 차징후 발사한다.",                               JobCode.Archer,       3,       2.5,       0.0,      10,          false,      true));
+            skills.Add(PlayerSkillCode.A_Basic3,   new PlayerSkill("블리자드샷",        "냉기 속성의 화살로 적 다수를 공격한다.",                            JobCode.Archer,       4,       3.0,       0.0,      20,           true,     false));
+            skills.Add(PlayerSkillCode.A_Basic4,   new PlayerSkill("에로우 블로우",     "강한 기운을 실어 화살을 발사하여 적을 멀리 밀어낸다.",                 JobCode.Archer,       5,       3.5,       0.0,      25,          false,     false));
+            skills.Add(PlayerSkillCode.A_Basic5,   new PlayerSkill("애로우레인",        "화살을 허공에 쏘아 차례로 떨어지며 사방으로 퍼져나가며 떨어진다.",        JobCode.Archer,       7,       5.5,       0.0,      40,          true,      false));
+             
+            //                                                                            info                                                         Mage        level    a.ratio    m.ratio    mpConsum        splash    charging
+            skills.Add(PlayerSkillCode.M_Basic,   new PlayerSkill("지팡이 휘두르기",    "지팡이를 휘둘러 적을 공격한다.",                                   JobCode.Mage,         1,       0.8,       0.0,      0,            false,     false));
+            skills.Add(PlayerSkillCode.M_Magic1,  new PlayerSkill("파이어볼",         "불로 된 구체를 상대에게 날린다.",                                  JobCode.Mage,         1,       0.0,       3.0,      10,           false,     false));
+            skills.Add(PlayerSkillCode.M_Magic2,  new PlayerSkill("아이스볼",         "얼음으로 된 구체를 상대에게 날린다.",                               JobCode.Mage,         2,       0.0,       4.0,      15,           false,     false));
+            skills.Add(PlayerSkillCode.M_Magic3,  new PlayerSkill("파이어레인",        "불비를 상대에게 날린다.",                                        JobCode.Mage,         2,       0.0,       5.0,      20,           true,      false));
+            skills.Add(PlayerSkillCode.M_Magic4,  new PlayerSkill("윈드스톰",         "바람으로된 폭풍을 상대에게 날린다.",                                JobCode.Mage,         5,       0.0,       5.5,      30,           true,      false));
+            skills.Add(PlayerSkillCode.M_Magic5,  new PlayerSkill("메테오",          "하늘에서 불로된 운석을 여러개 떨어뜨린다.",                           JobCode.Mage,         7,       0.0,       6.5,      40,           true,       true));
         }
 
         public static PlayerSkill GetPSkill(PlayerSkillCode code)
@@ -172,11 +186,26 @@ namespace SpartaDungeon_GLSK.Data
     public enum PlayerSkillCode
     {
         W_Basic,
+        W_Basic1,
+        W_Basic2,
+        W_Basic3,
+        W_Basic4,
+        W_Basic5,
+
 
         A_Basic,
+        A_Basic1,
+        A_Basic2,
+        A_Basic3,
+        A_Basic4,
+        A_Basic5,
 
         M_Basic,
         M_Magic1,
+        M_Magic2,
+        M_Magic3,
+        M_Magic4,
+        M_Magic5,
 
         MAX
     }
