@@ -66,6 +66,9 @@ namespace SpartaDungeon_GLSK
                 case Scenes.PlayerMenu_Menu:
                     loop = PlayerMenuScene.GameMenu(out next, keyController);
                     break;
+                case Scenes.PlayerMenu_SaveData:
+                    loop = PlayerMenuScene.GameMenu(out next, keyController);
+                    break;
 
                 //Dungeon Scene : 던전 스테이지 분기
                 case Scenes.Dungeon_Default:
@@ -74,7 +77,7 @@ namespace SpartaDungeon_GLSK
 
                 //Game Over Scene
                 case Scenes.Gameover_Default:
-                    loop = GameoverScene.GAMEOVER(out next, keyController);
+                    //loop = GameoverScene.GAMEOVER(out next, keyController);
                     break;
 
 
@@ -131,6 +134,7 @@ namespace SpartaDungeon_GLSK
 
         //게임 메뉴
         PlayerMenu_Menu,
+        PlayerMenu_SaveData,
 
         //던전
         Dungeon_Default,

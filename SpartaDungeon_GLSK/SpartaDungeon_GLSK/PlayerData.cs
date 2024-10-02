@@ -113,6 +113,7 @@ namespace SpartaDungeon_GLSK
         {
             Lv++;
             Exp -= ExpNextLevel;
+            ExpNextLevel = Lv * 10;
 
             Job playerClass = JobDatabase.GetJob(PClass);
             Hp += playerClass.lvUpHp;

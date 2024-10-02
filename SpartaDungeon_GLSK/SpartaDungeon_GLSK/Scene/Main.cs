@@ -13,7 +13,9 @@
             int cheatActivated;
 
             keyController.GetUserInput(keyFilter, out cheatActivated); //반환값 안받으면 입력버퍼 지우라는 뜻
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("< < 스파르타 던전 for GLSK > >\n");
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("1. 새로하기");
             Console.WriteLine("2. 불러오기");
             Console.WriteLine("3. 게임종료");
