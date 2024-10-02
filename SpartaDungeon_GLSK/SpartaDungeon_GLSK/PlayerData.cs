@@ -122,6 +122,19 @@ namespace SpartaDungeon_GLSK
             Def += playerClass.lvUpDef;
             Speed += playerClass.lvUpSpeed;
             CriRate += playerClass.lvUpCriRate;
+
+            CurrentHp += playerClass.lvUpMp;
+            CurrentMp += playerClass.lvUpMp;
+
+            //스킬 해금
+            for (int i = 0; i < (int)PlayerSkillCode.MAX; i++)
+            {
+                PlayerSkill playerSkill = PlayerSkillDatabase.GetPSkill((PlayerSkillCode)i);
+                if (playerSkill.useClass == PClass && playerSkill.unlockLv == Lv)
+                {
+                    SkillList.Add((PlayerSkillCode)i);
+                }
+            }
         }
 
 
