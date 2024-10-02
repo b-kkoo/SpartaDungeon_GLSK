@@ -106,6 +106,8 @@ namespace SpartaDungeon_GLSK.Data
     //아이템 식별자
     public enum GearCode
     {
+        NONE = -1,
+
         Sword1,
         Sword2,
         Sword3,

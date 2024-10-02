@@ -26,9 +26,9 @@ namespace SpartaDungeon_GLSK
 
             // 인벤토리
             saveData.invenPotion = new Dictionary<int, int>();
-            foreach (KeyValuePair<PotionCode, int> pair in Program.playerData.invenPotion)
+            foreach (WorldPotion worldPotion in Program.playerData.invenPotion)
             {
-                saveData.invenPotion.Add((int)pair.Key, pair.Value);
+                saveData.invenPotion.Add((int)worldPotion.potion, worldPotion.stack);
             }
             saveData.invenGear = new SaveData.WorldGear[Program.playerData.invenGear.Count];
             for (int i = 0; i < Program.playerData.invenGear.Count; i++)
@@ -122,12 +122,12 @@ namespace SpartaDungeon_GLSK
                     // 인벤토리
                     if (saveData.invenPotion != null)
                     {
-                        Program.playerData.invenPotion = new List<KeyValuePair<PotionCode, int>>();
+                        Program.playerData.invenPotion = new List<WorldPotion>();
                         foreach (KeyValuePair<int, int> pair in saveData.invenPotion)
                         {
                             if (PotionDatabase.GetPotion((PotionCode)pair.Key) != null)
                             {
-                                Program.playerData.invenPotion.Add(new KeyValuePair<PotionCode, int>((PotionCode)pair.Key, pair.Value));
+                                Program.playerData.invenPotion.Add(new WorldPotion((PotionCode)pair.Key, pair.Value));
                             }
                         }
                     }

@@ -617,7 +617,7 @@ namespace SpartaDungeon_GLSK.Scene
                     if (dispPotionNum > 5) dispPotionNum = 5; //한번에 표시할 아이템 수 5개로 제한
                     for (int i = 0; i < dispPotionNum; i++)
                     {
-                        Console.WriteLine($"{i + 1}. {PotionDatabase.GetPotion(Program.playerData.invenPotion[potionTab + i].Key).name} X {Program.playerData.invenPotion[potionTab + i].Value}");
+                        Console.WriteLine($"{i + 1}. {PotionDatabase.GetPotion(Program.playerData.invenPotion[potionTab + i].potion).name} X {Program.playerData.invenPotion[potionTab + i].stack}");
                     }
                     if (dispPotionNum == 1) Console.WriteLine($"\n(1 : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
                     else Console.WriteLine($"\n(1 ~ {dispPotionNum} : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
@@ -666,7 +666,7 @@ namespace SpartaDungeon_GLSK.Scene
                 else
                 {
                     Console.SetCursorPosition(0, screenTop + 11);
-                    Console.WriteLine($"아이템 대상 선택 - {PotionDatabase.GetPotion(Program.playerData.invenPotion[selectedIdx].Key).name}\n");
+                    Console.WriteLine($"아이템 대상 선택 - {PotionDatabase.GetPotion(Program.playerData.invenPotion[selectedIdx].potion).name}\n");
 
                     //아이템 사용 대상 목록 디스플레이
                     int dispTargetNum = 0;
@@ -845,7 +845,13 @@ namespace SpartaDungeon_GLSK.Scene
             // 아이템 사용
             else
             {
-                Potion selectedPotion = PotionDatabase.GetPotion(Program.playerData.invenPotion[selectedIdx].Key);
+                Potion selectedPotion = PotionDatabase.GetPotion(Program.playerData.invenPotion[selectedIdx].potion);
+                //아이템 수 -1
+                Program.playerData.invenPotion[selectedIdx].stack--;
+                if (Program.playerData.invenPotion[selectedIdx].stack == 0)
+                {
+                    Program.playerData.invenPotion.RemoveAt(selectedIdx);
+                }
 
                 Console.SetCursorPosition(0, screenTop + 11);
                 Console.WriteLine(new string($"{playerData.Name}가 {selectedPotion.name} 사용!"));

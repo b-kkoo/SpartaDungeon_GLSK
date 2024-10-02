@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static SpartaDungeon_GLSK.SaveData;
 
 namespace SpartaDungeon_GLSK
 {
@@ -107,6 +108,10 @@ namespace SpartaDungeon_GLSK
                 SkillList.Add(PlayerSkillCode.M_Basic);
                 SkillList.Add(PlayerSkillCode.M_Magic1);
             }
+            //장비
+            Equipment[0] = GearCode.NONE;
+            Equipment[1] = GearCode.NONE;
+            Equipment[2] = GearCode.NONE;
         }
 
         public void LvUp() //레벨업 시 스텟 증가
@@ -138,7 +143,96 @@ namespace SpartaDungeon_GLSK
             }
         }
 
+        public void EquipGear(int unitIdx, WorldGear worldGear)
+        {
+            Gear gear = GearDatabase.GetGear(worldGear.gear);
 
+            // 장비목록에서 추가
+            worldGear.wearer = unitIdx;
+
+            //장착 해제
+            GearSlot gs;
+            switch (gear.type)
+            {
+                case GearType.WeaponS:
+                case GearType.WeaponB:
+                case GearType.WeaponW:
+                    gs = GearSlot.Weapon;
+                    break;
+                case GearType.ArmorHA:
+                case GearType.ArmorLA:
+                case GearType.ArmorR:
+                    gs = GearSlot.Armor;
+                    break;
+                default:
+                    gs = GearSlot.Ring;
+                    break;
+            }
+
+            if (Equipment[(int)gs] != GearCode.NONE) UnequipGear(unitIdx, gs);
+            //장착 추가
+            Equipment[(int)gs] = worldGear.gear;
+
+            //스텟
+            Hp += gear.hp;
+            Mp += gear.mp;
+            Atk += gear.atk;
+            MAtk += gear.mAtk;
+            Def += gear.def;
+            Speed += gear.speed;
+            CriRate += gear.criRate;
+
+            CurrentHp += gear.hp;
+            CurrentMp += gear.mp;
+        }
+
+        public void UnequipGear(int unitIdx, GearSlot gearSlot)
+        {
+            Gear gear = GearDatabase.GetGear(Equipment[(int)gearSlot]);
+
+            //장비목록에서 해제
+            foreach (WorldGear worldGear in Program.playerData.invenGear)
+            {
+                if (worldGear.wearer == unitIdx)
+                {
+                    GearSlot gs;
+                    switch (gear.type)
+                    {
+                        case GearType.WeaponS:
+                        case GearType.WeaponB:
+                        case GearType.WeaponW:
+                            gs = GearSlot.Weapon;
+                            break;
+                        case GearType.ArmorHA:
+                        case GearType.ArmorLA:
+                        case GearType.ArmorR:
+                            gs = GearSlot.Armor;
+                            break;
+                        default:
+                            gs = GearSlot.Ring;
+                            break;
+                    }
+                    if (gs == gearSlot) worldGear.wearer = -1;
+                }
+            }
+
+            //장착 해제
+            Equipment[(int)gearSlot] = GearCode.NONE;
+
+            //스텟
+            Hp      -= gear.hp;
+            Mp      -= gear.mp;
+            Atk     -= gear.atk;
+            MAtk    -= gear.mAtk;
+            Def     -= gear.def;
+            Speed   -= gear.speed;
+            CriRate -= gear.criRate;
+
+            CurrentHp -= gear.hp;
+            if (CurrentHp <= 0) CurrentHp = 1;
+            CurrentMp -= gear.mp;
+            if (CurrentMp < 0) CurrentMp = 0;
+        }
 
     }
 }

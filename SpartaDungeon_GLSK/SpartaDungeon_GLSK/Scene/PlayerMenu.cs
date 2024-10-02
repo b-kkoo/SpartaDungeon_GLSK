@@ -97,7 +97,7 @@ namespace SpartaDungeon_GLSK.Scene
 
             List<PlayerUnitData> team = Program.playerData.team;
             PlayerUnitData[] entry = Program.playerData.entry;
-            List<KeyValuePair<PotionCode, int>> invenPotion = Program.playerData.invenPotion;
+            List<WorldPotion> invenPotion = Program.playerData.invenPotion;
             List<WorldGear> invenGear = Program.playerData.invenGear;
 
             int teamTab = 0;
@@ -186,7 +186,7 @@ namespace SpartaDungeon_GLSK.Scene
                 }
 
                 //인벤토리
-                if (_statusTab == 1)
+                else if (_statusTab == 1)
                 {
                     DrawInvenPotion(14, teamTab);
 
@@ -208,9 +208,9 @@ namespace SpartaDungeon_GLSK.Scene
                             case ConsoleKey.D8:
                             case ConsoleKey.D9:
                                 selectedIdx = keyInput - ConsoleKey.D1;
-                                if (selectedIdx + teamTab < invenPotion.Count)
+                                if (selectedIdx + potionTab < invenPotion.Count)
                                 {
-                                    Potion potion = PotionDatabase.GetPotion(invenPotion[selectedIdx + teamTab].Key);
+                                    Potion potion = PotionDatabase.GetPotion(invenPotion[selectedIdx + potionTab].potion);
 
                                     Console.SetCursorPosition(0, 16);
                                     for (int i = 0; i <= 12; i++)
@@ -260,34 +260,130 @@ namespace SpartaDungeon_GLSK.Scene
                                                             if (entry[selectedTarget].CurrentMp > entry[selectedTarget].Mp) entry[selectedTarget].CurrentMp = entry[selectedTarget].Mp;
                                                         }
                                                         //아이템 갯수 -1
-                                                        invenPotion[selectedIdx + teamTab].Value -= 1;
+                                                        invenPotion[selectedIdx].stack--;
+                                                        if (invenPotion[selectedIdx].stack == 0)
+                                                        {
+                                                            invenPotion.RemoveAt(selectedIdx);
+                                                        }
+
+                                                        DrawEntry();
+                                                        DrawInvenPotion(14, teamTab);
+                                                        keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.Tab, ConsoleKey.Q, ConsoleKey.E, ConsoleKey.Z };
+                                                        loop3 = false;
                                                     }
+                                                    break;
+
+                                                case ConsoleKey.X:
+                                                    DrawInvenPotion(14, teamTab);
+                                                    keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.Tab, ConsoleKey.Q, ConsoleKey.E, ConsoleKey.Z };
+                                                    loop3 = false;
                                                     break;
                                             }
                                         }
                                     }
-
-
-
-
-
-
                                 }
                                 break;
 
                             // 다음 인덱스
                             case ConsoleKey.Tab:
-                                if (team.Count > 9)
+                                if (invenPotion.Count > 9)
                                 {
-                                    if (teamTab + 9 >= team.Count) teamTab = 0;
-                                    else teamTab += 9;
+                                    if (potionTab + 9 >= invenPotion.Count) potionTab = 0;
+                                    else potionTab += 9;
                                     loop2 = false;
                                 }
                                 break;
 
                             // 다른 창으로 이동
-                            case ConsoleKey.W:
-                                _statusTab = 1;
+                            case ConsoleKey.Q:
+                                _statusTab = 0;
+                                loop2 = false;
+                                break;
+                            case ConsoleKey.E:
+                                _statusTab = 2;
+                                loop2 = false;
+                                break;
+
+                            // 나가기
+                            case ConsoleKey.X:
+                                loop2 = false;
+                                loop = false;
+                                break;
+                        }
+                    }
+                }
+
+
+
+                //장비 관리
+                else
+                {
+                    DrawInvenGear(14, teamTab);
+
+                    keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.Tab, ConsoleKey.Q, ConsoleKey.W, ConsoleKey.Z };
+                    bool loop2 = true;
+                    while (loop2)
+                    {
+                        keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+                        switch (keyInput)
+                        {
+                            // 아이템 선택
+                            case ConsoleKey.D1:
+                            case ConsoleKey.D2:
+                            case ConsoleKey.D3:
+                            case ConsoleKey.D4:
+                            case ConsoleKey.D5:
+                            case ConsoleKey.D6:
+                            case ConsoleKey.D7:
+                            case ConsoleKey.D8:
+                            case ConsoleKey.D9:
+                                selectedIdx = keyInput - ConsoleKey.D1;
+                                if (selectedIdx + gearTab < invenGear.Count)
+                                {
+                                    WorldGear worldGear = invenGear[selectedIdx];
+
+                                    if (worldGear.wearer >= 0) //착용중인 장비 해제
+                                    {
+                                        Gear gear = GearDatabase.GetGear(worldGear.gear);
+                                        GearSlot gs;
+                                        switch (gear.type)
+                                        {
+                                            case GearType.WeaponS:
+                                            case GearType.WeaponB:
+                                            case GearType.WeaponW:
+                                                gs = GearSlot.Weapon;
+                                                break;
+                                            case GearType.ArmorHA:
+                                            case GearType.ArmorLA:
+                                            case GearType.ArmorR:
+                                                gs = GearSlot.Armor;
+                                                break;
+                                            default:
+                                                gs = GearSlot.Ring;
+                                                break;
+                                        }
+                                        team[worldGear.wearer].UnequipGear(worldGear.wearer, gs);
+                                    }
+                                    else
+                                    {
+
+                                    }
+                                }
+                                break;
+
+                            // 다음 인덱스
+                            case ConsoleKey.Tab:
+                                if (invenPotion.Count > 9)
+                                {
+                                    if (potionTab + 9 >= invenPotion.Count) potionTab = 0;
+                                    else potionTab += 9;
+                                    loop2 = false;
+                                }
+                                break;
+
+                            // 다른 창으로 이동
+                            case ConsoleKey.Q:
+                                _statusTab = 0;
                                 loop2 = false;
                                 break;
                             case ConsoleKey.E:
@@ -383,7 +479,7 @@ namespace SpartaDungeon_GLSK.Scene
         //인벤토리 그리기
         private static void DrawInvenPotion(int screenTop, int potionTab)
         {
-            List<KeyValuePair<PotionCode, int>> invenPotion = Program.playerData.invenPotion;
+            List<WorldPotion> invenPotion = Program.playerData.invenPotion;
 
             Console.SetCursorPosition(0, screenTop);
             for (int i = 0; i <= 12; i++)
@@ -403,8 +499,8 @@ namespace SpartaDungeon_GLSK.Scene
             //9개씩 디스플레이
             for (int i = potionTab; i < potionTab + 9 && i < invenPotion.Count; i++)
             {
-                Potion potion = PotionDatabase.GetPotion(invenPotion[i].Key);
-                Console.Write($" {i - potionTab + 1}. {potion.name} X {invenPotion[i].Value}");
+                Potion potion = PotionDatabase.GetPotion(invenPotion[i].potion);
+                Console.Write($" {i - potionTab + 1}. {potion.name} X {invenPotion[i].stack}");
                 Console.SetCursorPosition(50, Console.GetCursorPosition().Top);
                 Console.WriteLine($"{(potion.type == PotionType.HP ? "HP" : "MP")}를 {potion.power}만큼 회복시킨다.");
             }
