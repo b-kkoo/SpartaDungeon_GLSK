@@ -377,6 +377,10 @@ namespace SpartaDungeon_GLSK.Scene
                                                 break;
                                         }
                                         team[worldGear.wearer].UnequipGear(worldGear.wearer, gs);
+                                        worldGear.wearer = -1;
+
+                                        DrawEntry();
+                                        DrawInvenGear(14, teamTab);
                                     }
                                     else //착용되지 않은 장비 착용
                                     {
