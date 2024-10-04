@@ -103,14 +103,15 @@ namespace SpartaDungeon_GLSK
 
                 //Dungeon Scene : 던전 스테이지 분기
                 case Scenes.Dungeon_Default:
-                    //if (DungeonScene.CanIntoDungeon(keyController))
-                    //{
+                    if (DungeonScene.CanIntoDungeon(keyController))
+                    {
                         loop = DungeonScene.ChallengeToDungeon(out next, keyController);
-                    //}
-                    //else
-                    //{
-                    //    next = Scenes.Town_Default;
-                    //}
+                    }
+                    else
+                    {
+                        loop = true;
+                        next = Scenes.Town_Default;
+                    }
                     break;
 
                 //Game Over Scene

@@ -273,7 +273,19 @@ namespace SpartaDungeon_GLSK
                     string jsonString = File.ReadAllText(filePath);
                     SaveData saveData = JsonSerializer.Deserialize<SaveData>(jsonString);
 
-                    info = $"LV {saveData.team[0].Lv}  {saveData.team[0].Name}  {saveData.team[0].PClassName}, 최고주파 던전 : , 파티 {saveData.team.Length}명";
+                    string highestDungeonStage;
+                    int stageBig, stageSmall;
+                    if (saveData.DefeatHighestDungeonStage < 0)
+                    {
+                        highestDungeonStage = "없음";
+                    }
+                    else
+                    {
+                        stageBig = saveData.DefeatHighestDungeonStage / 10 + 1;
+                        stageSmall = saveData.DefeatHighestDungeonStage % 10 + 1;
+                        highestDungeonStage = $"Stage {stageBig}-{stageSmall}";
+                    }
+                    info = $"LV {saveData.team[0].Lv}  {saveData.team[0].Name}  {saveData.team[0].PClassName}, 최고주파 던전 : {highestDungeonStage}, 파티 {saveData.team.Length}명";
                 }
                 else
                 {
