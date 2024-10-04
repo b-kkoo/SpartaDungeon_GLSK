@@ -241,6 +241,7 @@ namespace SpartaDungeon_GLSK.Scene
                                         _entryNumDisplay = true;
                                         DrawEntry();
 
+                                        Console.SetCursorPosition(0, 16);
                                         Console.WriteLine($"{potion.name}을 누구에게 사용하시겠습니까?\n");
                                         for (int i = 0; i < entryNum; i++)
                                             Console.WriteLine($"{i + 1}. {entry[i].Name}");
@@ -402,6 +403,7 @@ namespace SpartaDungeon_GLSK.Scene
                                             _entryNumDisplay = true;
                                             DrawEntry();
 
+                                            Console.SetCursorPosition(0, 16);
                                             Console.WriteLine($"{gear.name}을 누구에게 착용하시겠습니까?\n");
                                             bool[] wearable = new bool[3];
                                             for (int i = 0; i < entryNum; i++)
@@ -460,12 +462,12 @@ namespace SpartaDungeon_GLSK.Scene
                                                                 }
                                                                 //실질 착용
                                                                 entry[selectedTarget].EquipGear(selectedTeamTarget, worldGear);
-                                                            }
 
-                                                            DrawEntry();
-                                                            DrawInvenGear(14, teamTab);
-                                                            keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.Tab, ConsoleKey.Q, ConsoleKey.W, ConsoleKey.X };
-                                                            loop3 = false;
+                                                                DrawEntry();
+                                                                DrawInvenGear(14, teamTab);
+                                                                keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.Tab, ConsoleKey.Q, ConsoleKey.W, ConsoleKey.X };
+                                                                loop3 = false;
+                                                            }
                                                         }
                                                         break;
 
@@ -537,6 +539,10 @@ namespace SpartaDungeon_GLSK.Scene
                 Console.Write("엔트리가 비어있습니다!");
                 Console.ForegroundColor = ConsoleColor.White;
             }
+            Console.SetCursorPosition(50, 0);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write($"소지금 : {Program.playerData.Gold} Gold");
+            Console.ForegroundColor = ConsoleColor.White;
 
             for (int i = 0; i < 3; i++)
             {
@@ -547,7 +553,8 @@ namespace SpartaDungeon_GLSK.Scene
 
                     if (entry[i].IsAlive == false) Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.SetCursorPosition(i * 40, 2); Console.Write($"{(_entryNumDisplay ? $" {i + 1}. " : "")}");
-                    Console.SetCursorPosition(i * 40 + 4, 2); Console.Write($"LV {entry[i].Lv,2}  {entry[i].Name,-14}{(entry[i].IsAlive == false ? "(기절)" : "")}  {entry[i].PClassName}");
+                    Console.SetCursorPosition(i * 40 + 4, 2); Console.Write($"LV {entry[i].Lv,2}  {entry[i].Name}{(entry[i].IsAlive == false ? "(기절)" : "")}");
+                    Console.SetCursorPosition(i * 40 + 30, 2); Console.Write($"{entry[i].PClassName}");
                     Console.SetCursorPosition(i * 40, 3); Console.Write($"    EXP {entry[i].Exp} / {entry[i].ExpNextLevel}   파티번호 {teamIdx,2}");
                     Console.SetCursorPosition(i * 40, 4); Console.Write($"    HP {entry[i].CurrentHp,3} / {entry[i].Hp,3}");
                     Console.SetCursorPosition(i * 40, 5); Console.Write($"    MP {entry[i].CurrentMp,3} / {entry[i].Mp,3}");
