@@ -93,7 +93,7 @@ namespace SpartaDungeon_GLSK.Scene
                 }
             }
         }
-        
+
         //퀘스트
         public static bool GuildQuest(out Scenes next, KeyController keyController)
         {
@@ -329,7 +329,7 @@ namespace SpartaDungeon_GLSK.Scene
                                             Console.SetCursorPosition(0, 0);
                                             Console.SetCursorPosition(0, 5);
 
-                                            if (Program.playerData.Gold > mercenary.Price) //구매 완
+                                            if (Program.playerData.Gold >= mercenary.Price) //구매 완
                                             {
                                                 //골드 차감
                                                 Program.playerData.Gold -= mercenary.Price;
@@ -379,6 +379,132 @@ namespace SpartaDungeon_GLSK.Scene
             }
 
             next = Scenes.Guild_Hall;
+            return true;
+        }
+
+
+        //퀘스트
+        public static bool GuildInn(out Scenes next, KeyController keyController)
+        {
+            ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
+            ConsoleKey keyInput;
+
+            int cheatActivated;
+            keyController.GetUserInput(keyFilter, out cheatActivated);
+
+            bool loop = true;
+            while (loop)
+            {
+                Console.Clear();
+
+                Console.WriteLine(" < < 길드 > >\n");
+                Console.WriteLine(" - 모험가 숙소\n\n");
+
+                Console.SetCursorPosition(20, 0);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write($"소지금 : {Program.playerData.Gold} Gold");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.SetCursorPosition(0, 5);
+
+                Console.WriteLine("길드 숙소 관리인 : 휴식을 취하고 싶은 모험가분 있으신가요?");
+                Console.WriteLine("                   50 Gold에 방을 내어드리겠습니다~");
+
+                List<PlayerUnitData> team = Program.playerData.team;
+                //팀원 목록 디스플레이
+                Console.SetCursorPosition(0, 8);
+                for (int i = 0; i < team.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {team[i].Name}, {team[i].CurrentHp,3} / {team[i].Hp,3}{(team[i].IsAlive == false ? "(기절)" : "")}");
+                }
+
+                keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.X };
+                bool loop2 = true;
+                while (loop2)
+                {
+                    keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+
+                    switch (keyInput)
+                    {
+                        case ConsoleKey.D1:
+                        case ConsoleKey.D2:
+                        case ConsoleKey.D3:
+                        case ConsoleKey.D4:
+                        case ConsoleKey.D5:
+                        case ConsoleKey.D6:
+                        case ConsoleKey.D7:
+                        case ConsoleKey.D8:
+                        case ConsoleKey.D9:
+                            int selectedIdx = keyInput - ConsoleKey.D1;
+                            if (selectedIdx < team.Count)
+                            {
+                                PlayerUnitData playerUnit = team[selectedIdx];
+
+                                Console.SetCursorPosition(0, 8);
+                                for (int i = 0; i <= 25; i++) Console.WriteLine(new string(' ', Console.WindowWidth));
+                                Console.SetCursorPosition(0, 0);
+                                Console.SetCursorPosition(0, 8);
+                                Console.WriteLine($"    {team[selectedIdx].Name}, {team[selectedIdx].CurrentHp,3} / {team[selectedIdx].Hp,3}{(team[selectedIdx].IsAlive == false ? "(기절)" : "")}");
+
+                                Console.WriteLine("\n해당 모험가를 휴식 시키시겠습니까?");
+                                Console.WriteLine("\n                                 (Z : 예,  X : 아니오)");
+
+                                keyFilter = new ConsoleKey[] { ConsoleKey.Z, ConsoleKey.X };
+                                bool loop3 = true;
+                                while (loop3)
+                                {
+                                    keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+
+                                    switch (keyInput)
+                                    {
+                                        case ConsoleKey.Z:
+                                            Console.SetCursorPosition(0, 5);
+                                            for (int i = 0; i <= 25; i++) Console.WriteLine(new string(' ', Console.WindowWidth));
+                                            Console.SetCursorPosition(0, 0);
+                                            Console.SetCursorPosition(0, 5);
+
+                                            if (Program.playerData.Gold >= 50) //구매 완
+                                            {
+
+                                                //골드 차감
+                                                Program.playerData.Gold -= 50;
+
+                                                //휴식 효과
+                                                playerUnit.IsAlive = true;
+                                                playerUnit.CurrentHp = playerUnit.Hp;
+
+                                                //구매 메시지
+                                                Console.WriteLine($"길드 숙소 관리인 : {playerUnit.Name}님, 편히 쉬세요~");
+                                                Thread.Sleep(1000);
+                                                keyController.GetUserInput(keyFilter, out cheatActivated);
+                                            }
+                                            else //골드 소지량 부족
+                                            {
+                                                Console.WriteLine($"길드 숙소 관리인 : 돈이 부족한 것 같아요~");
+                                                Thread.Sleep(1000);
+                                                keyController.GetUserInput(keyFilter, out cheatActivated);
+                                            }
+                                            loop3 = false;
+                                            break;
+
+                                        case ConsoleKey.X:
+                                            loop3 = false;
+                                            break;
+                                    }
+                                }
+                                loop2 = false;
+                            }
+                            break;
+
+                        case ConsoleKey.X:
+                            loop2 = false;
+                            loop = false;
+                            break;
+                    }
+                }
+
+            }
+
+                next = Scenes.Guild_Hall;
             return true;
         }
     }

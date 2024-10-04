@@ -18,6 +18,13 @@ namespace SpartaDungeon_GLSK
             ShopScene.Set();
             GuildScene.Set();
 
+            Console.CursorVisible = false;
+            try //윈도우 환경에서만 창 크기 변경 (다른 os 에서는 에러 뜸)
+            {
+                Console.SetWindowSize(200, 50);
+            }
+            catch { }
+
             sceneManager.Start();
         }
     }

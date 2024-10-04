@@ -7,6 +7,7 @@ namespace SpartaDungeon_GLSK.Scene
     public class PlayerMenuScene
     {
         private static int _statusTab;
+        private static bool _entryNumDisplay;
 
         public static bool GameMenu(out Scenes next, KeyController keyController)
         {
@@ -237,6 +238,9 @@ namespace SpartaDungeon_GLSK.Scene
                                     }
                                     else
                                     {
+                                        _entryNumDisplay = true;
+                                        DrawEntry();
+
                                         Console.WriteLine($"{potion.name}을 누구에게 사용하시겠습니까?\n");
                                         for (int i = 0; i < entryNum; i++)
                                             Console.WriteLine($"{i + 1}. {entry[i].Name}");
@@ -286,6 +290,9 @@ namespace SpartaDungeon_GLSK.Scene
                                                     break;
                                             }
                                         }
+
+                                        _entryNumDisplay = false;
+                                        DrawEntry();
                                     }
                                 }
                                 break;
@@ -392,6 +399,9 @@ namespace SpartaDungeon_GLSK.Scene
                                         }
                                         else
                                         {
+                                            _entryNumDisplay = true;
+                                            DrawEntry();
+
                                             Console.WriteLine($"{gear.name}을 누구에게 착용하시겠습니까?\n");
                                             bool[] wearable = new bool[3];
                                             for (int i = 0; i < entryNum; i++)
@@ -466,6 +476,9 @@ namespace SpartaDungeon_GLSK.Scene
                                                         break;
                                                 }
                                             }
+
+                                            _entryNumDisplay = false;
+                                            DrawEntry();
                                         }
                                     }
                                 }
@@ -533,7 +546,8 @@ namespace SpartaDungeon_GLSK.Scene
                     for (int j = 0; j < team.Count; j++) if (entry[i] == team[j]) { teamIdx = j; break; }
 
                     if (entry[i].IsAlive == false) Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.SetCursorPosition(i * 40, 2); Console.Write($" 1. LV {entry[i].Lv,2}  {entry[i].Name,-14}{(entry[i].IsAlive == false ? "(기절)" : "")}  {entry[i].PClassName}");
+                    Console.SetCursorPosition(i * 40, 2); Console.Write($"{(_entryNumDisplay ? $" {i + 1}. " : "")}");
+                    Console.SetCursorPosition(i * 40 + 4, 2); Console.Write($"LV {entry[i].Lv,2}  {entry[i].Name,-14}{(entry[i].IsAlive == false ? "(기절)" : "")}  {entry[i].PClassName}");
                     Console.SetCursorPosition(i * 40, 3); Console.Write($"    EXP {entry[i].Exp} / {entry[i].ExpNextLevel}   파티번호 {teamIdx,2}");
                     Console.SetCursorPosition(i * 40, 4); Console.Write($"    HP {entry[i].CurrentHp,3} / {entry[i].Hp,3}");
                     Console.SetCursorPosition(i * 40, 5); Console.Write($"    MP {entry[i].CurrentMp,3} / {entry[i].Mp,3}");
