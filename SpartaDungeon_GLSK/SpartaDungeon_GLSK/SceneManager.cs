@@ -69,6 +69,15 @@ namespace SpartaDungeon_GLSK
                 case Scenes.Shop_BuyPotion:
                     loop = ShopScene.BuyPotion(out next, keyController);
                     break;
+                case Scenes.Shop_SellPotion:
+                    loop = ShopScene.SellPotion(out next, keyController);
+                    break;
+                case Scenes.Shop_BuyGear:
+                    loop = ShopScene.BuyGear(out next, keyController);
+                    break;
+                case Scenes.Shop_SellGear:
+                    loop = ShopScene.SellGear(out next, keyController);
+                    break;
 
                 //Guild Scene
                 case Scenes.Guild_Hall:
@@ -76,6 +85,9 @@ namespace SpartaDungeon_GLSK
                     break;
                 case Scenes.Guild_Quest:
                     loop = GuildScene.GuildQuest(out next, keyController);
+                    break;
+                case Scenes.Guild_Mercenary:
+                    loop = GuildScene.GuildMercenary(out next, keyController);
                     break;
 
                 //PlayerMenu Scene : 상태창, 인벤토리, 장비, 스킬, 저장
