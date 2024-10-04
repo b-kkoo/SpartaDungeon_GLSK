@@ -490,7 +490,6 @@ namespace SpartaDungeon_GLSK.Scene
                                             //선택 확정
                                             if (seletedSkill.isSplash) //차징 스킬인 경우
                                             {
-                                                playerUnitData.Concentrating = true;
                                                 playerUnitData.ReservedSkill = selectedIdx;
                                                 playerUnitData.ReservedTarget = 0;
                                             }
@@ -567,7 +566,6 @@ namespace SpartaDungeon_GLSK.Scene
                                     //선택 확정
                                     if (selectedSkill.isSplash) //차징 스킬인 경우
                                     {
-                                        playerUnitData.Concentrating = true;
                                         playerUnitData.ReservedSkill = selectedIdx;
                                         playerUnitData.ReservedTarget = selectedTarget;
                                     }
@@ -778,6 +776,8 @@ namespace SpartaDungeon_GLSK.Scene
                 comment.Add($"{playerData.Name}의 {selectedSkill.skillName}!");
                 if (critcalHit) comment.Add("크리티컬로 적중!");
 
+                // 마나 소모
+                playerData.CurrentMp -= selectedSkill.mpConsum;
                 // 피격 구현
                 double damage = selectedSkill.CalcDamage(playerData);
                 if (critcalHit) damage *= 1.5;  //크리티컬 적중 시 1.5배의 데미지
@@ -898,6 +898,9 @@ namespace SpartaDungeon_GLSK.Scene
                 mSkill = MonsterSkillDatabase.GetMSkill(worldMonster.monster.skillList[i]);
                 angerConsum = mSkill.angerConsum;
 
+                // 분노 소모량 없으면 에러를 방지하기 위해 10으로 취급
+                if (angerConsum == 0) angerConsum = 10;
+
                 if (anger < angerConsum) continue;
                 else
                 {
@@ -997,6 +1000,8 @@ namespace SpartaDungeon_GLSK.Scene
                 if (keyInput == ConsoleKey.Z) loop = false;
             }
 
+            // 분노게이지 소모
+            worldMonster.anger -= selectedSkill.angerConsum;
             // 피격 구현
             double damage = selectedSkill.CalcDamage(worldMonster.monster);
             if (critcalHit) damage *= 1.5;  //크리티컬 적중 시 1.5배의 데미지

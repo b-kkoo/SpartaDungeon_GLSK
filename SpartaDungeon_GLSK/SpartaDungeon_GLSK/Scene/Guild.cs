@@ -414,7 +414,7 @@ namespace SpartaDungeon_GLSK.Scene
                 Console.SetCursorPosition(0, 8);
                 for (int i = 0; i < team.Count; i++)
                 {
-                    Console.WriteLine($"{i + 1}. {team[i].Name}, {team[i].CurrentHp,3} / {team[i].Hp,3}{(team[i].IsAlive == false ? "(기절)" : "")}");
+                    Console.WriteLine($"{i + 1}. {team[i].Name}, {team[i].CurrentHp,3} / {team[i].Hp,3}   {team[i].CurrentMp,3} / {team[i].Mp,3}{(team[i].IsAlive == false ? "(기절)" : "")}");
                 }
 
                 keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.X };
@@ -443,7 +443,7 @@ namespace SpartaDungeon_GLSK.Scene
                                 for (int i = 0; i <= 25; i++) Console.WriteLine(new string(' ', Console.WindowWidth));
                                 Console.SetCursorPosition(0, 0);
                                 Console.SetCursorPosition(0, 8);
-                                Console.WriteLine($"    {team[selectedIdx].Name}, {team[selectedIdx].CurrentHp,3} / {team[selectedIdx].Hp,3}{(team[selectedIdx].IsAlive == false ? "(기절)" : "")}");
+                                Console.WriteLine($"    {team[selectedIdx].Name}, {team[selectedIdx].CurrentHp,3} / {team[selectedIdx].Hp,3}   {team[selectedIdx].CurrentMp,3} / {team[selectedIdx].Mp,3}{(team[selectedIdx].IsAlive == false ? "(기절)" : "")}");
 
                                 Console.WriteLine("\n해당 모험가를 휴식 시키시겠습니까?");
                                 Console.WriteLine("\n                                 (Z : 예,  X : 아니오)");
@@ -471,6 +471,7 @@ namespace SpartaDungeon_GLSK.Scene
                                                 //휴식 효과
                                                 playerUnit.IsAlive = true;
                                                 playerUnit.CurrentHp = playerUnit.Hp;
+                                                playerUnit.CurrentMp = playerUnit.Mp;
 
                                                 //구매 메시지
                                                 Console.WriteLine($"길드 숙소 관리인 : {playerUnit.Name}님, 편히 쉬세요~");

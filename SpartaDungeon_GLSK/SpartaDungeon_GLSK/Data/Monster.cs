@@ -156,8 +156,8 @@ namespace SpartaDungeon_GLSK.Data
             skills.Add(MonsterSkillCode.Basic_GoblinMage,  new MonsterSkill("토템 휘두르기",      1,      0,      0,      false,    false));
             skills.Add(MonsterSkillCode.Magic_GoblinMage,  new MonsterSkill("다크 볼",            0,    1.5,     15,      false,    false));
             skills.Add(MonsterSkillCode.Basic_GoblinLord,  new MonsterSkill("마구 찍기",          1,      0,      0,      false,    false));
-            skills.Add(MonsterSkillCode.Melee_GoblinLord,  new MonsterSkill("휩쓸기",           1.5,      0,      0,       true,    false));
-            skills.Add(MonsterSkillCode.Magic_GoblinLord,  new MonsterSkill("파이어볼",           0,      2,      0,       true,    false));
+            skills.Add(MonsterSkillCode.Melee_GoblinLord,  new MonsterSkill("휩쓸기",           1.5,      0,     30,       true,    false));
+            skills.Add(MonsterSkillCode.Magic_GoblinLord,  new MonsterSkill("파이어볼",           0,      2,     20,       true,    false));
 
             skills.Add(MonsterSkillCode.Basic_Skeleton,    new MonsterSkill("휘두르기",           1,      0,      0,      false,    false));
             skills.Add(MonsterSkillCode.Melee_Skeleton,    new MonsterSkill("찌르기",           1.5,      0,     15,      false,    false));

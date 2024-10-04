@@ -5,7 +5,21 @@ namespace SpartaDungeon_GLSK.Scene
 {
     internal class DungeonScene
     {
-        
+        /*public static bool CanIntoDungeon(KeyController keyController) //던전 입장 가능 여부
+        {
+            if (Program.playerData.entry[0] == null)
+            {
+                Console.WriteLine("최소 한명은 엔트리에 들어가 있어야 합니다!");
+                Console.WriteLine("\n                                         (Z : 확인)"); 
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    if (Program.playerData.entry[i] != null && Program.playerData.entry[i].)
+                }
+            }
+        }*/
 
         public static bool ChallengeToDungeon(out Scenes next, KeyController keyController)
         {

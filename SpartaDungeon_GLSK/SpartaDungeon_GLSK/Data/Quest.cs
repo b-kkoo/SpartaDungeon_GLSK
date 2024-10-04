@@ -28,7 +28,7 @@ namespace SpartaDungeon_GLSK.Data
                                                                                                                                135, new GearCode[0], new WorldPotion[0]));
 
             quests.Add(QuestCode.dungeonStage0_2, new Quest("고블린 로드 퇴치",
-                                                    new string[] { "안내인 : 고블린 소굴에대해 새로운 정보가 공개됬어요.",
+                                                    new string[] { "안내인 : 고블린 소굴에대해 새로운 정보가 공개됐어요.",
                                                                    "안내인 : 그곳에 고블린 로드가 발생되었다는 정보를 입수했어요.",
                                                                    "안내인 : 고블린 로드가 발생됨에 따라 던전 브레이크가 발생될수있으니.",
                                                                    "안내인 : 고블린 로드 퇴치를 의뢰 할까합니다 의뢰를 해결하시면 상당한 보상을 드릴게요."},
