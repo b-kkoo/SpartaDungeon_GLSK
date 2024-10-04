@@ -272,9 +272,9 @@ namespace SpartaDungeon_GLSK.Scene
                                 for (int i = 0; i <= 25; i++) Console.WriteLine(new string(' ', Console.WindowWidth));
                                 Console.SetCursorPosition(0, 0);
                                 Console.SetCursorPosition(0, 4);
-                                Console.WriteLine($"{potion.name} : {(potion.type == PotionType.HP ? "HP" : "MP")}를 {potion.power}만큼 회복시킨다.\n\n");
+                                Console.WriteLine($"{potion.name} X {Program.playerData.invenPotion[selectedIdx + potionTab].stack}.\n\n");
 
-                                Console.WriteLine("구매할 포션 개수를 입력해주세요");
+                                Console.WriteLine("판매할 포션 개수를 입력해주세요");
 
                                 int quantity = 1;
                                 Console.SetCursorPosition(35, 6);
@@ -299,7 +299,7 @@ namespace SpartaDungeon_GLSK.Scene
 
                                         //인벤토리에서 아이템 삭제
                                         bool findInventory;
-                                        for (int i = 0; i < Program.playerData.invenPotion.Count; i--)
+                                        for (int i = 0; i < Program.playerData.invenPotion.Count; i++)
                                         {
                                             if (Program.playerData.invenPotion[i].stack > quantity )
                                             {
