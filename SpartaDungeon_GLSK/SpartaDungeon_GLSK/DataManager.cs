@@ -99,6 +99,7 @@ namespace SpartaDungeon_GLSK
             saveData.DefeatHighestDungeonStage = Program.ingameData.DefeatHighestDungeonStage;
             saveData.DungeonUnlock = Program.ingameData.DungeonUnlock;
             saveData.QuestFlag = Program.ingameData.QuestFlag;
+            saveData.MercenaryPurchased = Program.ingameData.MercenaryPurchased;
 
             try
             {
@@ -231,6 +232,10 @@ namespace SpartaDungeon_GLSK
                     {
                         Program.ingameData.QuestFlag = saveData.QuestFlag;
                     }
+                    if (saveData.MercenaryPurchased != null)
+                    {
+                        Program.ingameData.MercenaryPurchased = saveData.MercenaryPurchased;
+                    }
                 }
                 else
                 {
@@ -343,5 +348,7 @@ namespace SpartaDungeon_GLSK
         public int DungeonUnlock { get; set; }
 
         public int[] QuestFlag { get; set; }
+
+        public bool[] MercenaryPurchased { get; set; }
     }
 }

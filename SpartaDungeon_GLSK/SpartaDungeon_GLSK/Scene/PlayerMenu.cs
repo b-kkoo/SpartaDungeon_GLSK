@@ -573,7 +573,9 @@ namespace SpartaDungeon_GLSK.Scene
                 if (entry[0] == team[i]) entryNum = 0;
                 if (entry[1] == team[i]) entryNum = 1;
                 if (entry[2] == team[i]) entryNum = 2;
-                Console.WriteLine($" {i + 1}. LV {team[i].Lv,2}  {team[i].Name,-14}  {team[i].PClassName}{(entryNum >= 0 ? $"   출전-{entryNum + 1}" : "")}");
+                Console.Write($" {i + 1}. LV {team[i].Lv,2}  {team[i].Name}");
+                Console.SetCursorPosition(30, Console.GetCursorPosition().Top);
+                Console.WriteLine($"{team[i].PClassName}{(entryNum >= 0 ? $"   출전-{entryNum + 1}" : "")}");
             }
 
             if (team.Count > 9) Console.WriteLine("\n                             (Tab : 다음)");

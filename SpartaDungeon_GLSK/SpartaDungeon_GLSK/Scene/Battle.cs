@@ -357,13 +357,13 @@ namespace SpartaDungeon_GLSK.Scene
                 if (battleTable.Ally[i] != null)
                 {
                     if (battleTable.Ally[i].IsAlive == false) Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.SetCursorPosition(i * 50, screenTop + 5);
+                    Console.SetCursorPosition(i * 35, screenTop + 5);
                     Console.WriteLine($"LV {battleTable.Ally[i].Lv}   {battleTable.Ally[i].Name}{(battleTable.Ally[i].IsAlive ? "" : "(기절)")}");
-                    Console.SetCursorPosition(i * 50, screenTop + 6);
+                    Console.SetCursorPosition(i * 35, screenTop + 6);
                     Console.WriteLine($"HP {battleTable.Ally[i].CurrentHp} / {battleTable.Ally[i].Hp}");
-                    Console.SetCursorPosition(i * 50, screenTop + 7);
+                    Console.SetCursorPosition(i * 35, screenTop + 7);
                     Console.WriteLine($"MP {battleTable.Ally[i].CurrentMp} / {battleTable.Ally[i].Mp}");
-                    Console.SetCursorPosition(i * 50, screenTop + 8);
+                    Console.SetCursorPosition(i * 35, screenTop + 8);
                     Console.WriteLine($"AP {Math.Floor(battleTable.Ally[i].AP)} %{(battleTable.Ally[i].Concentrating ? " (집중)" : "")}");
                     Console.ForegroundColor = ConsoleColor.White;
                 }

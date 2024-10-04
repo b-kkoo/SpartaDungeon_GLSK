@@ -77,6 +77,9 @@ namespace SpartaDungeon_GLSK
                 case Scenes.Guild_Quest:
                     loop = GuildScene.GuildQuest(out next, keyController);
                     break;
+                case Scenes.Guild_Mercenary:
+                    loop = GuildScene.GuildMercenary(out next, keyController);
+                    break;
 
                 //PlayerMenu Scene : 상태창, 인벤토리, 장비, 스킬, 저장
                 case Scenes.PlayerMenu_Menu:
