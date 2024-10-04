@@ -68,7 +68,7 @@ namespace SpartaDungeon_GLSK.Scene
                         return true;
 
                     case ConsoleKey.X:
-                        next = Scenes.PlayerMenu_Menu; //게임 메뉴 이동
+                        next = Scenes.Town_Default; //마을 이동
                         return true;
                 }
             }
