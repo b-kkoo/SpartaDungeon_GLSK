@@ -141,7 +141,9 @@ namespace SpartaDungeon_GLSK.Data
         Ring1,
         Ring2,
         Ring3,
-        Ring4
+        Ring4,
+        
+        Max
     }
 
     //아이템 타입

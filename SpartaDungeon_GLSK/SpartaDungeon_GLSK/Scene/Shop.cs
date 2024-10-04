@@ -10,6 +10,7 @@ namespace SpartaDungeon_GLSK.Scene
     public class ShopScene
     {
         public static List<PotionCode> _sellingPotionList = new List<PotionCode>();
+        public static List<GearCode> _sellingGearList = new List<GearCode>();
 
         public static void Set()
         {
@@ -17,6 +18,11 @@ namespace SpartaDungeon_GLSK.Scene
             _sellingPotionList.Add(PotionCode.PotionHp2);
             _sellingPotionList.Add(PotionCode.PotionMp1);
             _sellingPotionList.Add(PotionCode.PotionMp2);
+
+            for (int g = 0; g < (int)GearCode.Max; g++)
+            {
+                _sellingGearList.Add((GearCode)g);
+            }                
         }
 
         //상점
@@ -40,7 +46,7 @@ namespace SpartaDungeon_GLSK.Scene
 
             while (true)
             {
-                keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.X };
+                keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.X };
                 keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
 
                 switch (keyInput)
@@ -50,19 +56,19 @@ namespace SpartaDungeon_GLSK.Scene
                         return true;
 
                     case ConsoleKey.D2:
-                        next = Scenes.Main_Menu; //포션 판매로 이동
+                        next = Scenes.Shop_SellPotion; //포션 판매로 이동
                         return true;
 
                     case ConsoleKey.D3:
-                        next = Scenes.Main_Menu; //장비 구매로 이동
+                        next = Scenes.Shop_BuyGear; //장비 구매로 이동
                         return true;
 
                     case ConsoleKey.D4:
-                        next = Scenes.Main_Menu; //장비 판매로 이동
+                        next = Scenes.Shop_SellGear; //장비 판매로 이동
                         return true;
 
                     case ConsoleKey.X:
-                        next = Scenes.PlayerMenu_Menu; //게임 메뉴 이동
+                        next = Scenes.Town_Default; //마을 이동
                         return true;
                 }
             }
@@ -207,96 +213,146 @@ namespace SpartaDungeon_GLSK.Scene
         }
 
         //포션 판매
-        /*public static bool SellPotion(out Scenes next, KeyController keyController, out int selectedIdx)
+        public static bool SellPotion(out Scenes next, KeyController keyController)
         {
             ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
             ConsoleKey keyInput;
 
-            int intInput;
-
             int cheatActivated;
-            int potionNum = Program.playerData.invenPotion.Count;
-            int potionTab = 0;
-            selectedIdx = 0;
-
             keyController.GetUserInput(keyFilter, out cheatActivated);
 
             Console.WriteLine("< 포션 상점 >");
-            Console.WriteLine("보유한 포션을 판매할 수 있습니다\n");
+            Console.WriteLine("\n보유한 포션을 판매할 수 있습니다.");
 
-            bool tabActivate = (potionNum > 5);
-            int dispPotionNum = potionNum - potionTab;
+            int potionTab = 0;
+            int selectedIdx = 0;
 
-            for (int i = 0; i < dispPotionNum; i++)
-            {
-                Console.WriteLine($"{i + 1}. {PotionDatabase.GetPotion(Program.playerData.invenPotion[potionTab + i].potion).name} X {Program.playerData.invenPotion[potionTab + i].stack}");
-            }
-            if (dispPotionNum == 1) Console.WriteLine($"(1 : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
-            else Console.WriteLine($"(1 ~ {dispPotionNum} : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
-
-            keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.Tab, ConsoleKey.X };
+            keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.Tab, ConsoleKey.X };
             bool loop = true;
             while (loop)
             {
-                keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
-
-                switch (keyInput)
+                //보유 포션 리스트 디스플레이
+                Console.SetCursorPosition(20, 0);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write($"소지금 : {Program.playerData.Gold} Gold");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.SetCursorPosition(0, 4);
+                for (int i = 0; i <= 14; i++) Console.WriteLine(new string(' ', Console.WindowWidth));
+                Console.SetCursorPosition(0, 0);
+                Console.SetCursorPosition(0, 4);
+                for (int i = potionTab; i < potionTab + 9 && i < Program.playerData.invenPotion.Count; i++)
                 {
-                    case ConsoleKey.D1:
-                    case ConsoleKey.D2:
-                    case ConsoleKey.D3:
-                    case ConsoleKey.D4:
-                    case ConsoleKey.D5:
-                        selectedIdx = potionTab + (keyInput - ConsoleKey.D1);
-                        if (selectedIdx < Program.playerData.invenPotion.Count)
-                        {
-                            //판매할 개수 입력
-                            Console.WriteLine("판매할 포션 개수를 입력해주세요");
-                            Console.Write("");
-                            intInput = int.Parse(Console.ReadLine());
+                    Potion potion = PotionDatabase.GetPotion(Program.playerData.invenPotion[i].potion);
+                    Console.Write($" {i - potionTab + 1}. {potion.name}");
+                    Console.SetCursorPosition(20, Console.GetCursorPosition().Top);
+                    Console.WriteLine($"{(potion.type == PotionType.HP ? "HP" : "MP")}를 {potion.power}만큼 회복시킨다.\n");
+                }
+                if (Program.playerData.invenPotion.Count > 9) Console.WriteLine("\n                             (Tab : 다음)");
 
-                            if (intInput <= Program.playerData.invenPotion[selectedIdx + potionTab].stack)
+                bool loop2 = true;
+                while (loop2)
+                {
+                    keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+                    switch (keyInput)
+                    {
+                        case ConsoleKey.D1:
+                        case ConsoleKey.D2:
+                        case ConsoleKey.D3:
+                        case ConsoleKey.D4:
+                        case ConsoleKey.D5:
+                        case ConsoleKey.D6:
+                        case ConsoleKey.D7:
+                        case ConsoleKey.D8:
+                        case ConsoleKey.D9:
+                            selectedIdx = keyInput - ConsoleKey.D1;
+                            if (selectedIdx + potionTab < Program.playerData.invenPotion.Count)
                             {
-                                //판매
-                                Console.WriteLine($"포션을 {intInput}개 판매하였습니다");
-                                Program.playerData.invenPotion[selectedIdx + potionTab].stack -= intInput;
-                                //돈 받기
-                                Program.playerData.Gold += intInput * (int)(PotionDatabase.GetPotion(Program.playerData.invenPotion[selectedIdx + potionTab].potion).Price * 0.8);
-                            }
-                            else if (intInput > Program.playerData.invenPotion[selectedIdx + potionTab].stack)
-                            {
-                                Console.WriteLine("판매할 포션 개수가 보유한 포션 개수보다 많습니다");
-                                Thread.Sleep(1000);
-                                keyController.GetUserInput(keyFilter, out cheatActivated);
-                            }
-                            else
-                            {
-                                Console.WriteLine("다시 입력해주세요");
-                                Thread.Sleep(1000);
-                                keyController.GetUserInput(keyFilter, out cheatActivated);
-                            }
-                        }
-                        break;
+                                Potion potion = PotionDatabase.GetPotion(Program.playerData.invenPotion[selectedIdx + potionTab].potion);
+                                Console.SetCursorPosition(0, 4);
+                                for (int i = 0; i <= 25; i++) Console.WriteLine(new string(' ', Console.WindowWidth));
+                                Console.SetCursorPosition(0, 0);
+                                Console.SetCursorPosition(0, 4);
+                                Console.WriteLine($"{potion.name} X {Program.playerData.invenPotion[selectedIdx + potionTab].stack}.\n\n");
 
-                    case ConsoleKey.Tab:
-                        if (tabActivate == true)
-                        {
-                            //다음 리스트 보기
-                            if (potionTab + 5 >= potionNum) potionTab = 0;
-                            else potionTab += 5;
+                                Console.WriteLine("판매할 포션 개수를 입력해주세요");
+
+                                int quantity = 1;
+                                Console.SetCursorPosition(35, 6);
+                                Console.Write("↑");
+                                Console.SetCursorPosition(35, 8);
+                                Console.Write("↓");
+                                Console.SetCursorPosition(33, 7);
+                                Console.Write("←");
+                                Console.SetCursorPosition(37, 7);
+                                Console.Write("→");
+                                if (GetQuantityInput(36, 7, 99, keyController, ref quantity))
+                                {
+                                    Console.SetCursorPosition(0, 4);
+                                    for (int i = 0; i <= 25; i++) Console.WriteLine(new string(' ', Console.WindowWidth));
+                                    Console.SetCursorPosition(0, 0);
+                                    Console.SetCursorPosition(0, 4);
+
+                                    if (Program.playerData.invenPotion[selectedIdx + potionTab].stack >= quantity)
+                                    {
+                                        //골드 수령
+                                        Program.playerData.Gold += quantity * (int)(potion.Price * 0.8);
+
+                                        //인벤토리에서 아이템 삭제
+                                        bool findInventory;
+                                        for (int i = 0; i < Program.playerData.invenPotion.Count; i++)
+                                        {
+                                            if (Program.playerData.invenPotion[i].stack > quantity )
+                                            {
+                                                Program.playerData.invenPotion[i].stack -= quantity;
+                                                break;
+                                            }
+                                            else 
+                                            {
+                                                Program.playerData.invenPotion.RemoveAt(selectedIdx + potionTab);
+                                                findInventory = false;
+                                                break;
+                                            }
+                                        }
+
+                                        //판매 메시지
+                                        Console.WriteLine($"{potion.name}을 {quantity}개 판매매하였습니다");
+                                        Thread.Sleep(1000);
+                                        keyController.GetUserInput(keyFilter, out cheatActivated);
+                                    }
+                                    else //보유 개수 부족
+                                    {
+                                        Console.WriteLine("보유한 포션이 판매할 수량보다 적습니다");
+                                        Thread.Sleep(1000);
+                                        keyController.GetUserInput(keyFilter, out cheatActivated);
+                                    }
+                                }
+                                loop2 = false;
+                            }
+                            break;
+
+                        case ConsoleKey.Tab:
+                            if (Program.playerData.invenPotion.Count > 9)
+                            {
+                                if (potionTab + 9 >= Program.playerData.invenPotion.Count) potionTab = 0;
+                                else potionTab += 9;
+                                loop2 = false;
+                            }
+                            break;
+
+                        case ConsoleKey.X:
+                            loop2 = false;
                             loop = false;
-                        }
-                        break;
-
-                    case ConsoleKey.X:
-                        next = Scenes.Town_Default; //상점으로 되돌아가기
-                        return true;
+                            break;
+                    }
                 }
             }
+
+            next = Scenes.Shop_Default; //상점으로 되돌아가기
+            return true;
         }
 
         //장비 구매
-        public static bool BuyGear(out Scenes next, KeyController keyController, out int selectedIdx) 
+        public static bool BuyGear(out Scenes next, KeyController keyController)
         {
             ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
             ConsoleKey keyInput;
@@ -304,174 +360,250 @@ namespace SpartaDungeon_GLSK.Scene
             int cheatActivated;
             keyController.GetUserInput(keyFilter, out cheatActivated);
 
-            int intInput;
-            int gearNum = Program.playerData.invenGear.Count;
-            int gearTab = 0;
-            selectedIdx = 0;
-
             Console.WriteLine("< 장비 상점 >");
-            Console.WriteLine("전투에 필요한 장비를 구매할 수 있습니다.\n");
+            Console.WriteLine("\n전투에 필요한 장비를 구매할 수 있습니다.");
 
-            bool tabActivate = (gearNum > 5);
-            int dispGearNum = gearNum - gearTab;
+            int gearTab = 0;
+            int selectedIdx = 0;
 
-            for (int i = 0; i < dispGearNum; i++)
-            {
-                Console.WriteLine($"{i + 1}. {Program.playerData.invenGear[i]}");
-            }
-            if (dispGearNum == 1) Console.WriteLine($"(1 : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
-            else Console.WriteLine($"(1 ~ {dispGearNum} : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
-
-            keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.Tab, ConsoleKey.X };
+            keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.Tab, ConsoleKey.X };
             bool loop = true;
             while (loop)
             {
-                keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
-
-                switch (keyInput)
+                //장비 판매 리스트 디스플레이
+                Console.SetCursorPosition(20, 0);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write($"소지금 : {Program.playerData.Gold} Gold");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.SetCursorPosition(0, 4);
+                for (int i = 0; i <= 14; i++) Console.WriteLine(new string(' ', Console.WindowWidth));
+                Console.SetCursorPosition(0, 0);
+                Console.SetCursorPosition(0, 4);
+                for (int i = gearTab; i < gearTab + 9 && i < _sellingGearList.Count; i++)
                 {
-                    case ConsoleKey.D1:
-                    case ConsoleKey.D2:
-                    case ConsoleKey.D3:
-                    case ConsoleKey.D4:
-                    case ConsoleKey.D5:
-                        selectedIdx = gearTab + (keyInput - ConsoleKey.D1);
-                        if (selectedIdx < Program.playerData.invenGear.Count)
-                        {
-                            Console.WriteLine("장비를 구매하시겠습니까?");
-                            Console.WriteLine("                                       1.예 2.아니오 ");
-                            Console.Write("");
-                            intInput = int.Parse(Console.ReadLine());
+                    Gear gear = GearDatabase.GetGear(_sellingGearList[i]);
+                    Console.Write($" {i - gearTab + 1}. {gear.name}");
+                    Console.SetCursorPosition(20, Console.GetCursorPosition().Top);
+                    Console.WriteLine($"\n");
+                }
+                if (_sellingGearList.Count > 9) Console.WriteLine("\n                             (Tab : 다음)");
 
-                            if (intInput == 1)
+                bool loop2 = true;
+                while (loop2)
+                {
+                    keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+                    switch (keyInput)
+                    {
+                        case ConsoleKey.D1:
+                        case ConsoleKey.D2:
+                        case ConsoleKey.D3:
+                        case ConsoleKey.D4:
+                        case ConsoleKey.D5:
+                        case ConsoleKey.D6:
+                        case ConsoleKey.D7:
+                        case ConsoleKey.D8:
+                        case ConsoleKey.D9:
+                            selectedIdx = keyInput - ConsoleKey.D1;
+                            if (selectedIdx + gearTab < _sellingGearList.Count)
                             {
-                                //판매
-                                Console.WriteLine("장비를 구매하였습니다");
-                                //인벤토리에서 장비 추가
-                                //돈 차감
-                                Program.playerData.Gold -= 가격;
-                            }
-                            else if (intInput == 2)
-                            {
-                                Console.WriteLine("다시 입력해주세요");
-                                Thread.Sleep(1000);
-                                keyController.GetUserInput(keyFilter, out cheatActivated);
-                            }
-                            else
-                            {
-                                Console.WriteLine("다시 입력해주세요");
-                                Thread.Sleep(1000);
-                                keyController.GetUserInput(keyFilter, out cheatActivated);
-                            }
-                        }
-                        break;
+                                Gear gear = GearDatabase.GetGear(_sellingGearList[selectedIdx + gearTab]);
+                                Console.SetCursorPosition(0, 4);
+                                for (int i = 0; i <= 25; i++) Console.WriteLine(new string(' ', Console.WindowWidth));
+                                Console.SetCursorPosition(0, 0);
+                                Console.SetCursorPosition(0, 4);
+                                Console.WriteLine($"{gear.name} : \n\n");
 
-                    case ConsoleKey.Tab:
-                        if (tabActivate == true)
-                        {
-                            //다음 리스트 보기
-                            if (gearTab + 5 >= gearNum) gearTab = 0;
-                            else gearTab += 5;
+                                Console.WriteLine("구매할 장비 개수를 입력해주세요");
+
+                                int quantity = 1;
+                                Console.SetCursorPosition(35, 6);
+                                Console.Write("↑");
+                                Console.SetCursorPosition(35, 8);
+                                Console.Write("↓");
+                                Console.SetCursorPosition(33, 7);
+                                Console.Write("←");
+                                Console.SetCursorPosition(37, 7);
+                                Console.Write("→");
+                                if (GetQuantityInput(36, 7, 99, keyController, ref quantity))
+                                {
+                                    Console.SetCursorPosition(0, 4);
+                                    for (int i = 0; i <= 25; i++) Console.WriteLine(new string(' ', Console.WindowWidth));
+                                    Console.SetCursorPosition(0, 0);
+                                    Console.SetCursorPosition(0, 4);
+
+                                    if (Program.playerData.Gold >= quantity * gear.Price)
+                                    {
+                                        //골드 차감
+                                        Program.playerData.Gold -= quantity * gear.Price;
+
+                                        //인벤토리에 아이템 추가
+                                        for (int i = 0; i < quantity; i++)
+                                        {
+                                            Program.playerData.invenGear.Add(new WorldGear(_sellingGearList[selectedIdx + gearTab]));
+                                        }
+
+                                        //구매 메시지
+                                        Console.WriteLine($"{gear.name}을 {quantity}개 구매하였습니다");
+                                        Thread.Sleep(1000);
+                                        keyController.GetUserInput(keyFilter, out cheatActivated);
+                                    }
+                                    else //골드 부족
+                                    {
+                                        Console.WriteLine("골드가 부족합니다");
+                                        Thread.Sleep(1000);
+                                        keyController.GetUserInput(keyFilter, out cheatActivated);
+                                    }
+                                }
+                                loop2 = false;
+                            }
+                            break;
+
+                        case ConsoleKey.Tab:
+                            if (_sellingGearList.Count > 9)
+                            {
+                                if (gearTab + 9 >= _sellingGearList.Count) gearTab = 0;
+                                else gearTab += 9;
+                                loop2 = false;
+                            }
+                            break;
+
+                        case ConsoleKey.X:
+                            loop2 = false;
                             loop = false;
-                        }
-                        break;
-
-                    case ConsoleKey.X:
-                        next = Scenes.Town_Default; //상점으로 되돌아가기
-                        return true;
+                            break;
+                    }
                 }
             }
+
+            next = Scenes.Shop_Default; //상점으로 되돌아가기
+            return true;
         }
 
         //장비 판매
-        public static bool SellGear(out Scenes next, KeyController keyController, out int selectedIdx) 
+        public static bool SellGear(out Scenes next, KeyController keyController)
         {
             ConsoleKey[] keyFilter = new ConsoleKey[] { ConsoleKey.NoName };
             ConsoleKey keyInput;
 
-            int intInput;
-
             int cheatActivated;
-            int gearNum = Program.playerData.invenGear.Count;
-            int gearTab = 0;
-            selectedIdx = 0;
-
             keyController.GetUserInput(keyFilter, out cheatActivated);
 
             Console.WriteLine("< 장비 상점 >");
-            Console.WriteLine("보유한 장비를 판매할 수 있습니다.\n");
+            Console.WriteLine("\n보유한 장비를 판매할 수 있습니다.");
 
-            bool tabActivate = (gearNum > 5);
-            int dispGearNum = gearNum - gearTab;
+            int gearTab = 0;
+            int selectedIdx = 0;
 
-            for (int i = 0; i < dispGearNum; i++)
-            {
-                Console.WriteLine($"{i + 1}. {Program.playerData.invenGear[i]}");
-            }
-            if (dispGearNum == 1) Console.WriteLine($"(1 : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
-            else Console.WriteLine($"(1 ~ {dispGearNum} : 선택, {(tabActivate ? "Tab : 다음, " : "")}X : 취소)");
-
-            keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.Tab, ConsoleKey.X };
+            keyFilter = new ConsoleKey[] { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.Tab, ConsoleKey.X };
             bool loop = true;
             while (loop)
             {
-                keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
-
-                switch (keyInput)
+                //장비 판매 리스트 디스플레이
+                Console.SetCursorPosition(20, 0);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write($"소지금 : {Program.playerData.Gold} Gold");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.SetCursorPosition(0, 4);
+                for (int i = 0; i <= 14; i++) Console.WriteLine(new string(' ', Console.WindowWidth));
+                Console.SetCursorPosition(0, 0);
+                Console.SetCursorPosition(0, 4);
+                for (int i = gearTab; i < gearTab + 9 && i < Program.playerData.invenGear.Count; i++)
                 {
-                    case ConsoleKey.D1:
-                    case ConsoleKey.D2:
-                    case ConsoleKey.D3:
-                    case ConsoleKey.D4:
-                    case ConsoleKey.D5:
-                        selectedIdx = gearTab + (keyInput - ConsoleKey.D1);
-                        if (selectedIdx < Program.playerData.invenGear.Count)
-                        {
-                            Console.WriteLine("장비를 판매하시겠습니까?");
-                            Console.WriteLine("                                       1.예 2.아니오 ");
-                            Console.Write("");
-                            intInput = int.Parse(Console.ReadLine());
+                    Gear gear = GearDatabase.GetGear(Program.playerData.invenGear[i].gear);
+                    Console.Write($" {i - gearTab + 1}. {gear.name}");
+                    Console.SetCursorPosition(20, Console.GetCursorPosition().Top);
+                    Console.WriteLine($"\n");
+                }
+                if (Program.playerData.invenGear.Count > 9) Console.WriteLine("\n                             (Tab : 다음)");
 
-                            if (intInput == 1)
+                bool loop2 = true;
+                while (loop2)
+                {
+                    keyInput = keyController.GetUserInput(keyFilter, out cheatActivated);
+                    switch (keyInput)
+                    {
+                        case ConsoleKey.D1:
+                        case ConsoleKey.D2:
+                        case ConsoleKey.D3:
+                        case ConsoleKey.D4:
+                        case ConsoleKey.D5:
+                        case ConsoleKey.D6:
+                        case ConsoleKey.D7:
+                        case ConsoleKey.D8:
+                        case ConsoleKey.D9:
+                            selectedIdx = keyInput - ConsoleKey.D1;
+                            if (selectedIdx + gearTab < Program.playerData.invenGear.Count)
                             {
-                                //장착중인 장비의 경우 장착 해제
-                                //판매
-                                Console.WriteLine("장비를 판매하였습니다");
-                                //인벤토리에서 장비 삭제
-                                //돈 받기
-                                Program.playerData.Gold += (int)가격 * 0.8;
-                            }
-                            else if (intInput == 2)
-                            {
-                                Console.WriteLine("다시 입력해주세요");
-                                Thread.Sleep(1000);
-                                keyController.GetUserInput(keyFilter, out cheatActivated);
-                            }
-                            else
-                            {
-                                Console.WriteLine("다시 입력해주세요");
-                                Thread.Sleep(1000);
-                                keyController.GetUserInput(keyFilter, out cheatActivated);
-                            }
-                        }
-                        break;
+                                Gear gear = GearDatabase.GetGear(Program.playerData.invenGear[selectedIdx + gearTab].gear);
+                                Console.SetCursorPosition(0, 4);
+                                for (int i = 0; i <= 25; i++) Console.WriteLine(new string(' ', Console.WindowWidth));
+                                Console.SetCursorPosition(0, 0);
+                                Console.SetCursorPosition(0, 4);
+                                Console.WriteLine($"{gear.name} : \n\n");
 
-                    case ConsoleKey.Tab:
-                        if (tabActivate == true)
-                        {
-                            //다음 리스트 보기
-                            if (gearTab + 5 >= gearNum) gearTab = 0;
-                            else gearTab += 5;
+                                Console.WriteLine("판매하시겠습니까?");
+
+                                int quantity = 1;
+                                Console.SetCursorPosition(35, 6);
+                                Console.Write("↑");
+                                Console.SetCursorPosition(35, 8);
+                                Console.Write("↓");
+                                Console.SetCursorPosition(33, 7);
+                                Console.Write("←");
+                                Console.SetCursorPosition(37, 7);
+                                Console.Write("→");
+                                if (GetQuantityInput(36, 7, 99, keyController, ref quantity))
+                                {
+                                    Console.SetCursorPosition(0, 4);
+                                    for (int i = 0; i <= 25; i++) Console.WriteLine(new string(' ', Console.WindowWidth));
+                                    Console.SetCursorPosition(0, 0);
+                                    Console.SetCursorPosition(0, 4);
+
+                                    if (quantity == 1)
+                                    {
+                                        //골드 수령
+                                        Program.playerData.Gold += (int)(gear.Price * 0.8);
+
+                                        //인벤토리서 아이템 삭제
+                                        Program.playerData.invenGear.RemoveAt(selectedIdx + gearTab);
+
+
+                                        //판매 메시지
+                                        Console.WriteLine($"{gear.name}을 판매하였습니다");
+                                        Thread.Sleep(1000);
+                                        keyController.GetUserInput(keyFilter, out cheatActivated);
+                                    }
+                                    else //보유량 부족
+                                    {
+                                        Console.WriteLine("1개씩 판매해주세요");
+                                        Thread.Sleep(1000);
+                                        keyController.GetUserInput(keyFilter, out cheatActivated);
+                                    }
+                                }
+                                loop2 = false;
+                            }
+                            break;
+
+                        case ConsoleKey.Tab:
+                            if (_sellingGearList.Count > 9)
+                            {
+                                if (gearTab + 9 >= _sellingGearList.Count) gearTab = 0;
+                                else gearTab += 9;
+                                loop2 = false;
+                            }
+                            break;
+
+                        case ConsoleKey.X:
+                            loop2 = false;
                             loop = false;
-                        }
-                        break;
-
-                    case ConsoleKey.X:
-                        next = Scenes.Town_Default; //상점으로 되돌아가기
-                        return true;
+                            break;
+                    }
                 }
             }
-        }*/
+
+            next = Scenes.Shop_Default; //상점으로 되돌아가기
+            return true;
+        }
 
 
         private static bool GetQuantityInput(int screenLeft, int screenTop, int max, KeyController keyController, ref int quantity)
